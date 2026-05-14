@@ -123,7 +123,9 @@ static QMap<class QString, QSharedPointer<ValueHandler>>
     OPTION("drawMarkerSize"              ,LowerBoundedInt    ( 1, 5          )),
     OPTION("drawColor"                   ,Color              ( Qt::red       )),
     OPTION("userColors"                  ,UserColors         ( 3, 17         )),
+#if !defined(DISABLE_UPDATE_CHECKER)
     OPTION("ignoreUpdateToVersion"       ,String             ( ""            )),
+#endif
     OPTION("keepOpenAppLauncher"         ,Bool               ( false         )),
     OPTION("fontFamily"                  ,String             ( ""            )),
     // PREDEFINED_COLOR_PALETTE_LARGE is defined in src/CMakeList.txt file and can be overwritten in GitHub actions

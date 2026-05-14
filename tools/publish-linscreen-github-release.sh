@@ -2,7 +2,8 @@
 set -eu
 
 repo="${1:-aurelson101/linscreen}"
-tag="${2:-v14.0.0}"
+project_version="$(sed -n 's/^set(LINSCREEN_VERSION[[:space:]]*\\([0-9][^)]*\\)).*/\\1/p' CMakeLists.txt | head -n 1)"
+tag="${2:-v${project_version}}"
 remote_name="${3:-linscreen}"
 build_dir="${BUILD_DIR:-build-linscreen-release}"
 
@@ -16,7 +17,12 @@ if ! gh auth status >/dev/null 2>&1; then
     exit 1
 fi
 
-if [ ! -f "${build_dir}/linscreen_14.0.0_amd64.deb" ]; then
+if [ -z "${project_version}" ]; then
+    echo "Could not read LINSCREEN_VERSION from CMakeLists.txt" >&2
+    exit 1
+fi
+
+if [ ! -f "${build_dir}/linscreen_${project_version}_amd64.deb" ]; then
     tools/package-linscreen-deb.sh "${build_dir}"
 fi
 

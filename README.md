@@ -1,18 +1,46 @@
 # LinScreen
 
-LinScreen is a GPL-3.0 screenshot and annotation tool focused on reliable Linux desktop capture, especially Wayland sessions on GNOME and KDE with one or more monitors.
+LinScreen is a screenshot and annotation tool for Linux desktops, with a focus on Wayland sessions on GNOME and KDE, including multi-monitor setups.
 
-## Highlights
+It is a rebranded, Wayland-focused fork intended to be packaged as `linscreen` with desktop ID `org.linscreen.LinScreen`.
 
-- Interactive region capture with annotation tools.
-- Full-screen and per-monitor capture commands.
-- Wayland capture through desktop portals.
+## Features
+
+- Region, full-screen, and per-monitor screenshots.
+- Annotation tools for arrows, text, shapes, counters, blur/pixelate, copy, and save.
+- Wayland capture through `xdg-desktop-portal`.
 - X11 fallback support.
-- Desktop integration through AppStream, desktop entry, DBus, icons, shell completions, and man page.
-- Debug helper for Wayland portal issues.
-- Linux packaging through CPack Debian and tarball artifacts.
+- GNOME/KDE desktop integration through desktop entry, AppStream metadata, DBus service, icons, completions, and man page.
+- Debian package and Linux tarball generation from one script.
+- Wayland portal debug helper for tricky GNOME/KDE setups.
 
-## Build on Debian or Ubuntu
+## Install The Debian Package
+
+Build or download the package, then install it with:
+
+```sh
+sudo apt install ./build-linscreen-release/linscreen_14.0.1_amd64.deb
+```
+
+The Debian package refreshes desktop/icon caches after install. If the launcher is still missing in GNOME or KDE, log out and back in once.
+
+Quick checks:
+
+```sh
+linscreen --version
+gtk-launch org.linscreen.LinScreen
+grep -E '^(Exec|Icon|Name)=' /usr/share/applications/org.linscreen.LinScreen.desktop
+```
+
+Expected desktop entry values:
+
+```ini
+Name=LinScreen
+Exec=/usr/bin/linscreen
+Icon=org.linscreen.LinScreen
+```
+
+## Build On Debian Or Ubuntu
 
 Install dependencies:
 
@@ -22,13 +50,13 @@ sudo apt install cmake build-essential ninja-build \
   qt6-l10n-tools libgl-dev appstream desktop-file-utils
 ```
 
-Build packages:
+Build release artifacts:
 
 ```sh
 tools/package-linscreen-deb.sh
 ```
 
-The generated artifacts are written under `build-linscreen-release/`:
+Artifacts are written under `build-linscreen-release/`:
 
 - `linscreen_14.0.1_amd64.deb`
 - `linscreen-14.0.1-linux.tar.gz`
@@ -37,10 +65,33 @@ The generated artifacts are written under `build-linscreen-release/`:
 ## Run
 
 ```sh
+linscreen
 linscreen gui
 linscreen full --path ~/Pictures/capture.png
 linscreen screen --number 0 --path ~/Pictures/monitor.png
 linscreen config
+```
+
+## Wayland Portal Notes
+
+LinScreen uses the desktop portal on Wayland. The important installed files are:
+
+- `/usr/share/applications/org.linscreen.LinScreen.desktop`
+- `/usr/share/dbus-1/services/org.linscreen.LinScreen.service`
+- `/usr/share/icons/hicolor/scalable/apps/org.linscreen.LinScreen.svg`
+
+If you see:
+
+```text
+Could not register app ID: App info not found for 'org.linscreen.LinScreen'
+```
+
+verify the desktop entry exists and points to `/usr/bin/linscreen`, then refresh caches or reconnect your session:
+
+```sh
+sudo update-desktop-database /usr/share/applications
+sudo gtk-update-icon-cache -q -t -f /usr/share/icons/hicolor
+gtk-launch org.linscreen.LinScreen
 ```
 
 ## Wayland Debugging
@@ -56,7 +107,7 @@ cmake --build build-wayland-debug -j"$(nproc)"
 tools/wayland-capture-debug.sh build-wayland-debug
 ```
 
-The debug output reports session variables, portal services, and capture portal failures.
+The debug output reports session variables, portal services, backend processes, and capture portal failures.
 
 ## Flatpak
 
@@ -82,26 +133,18 @@ A native Linux Qt installation cannot produce `linscreen.exe`.
 
 ## Release
 
-The GitHub release workflow builds the Debian package and tarball when a version tag is pushed:
-
-```sh
-git tag v14.0.1
-git push origin v14.0.1
-```
-
-Release assets include:
-
-- `.deb`
-- Linux `.tar.gz`
-- `SHA256SUMS`
-
-To create the GitHub repository and publish the current local `.deb` manually,
-install GitHub CLI, authenticate, then run:
+Create or update the GitHub release with:
 
 ```sh
 gh auth login
-tools/publish-linscreen-github-release.sh aurelson101/linscreen v14.0.1
+tools/publish-linscreen-github-release.sh aurelson101/linscreen
 ```
+
+The script reads `LINSCREEN_VERSION` from `CMakeLists.txt`, builds missing artifacts, pushes the current branch to `main`, tags `v<version>`, and uploads:
+
+- Debian package
+- Linux tarball
+- `SHA256SUMS`
 
 ## License
 

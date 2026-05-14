@@ -7,7 +7,7 @@ body:
     attributes:
       label: LinScreen version
       description: Paste the output of `linscreen --version`.
-      placeholder: LinScreen v14.0.0 (...)
+      placeholder: LinScreen v14.0.1 (...)
     validations:
       required: true
   - type: textarea
