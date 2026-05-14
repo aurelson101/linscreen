@@ -146,6 +146,11 @@ The script reads `LINSCREEN_VERSION` from `CMakeLists.txt`, builds missing artif
 - Linux tarball
 - `SHA256SUMS`
 
+## Website
+
+The presentation website for `https://linscreen.aurelson.com` lives in `www/`.
+It is a static Bootstrap page and can be deployed as-is.
+
 ## License
 
 LinScreen is distributed under the GNU General Public License v3.0. See `LICENSE`.
