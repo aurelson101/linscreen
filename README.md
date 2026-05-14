@@ -30,8 +30,8 @@ tools/package-linscreen-deb.sh
 
 The generated artifacts are written under `build-linscreen-release/`:
 
-- `linscreen_14.0.0_amd64.deb`
-- `linscreen-14.0.0-linux.tar.gz`
+- `linscreen_14.0.1_amd64.deb`
+- `linscreen-14.0.1-linux.tar.gz`
 - `src/linscreen`
 
 ## Run
@@ -85,8 +85,8 @@ A native Linux Qt installation cannot produce `linscreen.exe`.
 The GitHub release workflow builds the Debian package and tarball when a version tag is pushed:
 
 ```sh
-git tag v14.0.0
-git push origin v14.0.0
+git tag v14.0.1
+git push origin v14.0.1
 ```
 
 Release assets include:
@@ -100,7 +100,7 @@ install GitHub CLI, authenticate, then run:
 
 ```sh
 gh auth login
-tools/publish-linscreen-github-release.sh aurelson101/linscreen v14.0.0
+tools/publish-linscreen-github-release.sh aurelson101/linscreen v14.0.1
 ```
 
 ## License

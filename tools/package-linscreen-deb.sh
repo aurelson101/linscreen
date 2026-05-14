@@ -10,6 +10,7 @@ fi
 
 cmake -S . -B "${build_dir}" \
     -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_INSTALL_PREFIX=/usr \
     -DDISABLE_UPDATE_CHECKER=ON \
     -DENABLE_IMGUR=OFF
 
