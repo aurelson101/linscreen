@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  deb:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            appstream \
+            build-essential \
+            cmake \
+            desktop-file-utils \
+            dpkg-dev \
+            git \
+            libgl-dev \
+            ninja-build \
+            qt6-base-dev \
+            qt6-l10n-tools \
+            qt6-svg-dev \
+            qt6-tools-dev \
+            qt6-tools-dev-tools
+
+      - name: Build packages
+        run: tools/package-linscreen-deb.sh build-linscreen-release
+
+      - name: Checksums
+        run: |
+          cd build-linscreen-release
+          sha256sum linscreen_*.deb linscreen-*-linux.tar.gz > SHA256SUMS
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            build-linscreen-release/linscreen_*.deb
+            build-linscreen-release/linscreen-*-linux.tar.gz
+            build-linscreen-release/SHA256SUMS

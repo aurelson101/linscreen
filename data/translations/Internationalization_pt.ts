@@ -150,26 +150,26 @@
     </message>
     <message>
         <location filename="../../src/widgets/capturelauncher.ui" line="94"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_capturelauncher.h" line="186"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_capturelauncher.h" line="186"/>
         <location filename="../../src/widgets/capturelauncher.cpp" line="90"/>
         <source> seconds</source>
         <translation> segundos</translation>
     </message>
     <message>
         <location filename="../../src/widgets/capturelauncher.ui" line="166"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_capturelauncher.h" line="188"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_capturelauncher.h" line="188"/>
         <source>Take new screenshot</source>
         <translation>Tirar nova captura de ecrã</translation>
     </message>
     <message>
         <location filename="../../src/widgets/capturelauncher.ui" line="47"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_capturelauncher.h" line="181"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_capturelauncher.h" line="181"/>
         <source>Area:</source>
         <translation>Área:</translation>
     </message>
     <message>
         <location filename="../../src/widgets/capturelauncher.ui" line="14"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_capturelauncher.h" line="179"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_capturelauncher.h" line="179"/>
         <source>Capture Launcher</source>
         <translation>Lançador de captura</translation>
     </message>
@@ -179,25 +179,25 @@
     </message>
     <message>
         <location filename="../../src/widgets/capturelauncher.ui" line="32"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_capturelauncher.h" line="180"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_capturelauncher.h" line="180"/>
         <source>Capture Mode</source>
         <translation>Modo de Captura</translation>
     </message>
     <message>
         <location filename="../../src/widgets/capturelauncher.ui" line="64"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_capturelauncher.h" line="183"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_capturelauncher.h" line="183"/>
         <source>Delay:</source>
         <translation>Atraso:</translation>
     </message>
     <message>
         <location filename="../../src/widgets/capturelauncher.ui" line="71"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_capturelauncher.h" line="184"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_capturelauncher.h" line="184"/>
         <source>Monitor:</source>
         <translation>Monitor:</translation>
     </message>
     <message>
         <location filename="../../src/widgets/capturelauncher.ui" line="87"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_capturelauncher.h" line="185"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_capturelauncher.h" line="185"/>
         <source>WxH+x+y</source>
         <translation>WxH+x+y</translation>
     </message>
@@ -271,13 +271,13 @@
     </message>
     <message>
         <location filename="../../src/widgets/capture/capturewidget.cpp" line="777"/>
-        <source>Flameshot has lost focus. Keyboard shortcuts won&apos;t work until you click somewhere.</source>
-        <translation>Flameshot perdeu o foco. As teclas de atalho não funcionarão até que clique em algum lugar.</translation>
+        <source>LinScreen has lost focus. Keyboard shortcuts won&apos;t work until you click somewhere.</source>
+        <translation>LinScreen perdeu o foco. As teclas de atalho não funcionarão até que clique em algum lugar.</translation>
     </message>
     <message>
         <location filename="../../src/widgets/capture/capturewidget.cpp" line="783"/>
-        <source>Configuration error resolved. Launch `flameshot gui` again to apply it.</source>
-        <translation>Erro de configuração resolvido. Inicie o “flameshot gui” novamente para aplicá-lo.</translation>
+        <source>Configuration error resolved. Launch `linscreen gui` again to apply it.</source>
+        <translation>Erro de configuração resolvido. Inicie o “linscreen gui” novamente para aplicá-lo.</translation>
     </message>
     <message>
         <source>Select an area with the mouse, or press Esc to exit.
@@ -581,10 +581,10 @@ Premeu Espai per obrir el calaix lateral.</translation>
     <message>
         <location filename="../../src/config/configresolver.cpp" line="89"/>
         <source>Some keyboard shortcuts have conflicts.
-This will NOT prevent flameshot from starting.
+This will NOT prevent linscreen from starting.
 Please solve them manually in the configuration file.</source>
         <translation>Algumas teclas de atalho apresentam conflitos.
-Isto NÃO impedirá o Flameshot de iniciar.
+Isto NÃO impedirá o LinScreen de iniciar.
 Resolva-as manualmente no ficheiro de configuração.</translation>
     </message>
     <message>
@@ -790,42 +790,42 @@ Resolva-as manualmente no ficheiro de configuração.</translation>
     </message>
 </context>
 <context>
-    <name>Flameshot</name>
+    <name>LinScreen</name>
     <message>
-        <location filename="../../src/core/flameshot.cpp" line="122"/>
+        <location filename="../../src/core/linscreen.cpp" line="122"/>
         <source>Error</source>
         <translation>Erro</translation>
     </message>
     <message>
-        <location filename="../../src/core/flameshot.cpp" line="122"/>
+        <location filename="../../src/core/linscreen.cpp" line="122"/>
         <source>Unable to close active modal widgets</source>
         <translation>Incapaz de fechar widgets modais ativos</translation>
     </message>
     <message>
-        <location filename="../../src/core/flameshot.cpp" line="441"/>
+        <location filename="../../src/core/linscreen.cpp" line="441"/>
         <source>URL copied to clipboard.</source>
         <translation>URL copiada para a área de transferência.</translation>
     </message>
 </context>
 <context>
-    <name>FlameshotDaemon</name>
+    <name>LinScreenDaemon</name>
     <message>
         <source>New version %1 is available</source>
         <translation type="vanished">Nova versão %1 está disponível</translation>
     </message>
     <message>
-        <location filename="../../src/core/flameshotdaemon.cpp" line="272"/>
-        <location filename="../../src/core/flameshotdaemon.cpp" line="436"/>
+        <location filename="../../src/core/linscreendaemon.cpp" line="272"/>
+        <location filename="../../src/core/linscreendaemon.cpp" line="436"/>
         <source>You have the latest version</source>
         <translation>Você está com a versão mais recente</translation>
     </message>
     <message>
-        <location filename="../../src/core/flameshotdaemon.cpp" line="445"/>
+        <location filename="../../src/core/linscreendaemon.cpp" line="445"/>
         <source>Failed to get information about the latest version.</source>
         <translation>Não foi possível obter informações sobre a versão mais recente.</translation>
     </message>
     <message>
-        <location filename="../../src/core/flameshotdaemon.cpp" line="468"/>
+        <location filename="../../src/core/linscreendaemon.cpp" line="468"/>
         <source>Unable to connect via DBus</source>
         <translation>Não foi possível conectar via DBus</translation>
     </message>
@@ -998,12 +998,12 @@ Resolva-as manualmente no ficheiro de configuração.</translation>
     </message>
     <message>
         <location filename="../../src/config/generalconf.cpp" line="411"/>
-        <source>Allow multiple flameshot GUI instances simultaneously</source>
-        <translation>Permitir várias instâncias GUI do flameshot simultaneamente</translation>
+        <source>Allow multiple linscreen GUI instances simultaneously</source>
+        <translation>Permitir várias instâncias GUI do linscreen simultaneamente</translation>
     </message>
     <message>
-        <source>This allows you to take screenshots of flameshot itself for example.</source>
-        <translation type="vanished">This allows you to take screenshots of flameshot itself for example.</translation>
+        <source>This allows you to take screenshots of linscreen itself for example.</source>
+        <translation type="vanished">This allows you to take screenshots of linscreen itself for example.</translation>
     </message>
     <message>
         <source>Automatically close daemon when it is not needed</source>
@@ -1014,8 +1014,8 @@ Resolva-as manualmente no ficheiro de configuração.</translation>
         <translation type="vanished">Llança a l&apos;inici</translation>
     </message>
     <message>
-        <source>Launch Flameshot</source>
-        <translation type="vanished">Inicia el Flameshot</translation>
+        <source>Launch LinScreen</source>
+        <translation type="vanished">Inicia el LinScreen</translation>
     </message>
     <message>
         <location filename="../../src/config/generalconf.cpp" line="448"/>
@@ -1105,12 +1105,12 @@ Resolva-as manualmente no ficheiro de configuração.</translation>
     </message>
     <message>
         <location filename="../../src/config/generalconf.cpp" line="412"/>
-        <source>This allows you to take screenshots of Flameshot itself for example</source>
-        <translation>Isto permite que tire capturas de ecrã do próprio Flameshot, por exemplo</translation>
+        <source>This allows you to take screenshots of LinScreen itself for example</source>
+        <translation>Isto permite que tire capturas de ecrã do próprio LinScreen, por exemplo</translation>
     </message>
     <message>
-        <source>Launch Flameshot daemon when computer is booted</source>
-        <translation type="vanished">Launch Flameshot daemon when computer is booted</translation>
+        <source>Launch LinScreen daemon when computer is booted</source>
+        <translation type="vanished">Launch LinScreen daemon when computer is booted</translation>
     </message>
     <message>
         <location filename="../../src/config/generalconf.cpp" line="451"/>
@@ -1152,8 +1152,8 @@ Resolva-as manualmente no ficheiro de configuração.</translation>
     </message>
     <message>
         <location filename="../../src/config/generalconf.cpp" line="437"/>
-        <source>Launch Flameshot daemon (background process) when computer is booted</source>
-        <translation>Iniciar o Flameshot em segundo plano quando o computador for inicializado</translation>
+        <source>Launch LinScreen daemon (background process) when computer is booted</source>
+        <translation>Iniciar o LinScreen em segundo plano quando o computador for inicializado</translation>
     </message>
     <message>
         <location filename="../../src/config/generalconf.cpp" line="462"/>
@@ -1613,49 +1613,49 @@ Resolva-as manualmente no ficheiro de configuração.</translation>
     <name>InfoWindow</name>
     <message>
         <location filename="../../src/widgets/infowindow.ui" line="14"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_infowindow.h" line="116"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_infowindow.h" line="116"/>
         <source>About</source>
         <translation>Sobre</translation>
     </message>
     <message>
         <location filename="../../src/widgets/infowindow.ui" line="26"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_infowindow.h" line="117"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_infowindow.h" line="117"/>
         <source>Icon</source>
         <translation>Icon</translation>
     </message>
     <message>
         <location filename="../../src/widgets/infowindow.ui" line="43"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_infowindow.h" line="118"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_infowindow.h" line="118"/>
         <source>License</source>
         <translation>Licença</translation>
     </message>
     <message>
         <location filename="../../src/widgets/infowindow.ui" line="56"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_infowindow.h" line="119"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_infowindow.h" line="119"/>
         <source>GPLv3+</source>
         <translation>GPLv3+</translation>
     </message>
     <message>
         <location filename="../../src/widgets/infowindow.ui" line="89"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_infowindow.h" line="120"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_infowindow.h" line="120"/>
         <source>Version</source>
         <translation>Version</translation>
     </message>
     <message>
         <location filename="../../src/widgets/infowindow.ui" line="102"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_infowindow.h" line="121"/>
-        <source>Flameshot v</source>
-        <translation>Flameshot v</translation>
+        <location filename="../../build/src/linscreen_autogen/include/ui_infowindow.h" line="121"/>
+        <source>LinScreen v</source>
+        <translation>LinScreen v</translation>
     </message>
     <message>
         <location filename="../../src/widgets/infowindow.ui" line="115"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_infowindow.h" line="122"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_infowindow.h" line="122"/>
         <source>OS Info</source>
         <translation>OS Info</translation>
     </message>
     <message>
         <location filename="../../src/widgets/infowindow.ui" line="128"/>
-        <location filename="../../build/src/flameshot_autogen/include/ui_infowindow.h" line="123"/>
+        <location filename="../../build/src/linscreen_autogen/include/ui_infowindow.h" line="123"/>
         <source>Copy Info</source>
         <translation>Copiar Informações</translation>
     </message>
@@ -2175,12 +2175,12 @@ Você pode ter que invalidar o sinal &apos;#&apos;, por exemplo &apos;\#FFF&apos
         <translation>Não foi possível escrever em</translation>
     </message>
     <message>
-        <location filename="../../src/core/flameshot.cpp" line="168"/>
+        <location filename="../../src/core/linscreen.cpp" line="168"/>
         <source>Requested screen exceeds screen count</source>
         <translation>O ecrã solicitado excede a contagem de ecrãs</translation>
     </message>
     <message>
-        <location filename="../../src/core/flameshot.cpp" line="418"/>
+        <location filename="../../src/core/linscreen.cpp" line="418"/>
         <source>Full screen screenshot pinned to screen</source>
         <translation>Captura de ecrã inteiro fixado no ecrã</translation>
     </message>
@@ -2223,8 +2223,8 @@ Você pode ter que invalidar o sinal &apos;#&apos;, por exemplo &apos;\#FFF&apos
     </message>
     <message>
         <location filename="../../src/cli/commandlineparser.cpp" line="334"/>
-        <source>Per default runs Flameshot in the background and adds a tray icon for configuration.</source>
-        <translation>Por padrão, o Flameshot é executado em segundo plano e adiciona um ícone de bandeja para configuração.</translation>
+        <source>Per default runs LinScreen in the background and adds a tray icon for configuration.</source>
+        <translation>Por padrão, o LinScreen é executado em segundo plano e adiciona um ícone de bandeja para configuração.</translation>
     </message>
     <message>
         <location filename="../../src/widgets/trayicon.cpp" line="83"/>
@@ -2363,8 +2363,8 @@ Você pode ter que invalidar o sinal &apos;#&apos;, por exemplo &apos;\#FFF&apos
         <translation type="vanished">O adaptador universal de captura do ecrã do Wayland requer o Grim como componente de captura de ecrã do Wayland. Se o componente de captura de ecrã estiver ausente, instale-o!</translation>
     </message>
     <message>
-        <source>If the useGrimAdapter setting is not enabled, the dbus protocol will be used. It should be noted that using the dbus protocol under wayland is not recommended. It is recommended to enable the useGrimAdapter setting in flameshot.ini to activate the grim-based general wayland screenshot adapter</source>
-        <translation type="vanished">Se a configuração useGrimAdapter não estiver ativada, o protocolo dbus será usado. Observe que o uso do protocolo dbus no Wayland não é recomendado. Recomenda-se ativar a configuração useGrimAdapter no flameshot.ini para ativar o adaptador de captura de ecrã geral do Wayland baseado em Grim</translation>
+        <source>If the useGrimAdapter setting is not enabled, the dbus protocol will be used. It should be noted that using the dbus protocol under wayland is not recommended. It is recommended to enable the useGrimAdapter setting in linscreen.ini to activate the grim-based general wayland screenshot adapter</source>
+        <translation type="vanished">Se a configuração useGrimAdapter não estiver ativada, o protocolo dbus será usado. Observe que o uso do protocolo dbus no Wayland não é recomendado. Recomenda-se ativar a configuração useGrimAdapter no linscreen.ini para ativar o adaptador de captura de ecrã geral do Wayland baseado em Grim</translation>
     </message>
     <message>
         <source>grim&apos;s screenshot component is implemented based on wlroots, it may not be used in GNOME or similar desktop environments</source>
@@ -2554,8 +2554,8 @@ Você pode ter que invalidar o sinal &apos;#&apos;, por exemplo &apos;\#FFF&apos
     <message>
         <location filename="../../src/config/setshortcutwidget.cpp" line="50"/>
         <location filename="../../src/config/setshortcutwidget.cpp" line="55"/>
-        <source>Flameshot must be restarted for changes to take effect.</source>
-        <translation>O Flameshot deve ser reiniciado para que as alterações entrem em vigor.</translation>
+        <source>LinScreen must be restarted for changes to take effect.</source>
+        <translation>O LinScreen deve ser reiniciado para que as alterações entrem em vigor.</translation>
     </message>
 </context>
 <context>
@@ -2677,13 +2677,13 @@ Você pode ter que invalidar o sinal &apos;#&apos;, por exemplo &apos;\#FFF&apos
     </message>
     <message>
         <location filename="../../src/config/shortcutswidget.cpp" line="268"/>
-        <source>It seems, that Windows forces to open its screenshot tool when the &apos;Print Screen&apos; key is pressed. Would you like to disable this so that Flameshot can use the &apos;Print Screen&apos; key?</source>
+        <source>It seems, that Windows forces to open its screenshot tool when the &apos;Print Screen&apos; key is pressed. Would you like to disable this so that LinScreen can use the &apos;Print Screen&apos; key?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/config/shortcutswidget.cpp" line="273"/>
-        <source>Flameshot must be restarted for changes to take effect.</source>
-        <translation type="unfinished">O Flameshot deve ser reiniciado para que as alterações entrem em vigor.</translation>
+        <source>LinScreen must be restarted for changes to take effect.</source>
+        <translation type="unfinished">O LinScreen deve ser reiniciado para que as alterações entrem em vigor.</translation>
     </message>
     <message>
         <location filename="../../src/config/shortcutswidget.cpp" line="278"/>
@@ -2699,18 +2699,18 @@ Você pode ter que invalidar o sinal &apos;#&apos;, por exemplo &apos;\#FFF&apos
     </message>
     <message>
         <location filename="../../src/config/shortcutswidget.cpp" line="317"/>
-        <source>Register Flameshot as MS-SCREENCLIP application (administrator privileges required)</source>
+        <source>Register LinScreen as MS-SCREENCLIP application (administrator privileges required)</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/config/shortcutswidget.cpp" line="321"/>
-        <source>After registering, you can select Flameshot as the default screenshot application in Windows Settings.</source>
+        <source>After registering, you can select LinScreen as the default screenshot application in Windows Settings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../../src/config/shortcutswidget.cpp" line="334"/>
         <location filename="../../src/config/shortcutswidget.cpp" line="344"/>
-        <source>You may start Flameshot as administrator ONCE and try again!</source>
+        <source>You may start LinScreen as administrator ONCE and try again!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -2905,8 +2905,8 @@ Você pode ter que invalidar o sinal &apos;#&apos;, por exemplo &apos;\#FFF&apos
     </message>
     <message>
         <location filename="../../src/utils/systemnotification.cpp" line="51"/>
-        <source>Flameshot Info</source>
-        <translation>Informações do Flameshot</translation>
+        <source>LinScreen Info</source>
+        <translation>Informações do LinScreen</translation>
     </message>
 </context>
 <context>
@@ -3077,8 +3077,8 @@ Você pode ter que invalidar o sinal &apos;#&apos;, por exemplo &apos;\#FFF&apos
     <name>UpdateNotificationWidget</name>
     <message>
         <location filename="../../src/widgets/updatenotificationwidget.cpp" line="71"/>
-        <source>New Flameshot version %1 is available</source>
-        <translation>Nova versão Flameshot %1 está disponível</translation>
+        <source>New LinScreen version %1 is available</source>
+        <translation>Nova versão LinScreen %1 está disponível</translation>
     </message>
     <message>
         <location filename="../../src/widgets/updatenotificationwidget.cpp" line="129"/>
@@ -3194,7 +3194,7 @@ Você pode ter que invalidar o sinal &apos;#&apos;, por exemplo &apos;\#FFF&apos
     </message>
     <message>
         <location filename="../../src/config/visualseditor.cpp" line="142"/>
-        <source>Flameshot must be restarted to apply these changes!</source>
+        <source>LinScreen must be restarted to apply these changes!</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

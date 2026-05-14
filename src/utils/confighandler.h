@@ -42,7 +42,7 @@ class AbstractLogger;
     void FUNC(const TYPE& val)                                                 \
     {                                                                          \
         QString key = QStringLiteral(#KEY);                                    \
-        /* Without this check, multiple `flameshot gui` instances running */   \
+        /* Without this check, multiple `linscreen gui` instances running */   \
         /* simultaneously would cause an endless loop of fileWatcher calls */  \
         if (QVariant::fromValue(val) != value(key)) {                          \
             setValue(key, QVariant::fromValue(val));                           \

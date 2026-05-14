@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2017-2019 Alejandro Sirgo Rica & Contributors
 
 #include "imguploaderbase.h"
-#include "core/flameshotdaemon.h"
+#include "core/linscreendaemon.h"
 #include "utils/confighandler.h"
 #include "utils/globalvalues.h"
 #include "utils/history.h"
@@ -166,13 +166,13 @@ void ImgUploaderBase::openURL()
 
 void ImgUploaderBase::copyURL()
 {
-    FlameshotDaemon::copyToClipboard(m_imageURL.toString());
+    LinScreenDaemon::copyToClipboard(m_imageURL.toString());
     m_notification->showMessage(tr("URL copied to clipboard."));
 }
 
 void ImgUploaderBase::copyImage()
 {
-    FlameshotDaemon::copyToClipboard(m_pixmap);
+    LinScreenDaemon::copyToClipboard(m_pixmap);
     m_notification->showMessage(tr("Screenshot copied to clipboard."));
 }
 

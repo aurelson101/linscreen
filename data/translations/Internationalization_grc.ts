@@ -539,8 +539,8 @@ Press Space to open the side panel.</translation>
     <message>
         <location filename="../../src/config/generalconf.cpp" line="317"/>
         <location filename="../../src/config/generalconf.cpp" line="331"/>
-        <source>Launch Flameshot</source>
-        <translation>Launch Flameshot</translation>
+        <source>Launch LinScreen</source>
+        <translation>Launch LinScreen</translation>
     </message>
     <message>
         <location filename="../../src/config/generalconf.cpp" line="327"/>
@@ -1173,8 +1173,8 @@ You may need to escape the &apos;#&apos; sign as in &apos;\#FFF&apos;</translati
     </message>
     <message>
         <location filename="../../src/cli/commandlineparser.cpp" line="331"/>
-        <source>Per default runs Flameshot in the background and adds a tray icon for configuration.</source>
-        <translation>Per default runs Flameshot in the background and adds a tray icon for configuration.</translation>
+        <source>Per default runs LinScreen in the background and adds a tray icon for configuration.</source>
+        <translation>Per default runs LinScreen in the background and adds a tray icon for configuration.</translation>
     </message>
     <message>
         <location filename="../../src/core/controller.cpp" line="508"/>
@@ -1550,8 +1550,8 @@ You may need to escape the &apos;#&apos; sign as in &apos;\#FFF&apos;</translati
     <name>SystemNotification</name>
     <message>
         <location filename="../../src/utils/systemnotification.cpp" line="30"/>
-        <source>Flameshot Info</source>
-        <translation>Flameshot Info</translation>
+        <source>LinScreen Info</source>
+        <translation>LinScreen Info</translation>
     </message>
 </context>
 <context>
@@ -1645,8 +1645,8 @@ You may need to escape the &apos;#&apos; sign as in &apos;\#FFF&apos;</translati
     <name>UpdateNotificationWidget</name>
     <message>
         <location filename="../../src/widgets/updatenotificationwidget.cpp" line="69"/>
-        <source>New Flameshot version %1 is available</source>
-        <translation>New Flameshot version %1 is available</translation>
+        <source>New LinScreen version %1 is available</source>
+        <translation>New LinScreen version %1 is available</translation>
     </message>
     <message>
         <location filename="../../src/widgets/updatenotificationwidget.cpp" line="122"/>

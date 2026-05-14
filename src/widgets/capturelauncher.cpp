@@ -4,7 +4,7 @@
 #include "capturelauncher.h"
 #include "./ui_capturelauncher.h"
 #include "config/cacheutils.h"
-#include "core/flameshot.h"
+#include "core/linscreen.h"
 #include "core/qguiappcurrentscreen.h"
 #include "utils/globalvalues.h"
 #include "utils/screenshotsaver.h"
@@ -176,17 +176,17 @@ void CaptureLauncher::startCapture()
 #endif
 
     connectCaptureSlots();
-    Flameshot::instance()->requestCapture(req);
+    LinScreen::instance()->requestCapture(req);
 }
 
 void CaptureLauncher::connectCaptureSlots() const
 {
-    connect(Flameshot::instance(),
-            &Flameshot::captureTaken,
+    connect(LinScreen::instance(),
+            &LinScreen::captureTaken,
             this,
             &CaptureLauncher::onCaptureTaken);
-    connect(Flameshot::instance(),
-            &Flameshot::captureFailed,
+    connect(LinScreen::instance(),
+            &LinScreen::captureFailed,
             this,
             &CaptureLauncher::onCaptureFailed);
 }
@@ -198,12 +198,12 @@ void CaptureLauncher::disconnectCaptureSlots() const
     // (random number, usually from 1 up to 20).
     // So now it enables signal on "Capture new screenshot" button and disables
     // on first success of fail.
-    disconnect(Flameshot::instance(),
-               &Flameshot::captureTaken,
+    disconnect(LinScreen::instance(),
+               &LinScreen::captureTaken,
                this,
                &CaptureLauncher::onCaptureTaken);
-    disconnect(Flameshot::instance(),
-               &Flameshot::captureFailed,
+    disconnect(LinScreen::instance(),
+               &LinScreen::captureFailed,
                this,
                &CaptureLauncher::onCaptureFailed);
 }

@@ -17,18 +17,20 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QProcess>
+#include <QProcessEnvironment>
 #include <QScreen>
 #include <QTimer>
 #include <QWidget>
 #include <algorithm>
 
-#ifdef FLAMESHOT_DEBUG_CAPTURE
+#ifdef LINSCREEN_DEBUG_CAPTURE
 #include <QDebug>
 #endif
 
 #if !(defined(Q_OS_MACOS) || defined(Q_OS_WIN))
 #include "request.h"
 #include <QDBusInterface>
+#include <QDBusMessage>
 #include <QDBusReply>
 #include <QDir>
 #include <QUrl>
@@ -36,6 +38,30 @@
 #endif
 
 bool ScreenGrabber::m_monitorSelectionActive = false;
+
+namespace {
+#if !(defined(Q_OS_MACOS) || defined(Q_OS_WIN))
+void logWaylandPortalContext()
+{
+#ifdef LINSCREEN_DEBUG_CAPTURE
+    const auto env = QProcessEnvironment::systemEnvironment();
+    qDebug() << QObject::tr("=== Wayland/portal capture context ===");
+    qDebug() << QObject::tr("Qt platform: %1")
+                  .arg(QGuiApplication::platformName());
+    qDebug() << QObject::tr("XDG_SESSION_TYPE: %1")
+                  .arg(env.value(QStringLiteral("XDG_SESSION_TYPE")));
+    qDebug() << QObject::tr("XDG_CURRENT_DESKTOP: %1")
+                  .arg(env.value(QStringLiteral("XDG_CURRENT_DESKTOP")));
+    qDebug() << QObject::tr("WAYLAND_DISPLAY: %1")
+                  .arg(env.value(QStringLiteral("WAYLAND_DISPLAY")));
+    qDebug() << QObject::tr("KDE_FULL_SESSION: %1")
+                  .arg(env.value(QStringLiteral("KDE_FULL_SESSION")));
+    qDebug() << QObject::tr("GNOME_DESKTOP_SESSION_ID: %1")
+                  .arg(env.value(QStringLiteral("GNOME_DESKTOP_SESSION_ID")));
+#endif
+}
+#endif
+}
 
 ScreenGrabber::ScreenGrabber(QObject* parent)
   : QObject(parent)
@@ -53,6 +79,8 @@ void ScreenGrabber::freeDesktopPortal(bool& ok, QPixmap& res)
 {
 
 #if !(defined(Q_OS_MACOS) || defined(Q_OS_WIN))
+    logWaylandPortalContext();
+
     auto* connectionInterface = QDBusConnection::sessionBus().interface();
     auto service = QStringLiteral("org.freedesktop.portal.Desktop");
 
@@ -67,6 +95,12 @@ void ScreenGrabber::freeDesktopPortal(bool& ok, QPixmap& res)
       service,
       QStringLiteral("/org/freedesktop/portal/desktop"),
       QStringLiteral("org.freedesktop.portal.Screenshot"));
+    if (!screenshotInterface.isValid()) {
+        ok = false;
+        AbstractLogger::error()
+          << tr("Could not create the freedesktop screenshot portal interface");
+        return;
+    }
 
     // unique token
     QString token =
@@ -84,15 +118,28 @@ void ScreenGrabber::freeDesktopPortal(bool& ok, QPixmap& res)
 
     QEventLoop loop;
 
-    const auto onPortalResponse = [&res, &loop, this](uint status,
-                                                      const QVariantMap& map) {
+    bool portalResponded = false;
+    const auto onPortalResponse = [&res, &loop, &portalResponded, this](
+                                    uint status, const QVariantMap& map) {
+        portalResponded = true;
         if (status == 0) {
             // Parse this as URI to handle unicode properly
             QUrl uri = map.value("uri").toString();
             QString uriString = uri.toLocalFile();
+            if (uriString.isEmpty()) {
+                AbstractLogger::error()
+                  << tr("Screenshot portal returned an empty image URI");
+                loop.quit();
+                return;
+            }
             res = QPixmap(uriString);
             QFile imgFile(uriString);
             imgFile.remove();
+        } else {
+            AbstractLogger::error()
+              << tr("Screenshot portal request was cancelled or denied "
+                    "(status %1)")
+                   .arg(status);
         }
         loop.quit();
     };
@@ -130,13 +177,19 @@ void ScreenGrabber::freeDesktopPortal(bool& ok, QPixmap& res)
           QStringLiteral("x11:0x%1").arg(parentDummy.winId(), 0, 16);
     }
 
-    screenshotInterface.call(
+    QDBusMessage reply = screenshotInterface.call(
       QStringLiteral("Screenshot"),
       parentWindow,
       QMap<QString, QVariant>({ { "handle_token", QVariant(token) },
                                 { "interactive", QVariant(false) } }));
 
-    loop.exec();
+    if (reply.type() == QDBusMessage::ErrorMessage) {
+        AbstractLogger::error()
+          << tr("Screenshot portal call failed: %1: %2")
+               .arg(reply.errorName(), reply.errorMessage());
+    } else {
+        loop.exec();
+    }
     timeout.stop();
     QObject::disconnect(conn);
     request->Close().waitForFinished();
@@ -144,10 +197,14 @@ void ScreenGrabber::freeDesktopPortal(bool& ok, QPixmap& res)
 
     if (res.isNull()) {
         ok = false;
+        if (!portalResponded && reply.type() != QDBusMessage::ErrorMessage) {
+            AbstractLogger::error()
+              << tr("Screenshot portal did not return an image");
+        }
         return;
     }
 
-#ifdef FLAMESHOT_DEBUG_CAPTURE
+#ifdef LINSCREEN_DEBUG_CAPTURE
     qDebug() << tr("FreeDesktop portal screenshot size: %1x%2, DPR: %3")
                   .arg(res.width())
                   .arg(res.height())
@@ -248,7 +305,7 @@ QPixmap ScreenGrabber::grabEntireDesktop(bool& ok, int preSelectedMonitor)
     if (!m_info.waylandDetected() && ConfigHandler().useX11LegacyScreenshot()) {
         qWarning() << "Using deprecated legacy X11 screenshot method. "
                       "Consider installing xdg-desktop-portal for your "
-                      "desktop. Future versions of Flameshot may remove the "
+                      "desktop. Future versions of LinScreen may remove the "
                       "option to use the legacy method.";
         screenshot = x11LegacyScreenshot();
         ok = !screenshot.isNull();
@@ -388,7 +445,7 @@ QWidget* ScreenGrabber::createMonitorPreviews(const QPixmap& fullScreenshot)
 {
     const QList<QScreen*> screens = QGuiApplication::screens();
 
-#ifdef FLAMESHOT_DEBUG_CAPTURE
+#ifdef LINSCREEN_DEBUG_CAPTURE
     qDebug() << tr("=== All Screen Information ===");
     for (int i = 0; i < screens.size(); ++i) {
         QScreen* s = screens[i];
@@ -503,7 +560,7 @@ QPixmap ScreenGrabber::cropToMonitor(const QPixmap& fullScreenshot,
     int totalLogicalWidth = maxX - minX;
     int totalLogicalHeight = maxY - minY;
 
-#ifdef FLAMESHOT_DEBUG_CAPTURE
+#ifdef LINSCREEN_DEBUG_CAPTURE
     qDebug() << tr("Total logical dimensions: %1x%2 (min: %3,%4)")
                   .arg(totalLogicalWidth)
                   .arg(totalLogicalHeight)
@@ -524,7 +581,7 @@ QPixmap ScreenGrabber::cropToMonitor(const QPixmap& fullScreenshot,
     qreal screenshotScaleY =
       (qreal)fullScreenshot.height() / totalLogicalHeight;
 
-#ifdef FLAMESHOT_DEBUG_CAPTURE
+#ifdef LINSCREEN_DEBUG_CAPTURE
     qDebug() << tr("Screenshot scale factors: X=%1 Y=%2")
                   .arg(screenshotScaleX)
                   .arg(screenshotScaleY);
@@ -557,7 +614,7 @@ QPixmap ScreenGrabber::cropToMonitor(const QPixmap& fullScreenshot,
     cropWidth = qRound(targetGeometry.width() * targetDpr);
     cropHeight = qRound(targetGeometry.height() * targetDpr);
 
-#ifdef FLAMESHOT_DEBUG_CAPTURE
+#ifdef LINSCREEN_DEBUG_CAPTURE
     qDebug() << tr("Calculated crop position for mixed DPI: X=%1 Y=%2")
                   .arg(cropX)
                   .arg(cropY);
@@ -566,7 +623,7 @@ QPixmap ScreenGrabber::cropToMonitor(const QPixmap& fullScreenshot,
 
     QRect cropRect(cropX, cropY, cropWidth, cropHeight);
 
-#ifdef FLAMESHOT_DEBUG_CAPTURE
+#ifdef LINSCREEN_DEBUG_CAPTURE
     qDebug() << tr("Screen %1: %2").arg(monitorIndex).arg(targetScreen->name());
     qDebug() << tr("  Logical geometry: %1x%2+%3+%4 DPR: %5")
                   .arg(targetGeometry.width())
@@ -602,7 +659,7 @@ QPixmap ScreenGrabber::cropToMonitor(const QPixmap& fullScreenshot,
                                  targetPhysicalHeight,
                                  Qt::IgnoreAspectRatio,
                                  Qt::SmoothTransformation);
-#ifdef FLAMESHOT_DEBUG_CAPTURE
+#ifdef LINSCREEN_DEBUG_CAPTURE
         qDebug() << tr("Scaling screenshot to: %1 %2")
                       .arg(targetPhysicalWidth)
                       .arg(targetPhysicalHeight);

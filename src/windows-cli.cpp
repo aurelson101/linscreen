@@ -13,9 +13,9 @@ std::wstring joinArgs(int argc, wchar_t* argv[])
     return result;
 }
 
-void CallFlameshot(const std::wstring args, bool wait)
+void CallLinScreen(const std::wstring args, bool wait)
 {
-    // generate full path for flameshot executable
+    // generate full path for LinScreen executable
     wchar_t path[MAX_PATH];
     int pathLength = GetModuleFileNameW(NULL, path, MAX_PATH);
     std::wstring pathstring(path);
@@ -32,7 +32,7 @@ void CallFlameshot(const std::wstring args, bool wait)
     wchar_t* cmd = (wchar_t*)malloc(sizeof(wchar_t) * cmdSize);
     swprintf(cmd,
              cmdSize,
-             L"\"%s\\flameshot.exe\" %s",
+             L"\"%s\\linscreen.exe\" %s",
              directory.c_str(),
              args.c_str());
     // call subprocess
@@ -53,16 +53,16 @@ void CallFlameshot(const std::wstring args, bool wait)
     return;
 }
 
-// Console 'wrapper' for flameshot on windows
+// Console wrapper for LinScreen on windows
 int wmain(int argc, wchar_t* argv[])
 {
     // if no args, do not wait for stdout
     if (argc == 1) {
-        std::cout << "Starting flameshot in daemon mode" << std::endl;
-        CallFlameshot(L"", false);
+        std::cout << "Starting linscreen in daemon mode" << std::endl;
+        CallLinScreen(L"", false);
     } else {
         std::wstring argString = joinArgs(argc, argv);
-        CallFlameshot(argString, true);
+        CallLinScreen(argString, true);
     }
     std::cout.flush();
     return 0;

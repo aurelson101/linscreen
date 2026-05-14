@@ -43,6 +43,7 @@ CMakeLists.txt.user
 
 # python
 venv/*
+.venv-tools/
 
 # Created by https://www.gitignore.io/api/snapcraft
 
@@ -53,7 +54,7 @@ prime/
 stage/
 *.snap
 .snapcraft/
-flameshot*.tar.bz2
+linscreen*.tar.bz2
 
 .vscode/
 build/

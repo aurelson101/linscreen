@@ -1,6 +1,6 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
-Upstream-Name: flameshot
-Source: https://github.com/flameshot-org/flameshot/
+Upstream-Name: linscreen
+Source: https://github.com/linscreen/linscreen/
 
 Files: *
 Copyright: 2016-2019 lupoDharkael <izhe@hotmail.es>
@@ -15,13 +15,13 @@ Copyright: 2017 Juanma Navarro Mañez <juanma1980@gmail.com>
 License: GPL-3+
 
 Files:
- data/img/app/flameshot.*
+ data/img/app/linscreen.*
  data/img/hicolor/*
 Copyright: 2017 lupoDharkael <izhe@hotmail.es>
 License: Free-Art-License-1.3
 
 Files:
- docs/appdata/flameshot.metainfo.xml
+ docs/appdata/linscreen.metainfo.xml
 Copyright: 2017-2019 lupoDharkael <izhe@hotmail.es>
 License: CC0-1.0
 
@@ -37,7 +37,7 @@ Copyright: 2017 Alejandro Sirgo Rica
            2007 Luca Gugelmann <lucag@student.ethz.ch>
 License: GPL-3+
 Comment:
- Relicensed under GPL-3+ under flameshot project.
+ Relicensed under GPL-3+ under linscreen project.
  .
  Originally based on Lightscreen areadialog.h,
  Copyright 2017  Christian Kaiser <info@ckaiser.com.ar>

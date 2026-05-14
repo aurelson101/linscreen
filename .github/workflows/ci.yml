@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  linux:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            appstream \
+            build-essential \
+            cmake \
+            desktop-file-utils \
+            dpkg-dev \
+            git \
+            libgl-dev \
+            ninja-build \
+            qt6-base-dev \
+            qt6-l10n-tools \
+            qt6-svg-dev \
+            qt6-tools-dev \
+            qt6-tools-dev-tools
+
+      - name: Build
+        run: tools/package-linscreen-deb.sh build-linscreen-ci
+
+      - name: Validate metadata
+        run: |
+          appstreamcli validate --no-net data/appdata/org.linscreen.LinScreen.metainfo.xml
+          desktop-file-validate data/desktopEntry/package/org.linscreen.LinScreen.desktop
+
+      - name: Smoke test
+        run: |
+          build-linscreen-ci/src/linscreen --version
+          dpkg-deb -I build-linscreen-ci/linscreen_*.deb
+
+      - name: Upload packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: linscreen-linux-packages
+          path: |
+            build-linscreen-ci/linscreen_*.deb
+            build-linscreen-ci/linscreen-*-linux.tar.gz

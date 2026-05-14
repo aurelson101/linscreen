@@ -1,7 +1,7 @@
 #include "trayicon.h"
 #include "core/capturerequest.h"
-#include "core/flameshot.h"
-#include "core/flameshotdaemon.h"
+#include "core/linscreen.h"
+#include "core/linscreendaemon.h"
 #include "core/qguiappcurrentscreen.h"
 #include "utils/confighandler.h"
 #include "utils/globalvalues.h"
@@ -25,7 +25,7 @@ TrayIcon::TrayIcon(QObject* parent)
     initMenu();
     initScreenMenu();
 
-    setToolTip(QStringLiteral("Flameshot"));
+    setToolTip(QStringLiteral("LinScreen"));
 #if defined(Q_OS_MACOS)
     // Because of the following issues on MacOS "Catalina":
     // https://bugreports.qt.io/browse/QTBUG-86393
@@ -38,7 +38,7 @@ TrayIcon::TrayIcon(QObject* parent)
     setContextMenu(m_menu);
 #endif
     QIcon icon =
-      QIcon::fromTheme("flameshot-tray", QIcon(GlobalValues::trayIconPath()));
+      QIcon::fromTheme("linscreen-tray", QIcon(GlobalValues::trayIconPath()));
 
 #if defined(Q_OS_MACOS)
     if (currentMacOsVersion >= QOperatingSystemVersion::MacOSBigSur) {
@@ -79,7 +79,7 @@ TrayIcon::TrayIcon(QObject* parent)
 
     if (ConfigHandler().showStartupLaunchMessage()) {
         showMessage(
-          "Flameshot",
+          "LinScreen",
           QObject::tr(
             "Hello, I'm here! Click icon in the tray to take a screenshot or "
             "click with a right button to see more options."),
@@ -133,28 +133,28 @@ void TrayIcon::initMenu()
     m_launcherAction = new QAction(tr("&Open Launcher"), this);
     connect(m_launcherAction,
             &QAction::triggered,
-            Flameshot::instance(),
-            &Flameshot::launcher);
+            LinScreen::instance(),
+            &LinScreen::launcher);
     auto* configAction = new QAction(tr("&Configuration"), this);
     connect(configAction,
             &QAction::triggered,
-            Flameshot::instance(),
-            &Flameshot::config);
+            LinScreen::instance(),
+            &LinScreen::config);
     m_infoAction = new QAction(tr("&About"), this);
     connect(m_infoAction,
             &QAction::triggered,
-            Flameshot::instance(),
-            &Flameshot::info);
+            LinScreen::instance(),
+            &LinScreen::info);
 
 #if !defined(DISABLE_UPDATE_CHECKER)
     m_appUpdates = new QAction(tr("Check for updates"), this);
     connect(m_appUpdates,
             &QAction::triggered,
-            FlameshotDaemon::instance(),
-            &FlameshotDaemon::checkForUpdates);
+            LinScreenDaemon::instance(),
+            &LinScreenDaemon::checkForUpdates);
 
-    connect(FlameshotDaemon::instance(),
-            &FlameshotDaemon::newVersionAvailable,
+    connect(LinScreenDaemon::instance(),
+            &LinScreenDaemon::newVersionAvailable,
             this,
             [this](const QVersionNumber& version) {
                 if (ConfigHandler().checkForUpdates()) {
@@ -181,14 +181,14 @@ void TrayIcon::initMenu()
     QAction* recentAction = new QAction(tr("&Latest Uploads"), this);
     connect(recentAction,
             &QAction::triggered,
-            Flameshot::instance(),
-            &Flameshot::history);
+            LinScreen::instance(),
+            &LinScreen::history);
 #endif
     auto* openSavePathAction = new QAction(tr("&Open Save Path"), this);
     connect(openSavePathAction,
             &QAction::triggered,
-            Flameshot::instance(),
-            &Flameshot::openSavePath);
+            LinScreen::instance(),
+            &LinScreen::openSavePath);
 
     m_menu->addAction(m_captureAction);
     m_menu->addAction(m_launcherAction);
@@ -281,9 +281,9 @@ void TrayIcon::initScreenMenu()
 
 void TrayIcon::startGuiCapture()
 {
-    auto* widget = Flameshot::instance()->gui();
+    auto* widget = LinScreen::instance()->gui();
 #if !defined(DISABLE_UPDATE_CHECKER)
-    FlameshotDaemon::instance()->showUpdateNotificationIfAvailable(widget);
+    LinScreenDaemon::instance()->showUpdateNotificationIfAvailable(widget);
 #endif
 }
 
@@ -291,5 +291,5 @@ void TrayIcon::startGuiCaptureOnScreen(int screenIndex)
 {
     CaptureRequest req(CaptureRequest::GRAPHICAL_MODE, 400);
     req.setSelectedMonitor(screenIndex);
-    Flameshot::instance()->requestCapture(req);
+    LinScreen::instance()->requestCapture(req);
 }

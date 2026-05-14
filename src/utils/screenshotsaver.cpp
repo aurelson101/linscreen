@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: 2017-2019 Alejandro Sirgo Rica & Contributors
 
 #include "screenshotsaver.h"
-#include "core/flameshotdaemon.h"
+#include "core/linscreendaemon.h"
 #include "utils/abstractlogger.h"
 #include "utils/confighandler.h"
 #include "utils/desktopinfo.h"
@@ -323,7 +323,7 @@ bool saveToFilesystemGUI(const QPixmap& capture)
 #ifdef Q_OS_WIN
                 savePath.replace('/', '\\');
 #endif
-                FlameshotDaemon::copyToClipboard(
+                LinScreenDaemon::copyToClipboard(
                   savePath,
                   QObject::tr("Path copied to clipboard as ") + savePath);
             }

@@ -1,5 +1,5 @@
 # Sway and wlroots support
-Flameshot currently supports Sway and other wlroots based Wayland compositors through [xdg-desktop-portal-wlr](https://github.com/emersion/xdg-desktop-portal-wlr). However, due to the way dbus works, there may be some extra steps required for the integration to work properly.
+LinScreen currently supports Sway and other wlroots based Wayland compositors through [xdg-desktop-portal-wlr](https://github.com/emersion/xdg-desktop-portal-wlr). However, due to the way dbus works, there may be some extra steps required for the integration to work properly.
 
 ## Basic steps
 The following packages need to be installed: `xdg-desktop-portal xdg-desktop-portal-wlr`. Please ensure your distro packages these, or install them manually.
@@ -37,23 +37,23 @@ exec hash dbus-update-activation-environment 2>/dev/null && \
      dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY SWAYSOCK
 ```
 
-To ensure that Flameshot is correctly positioned on multiple outputs (monitors) add this rule to your Sway config:
+To ensure that LinScreen is correctly positioned on multiple outputs (monitors) add this rule to your Sway config:
 ```
-for_window [app_id="flameshot"] border pixel 0, floating enable, fullscreen disable, move absolute position 0 0
+for_window [app_id="linscreen"] border pixel 0, floating enable, fullscreen disable, move absolute position 0 0
 ```
 
 and add the following on your River config:
 
 ```
-riverctl rule-add -app-id "flameshot" float
+riverctl rule-add -app-id "linscreen" float
 ```
 
-Otherwise, flameshot will not take all of the screen and tiles its window instead like a normal application. Note however, that some clipboard stuff is broken so it might be good to save your screenshot as a file while having it copied to a clipboard in case if clipboard does some weird stuff like not pasting the overall screenshot.
+Otherwise, linscreen will not take all of the screen and tiles its window instead like a normal application. Note however, that some clipboard stuff is broken so it might be good to save your screenshot as a file while having it copied to a clipboard in case if clipboard does some weird stuff like not pasting the overall screenshot.
 
 
 Starting from 0.17.0 xdg-desktop-portal requires a configuration file (e.g. in ~/.config/xdg-desktop-portal/sway-portals.conf):
 
-(take from [issues#3363](https://github.com/flameshot-org/flameshot/issues/3363))
+(take from [issues#3363](https://github.com/linscreen/linscreen/issues/3363))
 ```sh
 [preferred]
 # use xdg-desktop-portal-gtk for every portal interface
@@ -65,18 +65,18 @@ org.freedesktop.impl.portal.Screenshot=wlr
 
 ## Troubleshooting
 
-Q) Flameshot doesn't take a screenshot, it just hangs!
+Q) LinScreen doesn't take a screenshot, it just hangs!
 
 A) Please ensure that the packages are installed, and that the variables are exported.
-This is usually caused by Flameshot receiving no response from the desktop portal. This can be verified by running `dbus-monitor --session sender=org.freedesktop.portal.Desktop destination=org.freedesktop.portal.Desktop`.
+This is usually caused by LinScreen receiving no response from the desktop portal. This can be verified by running `dbus-monitor --session sender=org.freedesktop.portal.Desktop destination=org.freedesktop.portal.Desktop`.
 
-Q) Flameshot takes one screenshot, then won't take anymore!
+Q) LinScreen takes one screenshot, then won't take anymore!
 
-A) There is a bug in xdg-desktop-portal-wlr and Flameshot causing calls with the same token to fail. If you see a sdbus vtable error in the xdpw logs, either used the [patched version](https://github.com/nullobsi/xdg-desktop-portal-wlr/tree/improve-screenshot) or update Flameshot to the latest master.
+A) There is a bug in xdg-desktop-portal-wlr and LinScreen causing calls with the same token to fail. If you see a sdbus vtable error in the xdpw logs, either used the [patched version](https://github.com/nullobsi/xdg-desktop-portal-wlr/tree/improve-screenshot) or update LinScreen to the latest master.
 
 # River wlroots support
 
-Like mentioned above, Flameshot now works on wlroots based Wayland compositors, however, there is a weird problem with river and that is when setting `XDG_CURRENT_DESKTOP=river`, Flameshot won't work. The fix is you need to trick Flameshot that you are on `sway`. Hence, you need to run river like so:
+Like mentioned above, LinScreen now works on wlroots based Wayland compositors, however, there is a weird problem with river and that is when setting `XDG_CURRENT_DESKTOP=river`, LinScreen won't work. The fix is you need to trick LinScreen that you are on `sway`. Hence, you need to run river like so:
 
 ```sh
 XDG_CURRENT_DESKTOP=sway dbus-run-session river
@@ -85,10 +85,10 @@ XDG_CURRENT_DESKTOP=sway dbus-run-session river
 and add the following on your config such as in `$HOME/.config/river/init`
 
 ```
-riverctl float-filter-add "flameshot"
+riverctl float-filter-add "linscreen"
 ```
 
-Otherwise, Flameshot will not take all of the screen and tiles its window instead like a normal application.
+Otherwise, LinScreen will not take all of the screen and tiles its window instead like a normal application.
 
 #### For more information, please refer to https://github.com/emersion/xdg-desktop-portal-wlr/wiki/%22It-doesn't-work%22-Troubleshooting-Checklist
 

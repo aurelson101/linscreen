@@ -1,5 +1,5 @@
-flameshot (14.0.rc1-1) unstable; urgency=medium
+linscreen (14.0.rc1-1) unstable; urgency=medium
 
-  * Release for v14.0.rc1
+  * Initial LinScreen fork package for v14.0.rc1.
 
- -- Jeremy Borgman <borgman.jeremy@pm.me>  Thu, 02 Mar 2026 19:52:29 -0600
+ -- LinScreen developers <dev@linscreen.local>  Thu, 14 May 2026 15:30:00 +0200

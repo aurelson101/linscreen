@@ -15,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="../../data/graphics.qrc">
-    <normaloff>:/img/app/flameshot.png</normaloff>:/img/app/flameshot.png</iconset>
+    <normaloff>:/img/app/linscreen.png</normaloff>:/img/app/linscreen.png</iconset>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
@@ -99,7 +99,7 @@
      <item>
       <widget class="QLabel" name="VersionDetails">
        <property name="text">
-        <string>Flameshot v</string>
+        <string>LinScreen v</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>

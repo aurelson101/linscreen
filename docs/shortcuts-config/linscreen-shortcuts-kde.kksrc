@@ -1,0 +1,34 @@
+[Custom Commands][net.local.linscreen-2.desktop]
+Exec=linscreen gui --delay 3000
+Name=Take screenshot with delay
+
+[Custom Commands][net.local.linscreen-3.desktop]
+Exec=linscreen full
+Name=Take full-screen screenshot and save
+
+[Custom Commands][net.local.linscreen-4.desktop]
+Exec=linscreen full --clipboard
+Name=Take full-screen screenshot and copy it to clipboard
+
+[Custom Commands][net.local.linscreen-5.desktop]
+Exec=linscreen launcher
+Name=Open LinScreen Launcher
+
+[Custom Commands][net.local.linscreen.desktop]
+Exec=linscreen gui
+Name=Take screenshot
+
+[net.local.linscreen-2.desktop][Global Shortcuts]
+_launch=Ctrl+Print
+
+[net.local.linscreen-3.desktop][Global Shortcuts]
+_launch=Shift+Print
+
+[net.local.linscreen-4.desktop][Global Shortcuts]
+_launch=Ctrl+Shift+Print
+
+[net.local.linscreen-5.desktop][Global Shortcuts]
+_launch=
+
+[net.local.linscreen.desktop][Global Shortcuts]
+_launch=Print

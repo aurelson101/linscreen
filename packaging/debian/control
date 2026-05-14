@@ -1,7 +1,7 @@
-Source: flameshot
+Source: linscreen
 Section: graphics
 Priority: optional
-Maintainer: Boyuan Yang <byang@debian.org>
+Maintainer: LinScreen developers <dev@linscreen.local>
 Build-Depends:
  cmake (>= 3.22~),
  debhelper (>= 12),
@@ -13,11 +13,11 @@ Build-Depends:
  libgl-dev,
 Rules-Requires-Root: no
 Standards-Version: 4.7.2
-Homepage: https://flameshot.org/
-Vcs-Browser: https://github.com/flameshot-org/flameshot
-Vcs-Git: https://github.com/flameshot-org/flameshot.git
+Homepage: https://github.com/linscreen/linscreen
+Vcs-Browser: https://github.com/linscreen/linscreen
+Vcs-Git: https://github.com/linscreen/linscreen.git
 
-Package: flameshot
+Package: linscreen
 Architecture: any
 # Ubuntu noble expanded shlibs are suffixed with t64 for Qt dependencies, later versions of Ubuntu reverted back without suffix so make it future proof
 # ${shlibs:Depends},
@@ -41,8 +41,8 @@ Suggests:
  ca-certificates,
  openssl,
  qt6-image-formats-plugins,
-Description: Powerful yet simple-to-use screenshot software
- Flameshot is a powerful yet simple-to-use screenshot software.
+Description: Wayland-focused screenshot and annotation tool
+ LinScreen is a Wayland-focused screenshot and annotation tool.
  Notable features include customizable appearance, in-app screenshot editing,
  D-Bus interface, experimental GNOME/KDE Wayland support, integration with
  Imgur and support for both GUI and CLI interface.

@@ -50,8 +50,8 @@ pip install \
 
 ## Deployment
 
-The developer documentation is served from the official Flameshot website
-[flameshot.org][website]. Here's how.
+The developer documentation is served from the official LinScreen website
+[linscreen.org][website]. Here's how.
 
 The official website itself is served from this [repo][website-repo]. That repo
 contains the user documentation. It's deployed using GitHub pages -- the served
@@ -59,13 +59,13 @@ files can be found on the [gh-pages][] branch of that repo. This branch is
 automatically created by the [build][website-build] workflow on master.
 
 To make the developer docs available on the official site, we use a custom
-GitHub action called [deploy-dev-docs][] in the [flameshot][] repo. This action
+GitHub action called [deploy-dev-docs][] in the [linscreen][] repo. This action
 will build and deploy this documentation into the `docs/dev` subdirectory of the
 [gh-pages][] branch.
 
 ### The deploy-dev-docs GitHub workflow
 
-This workflow checks out the flameshot website [repo][website-repo] and does the following:
+This workflow checks out the linscreen website [repo][website-repo] and does the following:
 
 - Creates a clean [dev-docs-staging][] branch (we'll explain why, below).
 - Generates the developer docs under `docs/dev` there and makes a commit
@@ -88,15 +88,15 @@ place.**
 
 #### Access tokens
 In order to make changes to the [website repo][website-repo] from within a
-workflow in the [flameshot repo][flameshot], the workflow needs to use an access
+workflow in the [linscreen repo][linscreen], the workflow needs to use an access
 token, which it obtains from the `TOKEN_PUSH_TO_WEBSITE_REPO` secret.
 
 The following process was used to set it up:
 
-1. A flameshot organization member with write access must create a personal
+1. A linscreen organization member with write access must create a personal
    access token (PAT) [here][PAT] with write access to the [website repo][website-repo].
 2. A secret named `TOKEN_PUSH_TO_WEBSITE_REPO` must be added to the
-   [flameshot][] repo and its value must be set to the PAT. This can be done
+   [linscreen][] repo and its value must be set to the PAT. This can be done
    [here][action-secrets].
 
 For best security practice, the token should be set to expire after some time
@@ -113,23 +113,23 @@ secret, which can be done [here][edit-secret].
 [post-processing]: #post-processing
 [serving-locally]: #serving-locally
 
-<!-- Flameshot-related pages -->
-[flameshot]: https://github.com/flameshot-org/flameshot
-[website]: https://flameshot.org
-[doc-source]: https://github.com/flameshot-org/flameshot/tree/master/docs/dev
-[website-repo]: https://github.com/flameshot-org/flameshot-org.github.io
-[gh-pages]: https://github.com/flameshot-org/flameshot-org.github.io/tree/gh-pages
-[dev-docs-staging]: https://github.com/flameshot-org/flameshot-org.github.io/tree/dev-docs-staging
-[action-secrets]: https://github.com/flameshot-org/flameshot/settings/secrets/actions
-[edit-secret]: https://github.com/flameshot-org/flameshot/settings/secrets/actions/TOKEN_PUSH_TO_WEBSITE_REPO
+<!-- LinScreen-related pages -->
+[linscreen]: https://github.com/linscreen/linscreen
+[website]: https://linscreen.org
+[doc-source]: https://github.com/linscreen/linscreen/tree/master/docs/dev
+[website-repo]: https://github.com/linscreen/linscreen.github.io
+[gh-pages]: https://github.com/linscreen/linscreen.github.io/tree/gh-pages
+[dev-docs-staging]: https://github.com/linscreen/linscreen.github.io/tree/dev-docs-staging
+[action-secrets]: https://github.com/linscreen/linscreen/settings/secrets/actions
+[edit-secret]: https://github.com/linscreen/linscreen/settings/secrets/actions/TOKEN_PUSH_TO_WEBSITE_REPO
 
-<!-- Files in flameshot repo -->
-[mkdocs.yml]: https://github.com/flameshot-org/flameshot/blob/master/docs/dev/mkdocs.yml
-[post-process.sh]: https://github.com/flameshot-org/flameshot/blob/master/docs/dev/post-process.sh
-[deploy-dev-docs]: https://github.com/flameshot-org/flameshot/blob/master/.github/workflows/deploy-dev-docs.yml
+<!-- Files in linscreen repo -->
+[mkdocs.yml]: https://github.com/linscreen/linscreen/blob/master/docs/dev/mkdocs.yml
+[post-process.sh]: https://github.com/linscreen/linscreen/blob/master/docs/dev/post-process.sh
+[deploy-dev-docs]: https://github.com/linscreen/linscreen/blob/master/.github/workflows/deploy-dev-docs.yml
 
-<!-- Files in flameshot website repo -->
-[website-build]: https://github.com/flameshot-org/flameshot-org.github.io/blob/master/.github/workflows/build.yml
+<!-- Files in linscreen website repo -->
+[website-build]: https://github.com/linscreen/linscreen.github.io/blob/master/.github/workflows/build.yml
 
 <!-- External pages -->
 [markdown:reference-style-links]: https://www.markdownguide.org/basic-syntax/#reference-style-links

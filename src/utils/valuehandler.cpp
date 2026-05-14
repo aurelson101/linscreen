@@ -115,7 +115,7 @@ QVariant Color::process(const QVariant& val)
     QString str = val.toString();
     QColor color(str);
     if (str.length() == 9 && str[0] == '#') {
-        // Convert #RRGGBBAA (flameshot) to #AARRGGBB (QColor)
+        // Convert #RRGGBBAA (linscreen) to #AARRGGBB (QColor)
         int blue = color.blue();
         color.setBlue(color.green());
         color.setGreen(color.red());
@@ -135,7 +135,7 @@ QVariant Color::representation(const QVariant& val)
     QString str = val.toString();
     QColor color(str);
     if (str.length() == 9 && str[0] == '#') {
-        // Convert #AARRGGBB (QColor) to #RRGGBBAA (flameshot)
+        // Convert #AARRGGBB (QColor) to #RRGGBBAA (linscreen)
         int alpha = color.alpha();
         color.setAlpha(color.red());
         color.setRed(color.green());

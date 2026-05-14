@@ -3,7 +3,7 @@ add_subdirectory(capture)
 
 # Required to generate MOC
 target_sources(
-        flameshot
+        linscreen
         PRIVATE
         infowindow.ui
         capturelauncher.ui
@@ -23,7 +23,7 @@ target_sources(
 
 if (ENABLE_IMGUR)
 target_sources(
-    flameshot
+    linscreen
     PRIVATE
         uploadhistory.ui
         uploadlineitem.ui
@@ -34,7 +34,7 @@ target_sources(
 endif()
 
 target_sources(
-        flameshot
+        linscreen
         PRIVATE
         capturelauncher.cpp
         draggablewidgetmaker.cpp
@@ -50,7 +50,7 @@ target_sources(
 
 if (ENABLE_IMGUR)
 target_sources(
-    flameshot
+    linscreen
     PRIVATE
         uploadhistory.cpp
         uploadlineitem.cpp
@@ -60,7 +60,7 @@ endif()
 
 if (NOT DISABLE_UPDATE_CHECKER)
     target_sources(
-            flameshot
+            linscreen
             PRIVATE
             updatenotificationwidget.h
             updatenotificationwidget.cpp

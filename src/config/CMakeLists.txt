@@ -1,5 +1,5 @@
 target_sources(
-  flameshot
+  linscreen
   PRIVATE buttonlistview.cpp
           cacheutils.cpp
           clickablelabel.cpp

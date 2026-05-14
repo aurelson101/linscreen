@@ -10,14 +10,14 @@
 #include <QDBusInterface>
 #include <QDBusMessage>
 #else
-#include "core/flameshotdaemon.h"
+#include "core/linscreendaemon.h"
 #endif
 
 // work-around for snap, which cannot install icons into
 // the system folder, so instead the absolute path to the
-// icon (saved somewhere in /snap/flameshot/...) is passed
-#ifndef FLAMESHOT_ICON
-#define FLAMESHOT_ICON "flameshot"
+// icon (saved somewhere in /snap/linscreen/...) is passed
+#ifndef LINSCREEN_ICON
+#define LINSCREEN_ICON "linscreen"
 #endif
 
 SystemNotification::SystemNotification(QObject* parent)
@@ -48,7 +48,7 @@ SystemNotification::SystemNotification(QObject* parent)
 void SystemNotification::sendMessage(const QString& text,
                                      const QString& savePath)
 {
-    sendMessage(text, tr("Flameshot Info"), savePath);
+    sendMessage(text, tr("LinScreen Info"), savePath);
 }
 
 void SystemNotification::sendMessage(const QString& text,
@@ -65,9 +65,9 @@ void SystemNotification::sendMessage(const QString& text,
       this,
       [&]() {
           // The call is queued to avoid recursive static initialization of
-          // Flameshot and ConfigHandler.
-          if (FlameshotDaemon::instance())
-              FlameshotDaemon::instance()->sendTrayNotification(
+          // LinScreen and ConfigHandler.
+          if (LinScreenDaemon::instance())
+              LinScreenDaemon::instance()->sendTrayNotification(
                 text, title, timeout);
       },
       Qt::QueuedConnection);
@@ -84,7 +84,7 @@ void SystemNotification::sendMessage(const QString& text,
 
         args << (qAppName())                 // appname
              << static_cast<unsigned int>(0) // id
-             << FLAMESHOT_ICON               // icon
+             << LINSCREEN_ICON               // icon
              << title                        // summary
              << text                         // body
              << QStringList()                // actions

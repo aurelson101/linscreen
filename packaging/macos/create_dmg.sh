@@ -36,7 +36,7 @@ echo "Creating DMG with size: ${SIZE}k"
 
 # Create DMG
 hdiutil create -srcfolder "$TEMP_DIR" \
-    -volname "Flameshot" \
+    -volname "LinScreen" \
     -fs HFS+ \
     -fsargs "-c c=64,a=16,e=16" \
     -format UDZO \

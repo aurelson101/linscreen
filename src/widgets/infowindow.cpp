@@ -3,7 +3,7 @@
 
 #include "infowindow.h"
 #include "./ui_infowindow.h"
-#include "core/flameshotdaemon.h"
+#include "core/linscreendaemon.h"
 #include "core/qguiappcurrentscreen.h"
 #include "utils/globalvalues.h"
 
@@ -55,6 +55,6 @@ QString generateKernelString()
 
 void InfoWindow::copyInfo()
 {
-    FlameshotDaemon::copyToClipboard(GlobalValues::versionInfo() + "\n" +
+    LinScreenDaemon::copyToClipboard(GlobalValues::versionInfo() + "\n" +
                                      generateKernelString());
 }

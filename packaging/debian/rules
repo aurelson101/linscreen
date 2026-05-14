@@ -26,5 +26,5 @@ override_dh_auto_configure:
 override_dh_auto_install:
 	dh_auto_install
 	# Remove not required headers, etc.
-	rm -rf debian/flameshot/usr/include
-	rm -rf debian/flameshot/usr/lib
+	rm -rf debian/linscreen/usr/include
+	rm -rf debian/linscreen/usr/lib

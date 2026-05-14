@@ -36,12 +36,12 @@ To get a deeper understanding of how the configuration works, please see
 ### How do I add a new export action? (@borgmanJeremy @mehrad This is my preferred terminology over final action, need consensus)
 
 [config]: index.md#configuration
-[confighandler.h]: flameshot/confighandler_8h
-[confighandler.cpp]: flameshot/confighandler_8cpp
-[valuehandler.h]: flameshot/valuehandler_8h
-[ValueHandler]: flameshot/classValueHandler
-[ConfigHandler]: flameshot/classConfigHandler
-[ConfigWindow]: flameshot/classConfigWindow
-[CONFIG_GETTER_SETTER]: flameshot/confighandler_8h/#define-config_getter_setter
-[CONFIG_GETTER]: flameshot/confighandler_8h/#define-config_getter
-[CONFIG_SETTER]: flameshot/confighandler_8h/#define-config_setter
+[confighandler.h]: linscreen/confighandler_8h
+[confighandler.cpp]: linscreen/confighandler_8cpp
+[valuehandler.h]: linscreen/valuehandler_8h
+[ValueHandler]: linscreen/classValueHandler
+[ConfigHandler]: linscreen/classConfigHandler
+[ConfigWindow]: linscreen/classConfigWindow
+[CONFIG_GETTER_SETTER]: linscreen/confighandler_8h/#define-config_getter_setter
+[CONFIG_GETTER]: linscreen/confighandler_8h/#define-config_getter
+[CONFIG_SETTER]: linscreen/confighandler_8h/#define-config_setter

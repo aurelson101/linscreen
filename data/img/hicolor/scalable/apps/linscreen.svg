@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="LinScreen">
+  <defs>
+    <linearGradient id="screen" x1="10" y1="8" x2="54" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#12b3a8"/>
+      <stop offset="1" stop-color="#2563eb"/>
+    </linearGradient>
+    <linearGradient id="lens" x1="22" y1="18" x2="46" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ecfeff"/>
+      <stop offset="1" stop-color="#bae6fd"/>
+    </linearGradient>
+  </defs>
+  <rect x="5" y="8" width="54" height="40" rx="7" fill="url(#screen)"/>
+  <rect x="10" y="13" width="44" height="30" rx="4" fill="#07111f" opacity=".72"/>
+  <path fill="url(#lens)" d="M20 34c0-7.18 5.82-13 13-13s13 5.82 13 13-5.82 13-13 13-13-5.82-13-13z"/>
+  <path fill="#0f766e" d="M25 34c0-4.42 3.58-8 8-8s8 3.58 8 8-3.58 8-8 8-8-3.58-8-8z"/>
+  <path fill="#67e8f9" d="M29 31.5a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/>
+  <path fill="#0f172a" d="M25 53h14l2 5H23l2-5z"/>
+  <path fill="#1e293b" d="M18 58h28v4H18z"/>
+  <path fill="#ffffff" fill-opacity=".82" d="M14 17h13v4H14zM14 24h8v4h-8z"/>
+</svg>

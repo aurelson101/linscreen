@@ -4,7 +4,7 @@
 
 * borgmanJeremy
 * mmahmoudian
-* Flameshot developers
+* LinScreen developers
 
 <br>
 
@@ -39,14 +39,14 @@ N/A
 
 ## Problem
 
-Currently the drawing and marking tools in Flameshot only have one, non-customisable opacity setting. This current setting is bad for highlighting text because the Marker tool looks very pale. To compensate the user often has to highlight multiple times which is not convenient and time-consuming.
+Currently the drawing and marking tools in LinScreen only have one, non-customisable opacity setting. This current setting is bad for highlighting text because the Marker tool looks very pale. To compensate the user often has to highlight multiple times which is not convenient and time-consuming.
 
-Here is a comparison of Flameshot's Marker tool with Microsoft's **Snip & Sketch** Highlighter tool:
+Here is a comparison of LinScreen's Marker tool with Microsoft's **Snip & Sketch** Highlighter tool:
 
 ### Black text on light background
 
-**Flameshot:**
-![Flameshot_WHITE](https://user-images.githubusercontent.com/59576952/96623357-8c0a8600-130b-11eb-82e9-05ebbd95a7d9.png)
+**LinScreen:**
+![LinScreen_WHITE](https://user-images.githubusercontent.com/59576952/96623357-8c0a8600-130b-11eb-82e9-05ebbd95a7d9.png)
 
 **Snip & Sketch:**
 ![Snip_and_Sketch_WHITE](https://user-images.githubusercontent.com/59576952/96623397-9a58a200-130b-11eb-9d27-9a85f4fad504.png)
@@ -55,8 +55,8 @@ Here is a comparison of Flameshot's Marker tool with Microsoft's **Snip & Sketch
 
 ### White text on dark background
 
-**Flameshot:**
-![Flameshot_BLACK](https://user-images.githubusercontent.com/59576952/96623470-b8260700-130b-11eb-88ff-ff34ea69294c.png)
+**LinScreen:**
+![LinScreen_BLACK](https://user-images.githubusercontent.com/59576952/96623470-b8260700-130b-11eb-88ff-ff34ea69294c.png)
 
 **Snip & Sketch:**
 ![Snip_and_Sketch_BLACK](https://user-images.githubusercontent.com/59576952/96623478-bbb98e00-130b-11eb-9e26-59f72cc936a4.png)
@@ -71,7 +71,7 @@ Here is a comparison of Flameshot's Marker tool with Microsoft's **Snip & Sketch
 
 ## Anti-Goals
 
-Flameshot's Marker tool does a very good job at keeping the text readable so this is not linked to this request.
+LinScreen's Marker tool does a very good job at keeping the text readable so this is not linked to this request.
 
 ![image](https://user-images.githubusercontent.com/59576952/96624043-806b8f00-130c-11eb-9eb3-ce01d19234df.png)
 

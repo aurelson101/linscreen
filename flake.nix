@@ -66,8 +66,8 @@
             kdePackages.kguiaddons
           ];
 
-          flameshot = pkgs.stdenv.mkDerivation {
-            pname = "flameshot";
+          linscreen = pkgs.stdenv.mkDerivation {
+            pname = "linscreen";
             version = "dev";
 
             src = ./.;
@@ -94,31 +94,31 @@
             dontWrapQtApps = true;
 
             postFixup = ''
-              wrapProgram $out/bin/flameshot \
+              wrapProgram $out/bin/linscreen \
                 ${lib.optionalString enableWlrSupport "--prefix PATH : ${lib.makeBinPath [ pkgs.grim ]}"} \
                 ''${qtWrapperArgs[@]}
             '';
 
             meta = {
               description = "Powerful yet simple to use screenshot software";
-              homepage = "https://github.com/flameshot-org/flameshot";
+              homepage = "https://github.com/linscreen/linscreen";
               license = pkgs.lib.licenses.gpl3Only;
-              maintainers = [ "flameshot-org" ];
+              maintainers = [ "linscreen" ];
               platforms = pkgs.lib.platforms.unix ++ pkgs.lib.platforms.darwin;
-              mainProgram = "flameshot";
+              mainProgram = "linscreen";
             };
           };
         in
         {
           packages = {
-            default = flameshot;
-            inherit flameshot;
+            default = linscreen;
+            inherit linscreen;
           };
 
           devShells.default = pkgs.mkShell {
-            name = "flameshot-dev";
+            name = "linscreen-dev";
 
-            inputsFrom = [ flameshot ];
+            inputsFrom = [ linscreen ];
 
             buildInputs = with pkgs; [
               gdb

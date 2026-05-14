@@ -1,23 +1,23 @@
 #!/usr/bin/env sh
 
-# Tests for final action options with various flameshot commands
+# Tests for final action options with various linscreen commands
 # Arguments:
-# 1. path to tested flameshot executable
+# 1. path to tested linscreen executable
 
 # Dependencies:
 # - display command (imagemagick)
 
 # HOW TO USE:
-# - Start the script with path to tested flameshot executable as the first
+# - Start the script with path to tested linscreen executable as the first
 #   argument
 #
-# - Read messages from stdout and see if flameshot sends the right notifications
+# - Read messages from stdout and see if linscreen sends the right notifications
 #
 #   Some commands will pin screenshots to the screen. Check if that is happening
 #   correctly. NOTE: the screen command will pin one screenshot over your entire
 #   screen, so don't be confused by that.
 #
-# - When the flameshot gui is tested, follow the instructions from the system
+# - When the linscreen gui is tested, follow the instructions from the system
 #   notifications
 #
 # - Some tests may ask you for confirmation in the CLI before continuing.
@@ -25,13 +25,13 @@
 #   the image from stdout in a window. Just close that window.
 #
 
-FLAMESHOT="$1"
-[ -z "$FLAMESHOT" ] && FLAMESHOT="flameshot"
+LINSCREEN="$1"
+[ -z "$LINSCREEN" ] && LINSCREEN="linscreen"
 
 # --raw >/dev/null is a hack that makes the subcommand wait for the daemon to
 # finish the pending action
-flameshot() {
-    command "$FLAMESHOT" "$@" --raw >/tmp/img.png
+linscreen() {
+    command "$LINSCREEN" "$@" --raw >/tmp/img.png
 }
 
 # Print the given command and run it
@@ -42,11 +42,11 @@ cmd() {
 }
 
 notify() {
-  if [ "$FLAMESHOT_PLATFORM" = "MAC" ]
+  if [ "$LINSCREEN_PLATFORM" = "MAC" ]
   then
 osascript -  "$1"  <<EOF
   on run argv
-    display notification (item 1 of argv) with title "Flameshot"
+    display notification (item 1 of argv) with title "LinScreen"
   end run
 EOF
 
@@ -56,7 +56,7 @@ EOF
 }
 
 display_img() {
-  if [ "$FLAMESHOT_PLATFORM" = "MAC" ]
+  if [ "$LINSCREEN_PLATFORM" = "MAC" ]
   then
     open -a Preview.app -f
   else
@@ -73,14 +73,14 @@ wait_for_key() {
 
 # NOTE: Upload option is intentionally not tested
 
-#   flameshot full & screen
+#   linscreen full & screen
 # ┗━━━━━━━━━━━━━━━━━━━━━━━━┛
 
 for subcommand in full screen
 do
-    cmd flameshot "$subcommand" --path /tmp/
-    cmd flameshot "$subcommand" --clipboard
-    cmd command "$FLAMESHOT" "$subcommand" --raw | display_img
+    cmd linscreen "$subcommand" --path /tmp/
+    cmd linscreen "$subcommand" --clipboard
+    cmd command "$LINSCREEN" "$subcommand" --raw | display_img
     [ "$subcommand" = "full" ] && sleep 1
     echo
 done
@@ -89,37 +89,37 @@ echo "The next command will pin a screenshot over your entire screen."
 echo "Make sure to close it afterwards"
 echo "Press Enter to continue..."
 read ____
-flameshot screen --pin
+linscreen screen --pin
 sleep 1
 
-#   flameshot gui
+#   linscreen gui
 # ┗━━━━━━━━━━━━━━━┛
 
 wait_for_key
 notify "GUI Test 1: --path" #"Make a selection, then accept"
-cmd flameshot gui --path /tmp/
+cmd linscreen gui --path /tmp/
 wait_for_key
 notify "GUI Test 2: Clipboard" "Make a selection, then accept"
-cmd flameshot gui --clipboard
+cmd linscreen gui --clipboard
 wait_for_key
 notify "GUI Test 3: Print geometry" "Make a selection, then accept"
-cmd command "$FLAMESHOT" gui --print-geometry
+cmd command "$LINSCREEN" gui --print-geometry
 wait_for_key
 notify "GUI Test 4: Pin" "Make a selection, then accept"
-cmd flameshot gui --pin
+cmd linscreen gui --pin
 wait_for_key
 notify "GUI Test 5: Print raw" "Make a selection, then accept"
-cmd command "$FLAMESHOT" gui --raw | display_img
+cmd command "$LINSCREEN" gui --raw | display_img
 wait_for_key
-notify "GUI Test 6: Copy on select" "Make a selection, flameshot will close automatically"
-cmd flameshot gui --clipboard --accept-on-select
+notify "GUI Test 6: Copy on select" "Make a selection, linscreen will close automatically"
+cmd linscreen gui --clipboard --accept-on-select
 wait_for_key
 notify "GUI Test 7: File dialog on select" "After selecting, a file dialog will open"
-cmd flameshot gui --accept-on-select
+cmd linscreen gui --accept-on-select
 
 # All options except for --print-geometry (incompatible with --raw)
 wait_for_key
 notify "GUI Test 8: All actions except print-geometry" "Just make a selection"
-cmd command "$FLAMESHOT" gui -p /tmp/ -c -r --pin | display_img
+cmd command "$LINSCREEN" gui -p /tmp/ -c -r --pin | display_img
 
 echo '>> All tests done.'

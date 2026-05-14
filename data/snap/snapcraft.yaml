@@ -1,11 +1,11 @@
 ---
 
-name: flameshot
-adopt-info: flameshot
+name: linscreen
+adopt-info: linscreen
 base: core18
 summary: Powerful yet simple to use screenshot software
 description: |
-  A powerful open source screenshot and annotation tool for Linux, Flameshot
+  A powerful open source screenshot and annotation tool for Linux, LinScreen
   has a varied set of markup tools available, which include Freehand drawing,
   Lines, Arrows, Boxes, Circles, Highlighting, Blur. Additionally, you can
   customise the color, size and/or thickness of many of these image annotation
@@ -19,16 +19,16 @@ architectures:
 
 
 apps:
-  flameshot:
-    command: flameshot
-    desktop: usr/share/applications/org.flameshot.Flameshot.desktop
+  linscreen:
+    command: linscreen
+    desktop: usr/share/applications/org.linscreen.LinScreen.desktop
     extensions:
       - kde-neon
     environment:
       DISABLE_WAYLAND: 1
       XDG_DATA_DIRS: $SNAP/share:$XDG_DATA_DIRS
       QT_QPA_PLATFORMTHEME: gtk3
-    slots: [dbus-flameshot]
+    slots: [dbus-linscreen]
     plugs:
       - kde-frameworks-5-plug
       - home
@@ -42,7 +42,7 @@ apps:
       - x11
 
 parts:
-  flameshot:
+  linscreen:
     build-snaps:
       - kde-frameworks-5-core18-sdk
       - kde-frameworks-5-core18
@@ -52,7 +52,7 @@ parts:
       - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
       - '-DCMAKE_INSTALL_PREFIX=/usr'
       - '-DUSE_LAUNCHER_ABSOLUTE_PATH:BOOL=OFF'
-    source: https://github.com/flameshot-org/flameshot.git
+    source: https://github.com/linscreen/linscreen.git
     source-type: git
     override-pull: |
       snapcraftctl pull
@@ -63,9 +63,9 @@ parts:
     override-build: |
       snapcraftctl build
       # Correct the Icon path
-      sed -i 's|^Exec=flameshot|Exec=/snap/bin/org.flameshot.Flameshot|' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/org.flameshot.Flameshot.desktop
-      sed -i 's|^Icon=.*|Icon=${SNAP}/usr/share/icons/hicolor/scalable/apps/org.flameshot.Flameshot.svg|' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/org.flameshot.Flameshot.desktop
-      sed -i 's/^\(Name\(\[.\+\]\)\?=.*\)$/\1 (Snappy Edition)/g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/org.flameshot.Flameshot.desktop
+      sed -i 's|^Exec=linscreen|Exec=/snap/bin/org.linscreen.LinScreen|' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/org.linscreen.LinScreen.desktop
+      sed -i 's|^Icon=.*|Icon=${SNAP}/usr/share/icons/hicolor/scalable/apps/org.linscreen.LinScreen.svg|' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/org.linscreen.LinScreen.desktop
+      sed -i 's/^\(Name\(\[.\+\]\)\?=.*\)$/\1 (Snappy Edition)/g' ${SNAPCRAFT_PART_INSTALL}/usr/share/applications/org.linscreen.LinScreen.desktop
     build-packages:
       - g++
       - make
@@ -102,7 +102,7 @@ slots:
   # Depending on in which environment we're running we either need
   # to use the system or session DBus so we also need to have one
   # slot for each.
-  dbus-flameshot:
+  dbus-linscreen:
     interface: dbus
     bus: session
-    name: org.flameshot.Flameshot
+    name: org.linscreen.LinScreen

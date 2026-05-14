@@ -87,7 +87,7 @@ void ConfigResolver::populate()
     if (!config.checkShortcutConflicts()) {
         auto* conflicts = new QLabel(
           tr("Some keyboard shortcuts have conflicts.\n"
-             "This will NOT prevent flameshot from starting.\n"
+             "This will NOT prevent linscreen from starting.\n"
              "Please solve them manually in the configuration file."));
         conflicts->setWordWrap(true);
         conflicts->setMaximumWidth(geometry().width());

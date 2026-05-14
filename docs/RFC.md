@@ -1,12 +1,12 @@
-# Flameshot RFCs
+# LinScreen RFCs
 
-[Flameshot RFCs]: #flameshot-rfcs
+[LinScreen RFCs]: #linscreen-rfcs
 
 Many changes, including bug fixes and documentation improvements can be
 implemented and reviewed via the normal GitHub pull request workflow.
 
 Some changes though are "substantial", and we ask that these be put through a
-bit of a design process and produce a consensus among the Flameshot community and development team.
+bit of a design process and produce a consensus among the LinScreen community and development team.
 
 The "RFC" (request for comments) process is intended to provide a consistent
 and controlled path for new features to enter the language and standard
@@ -17,7 +17,7 @@ project is evolving in.
 
 [Table of Contents]: #table-of-contents
 
-  + [Opening](#flameshot-rfcs)
+  + [Opening](#linscreen-rfcs)
   + [Table of Contents]
   + [When you need to follow this process]
   + [Before creating an RFC]
@@ -33,7 +33,7 @@ project is evolving in.
 [When you need to follow this process]: #when-you-need-to-follow-this-process
 
 You need to follow this process if you intend to make "substantial" changes to
-Flameshot or the RFC process itself. What constitutes a
+LinScreen or the RFC process itself. What constitutes a
 "substantial" change is evolving based on community norms and varies depending
 on what part of the ecosystem you are proposing to change, but may include the
 following.
@@ -53,9 +53,9 @@ Some changes do not require an RFC:
 
     (warning removal, speedup, better platform coverage, etc.)
 
-  + Additions only likely to be _noticed by_ other developers-of-flameshot,
+  + Additions only likely to be _noticed by_ other developers-of-linscreen,
 
-    invisible to users-of-flameshot.
+    invisible to users-of-linscreen.
 
 If you submit a pull request to implement a new feature without going through
 the RFC process, it may be closed with a polite request to submit an RFC first.
@@ -76,17 +76,17 @@ beforehand, to ascertain that the RFC may be desirable; having a consistent
 impact on the project requires concerted effort toward consensus-building.
 
 The most common preparations for writing and submitting an RFC include talking
-the idea over on our [official Matrix Space](https://matrix.to/#/#flameshot-org:matrix.org) in the [Developers](https://matrix.to/#/!AYbNXDGTDwApLwzkNg:feneas.org?via=kde.org&via=matrix.org&via=ryan77627.xyz), or opening an issue on [Github Discussions](https://github.com/flameshot-org/flameshot/discussions).
+the idea over on our [official Matrix Space](https://matrix.to/#/#linscreen:matrix.org) in the [Developers](https://matrix.to/#/!AYbNXDGTDwApLwzkNg:feneas.org?via=kde.org&via=matrix.org&via=ryan77627.xyz), or opening an issue on [Github Discussions](https://github.com/linscreen/linscreen/discussions).
 
 ## What the process is
 
 [What the process is]: #what-the-process-is
 
-In short, to get a major feature added to Flameshot, one must first get the RFC
+In short, to get a major feature added to LinScreen, one must first get the RFC
 merged into the RFC repository as a markdown file. At that point the RFC is
-"active" and may be implemented with the goal of eventual inclusion into Flameshot.
+"active" and may be implemented with the goal of eventual inclusion into LinScreen.
 
-  + Fork the Flameshot repo
+  + Fork the LinScreen repo
   + Copy `docs/0000-template.md` to `docs/RFC/0000-my-feature.md` (where "my-feature" is
 
     descriptive). Don't assign an RFC number yet; This is going to be the PR
@@ -148,7 +148,7 @@ merged into the RFC repository as a markdown file. At that point the RFC is
 [The RFC life-cycle]: #the-rfc-life-cycle
 
 Once an RFC becomes "active" then authors may implement it and submit the
-feature as a pull request to the Flameshot repo. Being "active" is not a rubber
+feature as a pull request to the LinScreen repo. Being "active" is not a rubber
 stamp, and in particular still does not mean the feature will ultimately be
 merged; it does mean that in principle all the major stakeholders have agreed
 to the feature and are amenable to merging it.
@@ -196,9 +196,9 @@ rationale for the decision.
 Some accepted RFCs represent vital features that need to be implemented right
 away. Other accepted RFCs can represent features that can wait until some
 arbitrary developer feels like doing the work. Every accepted RFC has an
-associated issue tracking its implementation in the Flameshot repository; thus that
+associated issue tracking its implementation in the LinScreen repository; thus that
 associated issue can be assigned a priority via the triage process that the
-team uses for all issues in the Flameshot repository.
+team uses for all issues in the LinScreen repository.
 
 The author of an RFC is not obligated to implement it. Of course, the RFC
 author (like any other developer) is welcome to post an implementation for

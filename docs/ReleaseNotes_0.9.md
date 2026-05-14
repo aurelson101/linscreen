@@ -12,7 +12,7 @@ bugs and added new features in version 0.9.
 
 - Thanks to SignPath we are able to offer digitally signed windows releases.
 - Improved Wayland support
-  - Behind the scenes we configure flameshot to automatically run on xcb. This significantly improves the
+  - Behind the scenes we configure linscreen to automatically run on xcb. This significantly improves the
     wayland experience. This resolves issues with multimonitor setups and copying to the clipboard
 
 - New option to allow the clipboard image to be a jpeg instead of a png. This may reduce bandwidth when pasting the

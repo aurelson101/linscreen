@@ -1,6 +1,6 @@
 # Required to generate MOC
 target_sources(
-  flameshot
+  linscreen
   PRIVATE abstractlogger.h
           filenamehandler.h
           screengrabber.h
@@ -10,7 +10,7 @@ target_sources(
 )
 
 target_sources(
-  flameshot
+  linscreen
   PRIVATE abstractlogger.cpp
           filenamehandler.cpp
           screengrabber.cpp
@@ -22,6 +22,7 @@ target_sources(
           globalvalues.cpp
           desktopfileparse.cpp
           desktopinfo.cpp
+          waylandutils.cpp
           pathinfo.cpp
           colorutils.cpp
           history.cpp
@@ -30,7 +31,7 @@ target_sources(
 
 IF (UNIX AND NOT APPLE)
 target_sources(
-  flameshot
+  linscreen
   PRIVATE request.h
           request.cpp
 )
@@ -38,7 +39,7 @@ ENDIF()
 
 IF (WIN32)
   target_sources(
-    flameshot
+    linscreen
     PRIVATE winlnkfileparse.cpp
   )
 ENDIF()

@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.linscreen.LinScreen
+Exec=${CMAKE_INSTALL_FULL_BINDIR}/linscreen

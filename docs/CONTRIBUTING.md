@@ -9,7 +9,7 @@ Contributions are welcome! Here's how you can help:
 
 ## Translations
 
-See [translation instructions](https://github.com/flameshot-org/translation-instruction).
+See [translation instructions](https://github.com/linscreen/translation-instruction).
 
 ## Code
 
@@ -34,14 +34,14 @@ For small fixes or incremental improvements simply fork the repo and follow the 
 ## Issues
 
 1. Do a quick search on GitHub to check if the issue has already been reported.
-2. [Open an issue](https://github.com/flameshot-org/flameshot/issues/new) and describe the issue you are having - you could include:
+2. [Open an issue](https://github.com/linscreen/linscreen/issues/new) and describe the issue you are having - you could include:
      - Screenshots
      - Ways to reproduce the issue.
-     - Your Flameshot version.
+     - Your LinScreen version.
      - Your platform (e.g. Windows 10 or Ubuntu 15.04 x64)
 
 After reporting you should aim to answer questions or clarifications as this helps pinpoint the cause of the issue.
 
 ## Donations
 
-The best way to fund Flameshot is to create a bounty here: https://rysolv.com/issues
+The best way to fund LinScreen is to create a bounty here: https://rysolv.com/issues
