@@ -4,7 +4,7 @@ Release: 1%{?dist}
 Summary: Powerful yet simple to use screenshot software
 
 License: GPL-3.0-or-later
-URL:     https://github.com/linscreen/linscreen
+URL:     https://github.com/aurelson101/linscreen
 Source0: %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 Vendor:  LinScreen
 

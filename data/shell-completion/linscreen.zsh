@@ -4,7 +4,7 @@
 # -----------
 #
 #  Completion script for the linscreen command line interface
-#  (https://github.com/linscreen/linscreen).
+#  (https://github.com/aurelson101/linscreen).
 #
 # ------------------------------------------------------------------------------
 # How to use

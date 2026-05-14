@@ -13,9 +13,9 @@ Build-Depends:
  libgl-dev,
 Rules-Requires-Root: no
 Standards-Version: 4.7.2
-Homepage: https://github.com/linscreen/linscreen
-Vcs-Browser: https://github.com/linscreen/linscreen
-Vcs-Git: https://github.com/linscreen/linscreen.git
+Homepage: https://github.com/aurelson101/linscreen
+Vcs-Browser: https://github.com/aurelson101/linscreen
+Vcs-Git: https://github.com/aurelson101/linscreen.git
 
 Package: linscreen
 Architecture: any

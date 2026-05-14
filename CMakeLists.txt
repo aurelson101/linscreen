@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.22)
 set(LINSCREEN_VERSION 14.0.0)
 
 # LinScreen fork
-set(GIT_API_URL "https://api.github.com/repos/linscreen/linscreen/releases/latest")
+set(GIT_API_URL "https://api.github.com/repos/aurelson101/linscreen/releases/latest")
 
 project(
   linscreen
@@ -83,7 +83,7 @@ option(USE_KDSINGLEAPPLICATION "Use KDSingleApplication library" ON)
 option(USE_BUNDLED_KDSINGLEAPPLICATION "Use a bundled version of the KDSingleApplication library" ${USE_KDSINGLEAPPLICATION})
 option(USE_LAUNCHER_ABSOLUTE_PATH "Use absolute path for the desktop launcher" ON)
 option(USE_WAYLAND_CLIPBOARD "USE KF Gui Wayland Clipboard" OFF)
-option(DISABLE_UPDATE_CHECKER "Disable check for updates" OFF)
+option(DISABLE_UPDATE_CHECKER "Disable check for updates" ON)
 option(ENABLE_IMGUR "Enable Imgur Uploader" OFF)
 
 if(ENABLE_IMGUR)
@@ -155,7 +155,7 @@ add_subdirectory(src)
 set(CPACK_PACKAGE_VENDOR "LinScreen")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Wayland-focused screenshot and annotation tool.")
 set(CPACK_PACKAGE_VERSION ${PROJECT_VERSION})
-set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/linscreen/linscreen")
+set(CPACK_PACKAGE_HOMEPAGE_URL "https://github.com/aurelson101/linscreen")
 set(CPACK_PACKAGE_CONTACT "LinScreen developers <dev@linscreen.local>")
 set(CPACK_PACKAGE_ICON "${CMAKE_SOURCE_DIR}/data/img/app/org.linscreen.LinScreen.svg") # TODO: Can any generator make
 # use of this?
@@ -208,6 +208,8 @@ else()
   set(CPACK_DEBIAN_PACKAGE_MAINTAINER "LinScreen developers <dev@linscreen.local>")
   set(CPACK_DEBIAN_PACKAGE_DEPENDS "hicolor-icon-theme, qt6-qpa-plugins, libqt6core6, libqt6dbus6, libqt6gui6, libqt6network6, libqt6widgets6, libqt6svg6")
   set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "LinScreen is a screenshot and annotation tool focused on reliable Wayland capture through desktop portals, with X11 fallback support.")
+  set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
+      "${CMAKE_SOURCE_DIR}/cmake/debian/postinst;${CMAKE_SOURCE_DIR}/cmake/debian/postrm")
 endif()
 
 set(CPACK_PRE_BUILD_SCRIPTS "${CMAKE_SOURCE_DIR}/cmake/CPackPruneLinScreen.cmake")

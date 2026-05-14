@@ -48,34 +48,34 @@ SPDX-License-Identifier: CC0-1.0
 
   <screenshots>
     <screenshot type="default">
-      <image>https://raw.githubusercontent.com/linscreen/linscreen/master/docs/images/large_demo.png</image>
+      <image>https://raw.githubusercontent.com/aurelson101/linscreen/master/docs/images/large_demo.png</image>
       <caption>LinScreen Usage</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/linscreen/linscreen/master/docs/images/small_demo.png</image>
+      <image>https://raw.githubusercontent.com/aurelson101/linscreen/master/docs/images/small_demo.png</image>
       <caption>Demo of Pixelation, Arrow, Box, And Counter Bubble</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/linscreen/linscreen/master/docs/images/launcher.png</image>
+      <image>https://raw.githubusercontent.com/aurelson101/linscreen/master/docs/images/launcher.png</image>
       <caption>The Launcher Window</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/linscreen/linscreen/master/docs/images/config_interface.png</image>
+      <image>https://raw.githubusercontent.com/aurelson101/linscreen/master/docs/images/config_interface.png</image>
       <caption>Configuration Window - Interface tab</caption>
     </screenshot>
     <screenshot>
-      <image>https://raw.githubusercontent.com/linscreen/linscreen/master/docs/images/config_shortcuts.png</image>
+      <image>https://raw.githubusercontent.com/aurelson101/linscreen/master/docs/images/config_shortcuts.png</image>
       <caption>Configuration Window - Shortcuts tab</caption>
     </screenshot>
   </screenshots>
 
-  <url type="homepage">https://github.com/linscreen/linscreen</url>
-  <url type="bugtracker">https://github.com/linscreen/linscreen/issues</url>
+  <url type="homepage">https://github.com/aurelson101/linscreen</url>
+  <url type="bugtracker">https://github.com/aurelson101/linscreen/issues</url>
   <url type="translate">https://hosted.weblate.org/projects/linscreen/</url>
-  <url type="contribute">https://github.com/linscreen/linscreen/blob/master/docs/CONTRIBUTING.md</url>
-  <url type="vcs-browser">https://github.com/linscreen/linscreen/</url>
+  <url type="contribute">https://github.com/aurelson101/linscreen/blob/master/docs/CONTRIBUTING.md</url>
+  <url type="vcs-browser">https://github.com/aurelson101/linscreen/</url>
 
-  <update_contact>https://github.com/linscreen/linscreen/issues/new</update_contact>
+  <update_contact>https://github.com/aurelson101/linscreen/issues/new</update_contact>
 
   <launchable type="desktop-id">org.linscreen.LinScreen.desktop</launchable>
 

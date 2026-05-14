@@ -114,22 +114,22 @@ secret, which can be done [here][edit-secret].
 [serving-locally]: #serving-locally
 
 <!-- LinScreen-related pages -->
-[linscreen]: https://github.com/linscreen/linscreen
+[linscreen]: https://github.com/aurelson101/linscreen
 [website]: https://linscreen.org
-[doc-source]: https://github.com/linscreen/linscreen/tree/master/docs/dev
-[website-repo]: https://github.com/linscreen/linscreen.github.io
-[gh-pages]: https://github.com/linscreen/linscreen.github.io/tree/gh-pages
-[dev-docs-staging]: https://github.com/linscreen/linscreen.github.io/tree/dev-docs-staging
-[action-secrets]: https://github.com/linscreen/linscreen/settings/secrets/actions
-[edit-secret]: https://github.com/linscreen/linscreen/settings/secrets/actions/TOKEN_PUSH_TO_WEBSITE_REPO
+[doc-source]: https://github.com/aurelson101/linscreen/tree/master/docs/dev
+[website-repo]: https://github.com/aurelson101/linscreen.github.io
+[gh-pages]: https://github.com/aurelson101/linscreen.github.io/tree/gh-pages
+[dev-docs-staging]: https://github.com/aurelson101/linscreen.github.io/tree/dev-docs-staging
+[action-secrets]: https://github.com/aurelson101/linscreen/settings/secrets/actions
+[edit-secret]: https://github.com/aurelson101/linscreen/settings/secrets/actions/TOKEN_PUSH_TO_WEBSITE_REPO
 
 <!-- Files in linscreen repo -->
-[mkdocs.yml]: https://github.com/linscreen/linscreen/blob/master/docs/dev/mkdocs.yml
-[post-process.sh]: https://github.com/linscreen/linscreen/blob/master/docs/dev/post-process.sh
-[deploy-dev-docs]: https://github.com/linscreen/linscreen/blob/master/.github/workflows/deploy-dev-docs.yml
+[mkdocs.yml]: https://github.com/aurelson101/linscreen/blob/master/docs/dev/mkdocs.yml
+[post-process.sh]: https://github.com/aurelson101/linscreen/blob/master/docs/dev/post-process.sh
+[deploy-dev-docs]: https://github.com/aurelson101/linscreen/blob/master/.github/workflows/deploy-dev-docs.yml
 
 <!-- Files in linscreen website repo -->
-[website-build]: https://github.com/linscreen/linscreen.github.io/blob/master/.github/workflows/build.yml
+[website-build]: https://github.com/aurelson101/linscreen.github.io/blob/master/.github/workflows/build.yml
 
 <!-- External pages -->
 [markdown:reference-style-links]: https://www.markdownguide.org/basic-syntax/#reference-style-links

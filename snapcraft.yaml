@@ -34,7 +34,7 @@ apps:
 parts:
   linscreen:
     plugin: cmake
-    source: https://github.com/linscreen/linscreen.git
+    source: https://github.com/aurelson101/linscreen.git
     source-tag: v$SNAPCRAFT_PROJECT_VERSION
     build-packages:
       - libxkbcommon-dev

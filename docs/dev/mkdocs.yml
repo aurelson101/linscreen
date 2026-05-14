@@ -1,6 +1,6 @@
 site_name: LinScreen Developer Docs
 site_url: https://linscreen.org/docs/dev/
-repo_url: https://github.com/linscreen/linscreen/
+repo_url: https://github.com/aurelson101/linscreen/
 edit_uri: tree/master/docs/dev/src
 docs_dir: src
 site_dir: output

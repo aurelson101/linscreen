@@ -53,7 +53,7 @@ Otherwise, linscreen will not take all of the screen and tiles its window instea
 
 Starting from 0.17.0 xdg-desktop-portal requires a configuration file (e.g. in ~/.config/xdg-desktop-portal/sway-portals.conf):
 
-(take from [issues#3363](https://github.com/linscreen/linscreen/issues/3363))
+(take from [issues#3363](https://github.com/aurelson101/linscreen/issues/3363))
 ```sh
 [preferred]
 # use xdg-desktop-portal-gtk for every portal interface

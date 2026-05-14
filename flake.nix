@@ -101,7 +101,7 @@
 
             meta = {
               description = "Powerful yet simple to use screenshot software";
-              homepage = "https://github.com/linscreen/linscreen";
+              homepage = "https://github.com/aurelson101/linscreen";
               license = pkgs.lib.licenses.gpl3Only;
               maintainers = [ "linscreen" ];
               platforms = pkgs.lib.platforms.unix ++ pkgs.lib.platforms.darwin;

@@ -52,7 +52,7 @@ parts:
       - '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
       - '-DCMAKE_INSTALL_PREFIX=/usr'
       - '-DUSE_LAUNCHER_ABSOLUTE_PATH:BOOL=OFF'
-    source: https://github.com/linscreen/linscreen.git
+    source: https://github.com/aurelson101/linscreen.git
     source-type: git
     override-pull: |
       snapcraftctl pull

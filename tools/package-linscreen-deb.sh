@@ -10,6 +10,7 @@ fi
 
 cmake -S . -B "${build_dir}" \
     -DCMAKE_BUILD_TYPE=Release \
+    -DDISABLE_UPDATE_CHECKER=ON \
     -DENABLE_IMGUR=OFF
 
 cmake --build "${build_dir}" -j"$(nproc)"
