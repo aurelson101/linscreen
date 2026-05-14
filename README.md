@@ -146,6 +146,7 @@ The script reads `LINSCREEN_VERSION` from `CMakeLists.txt`, builds missing artif
 - Linux tarball
 - `SHA256SUMS`
 
+
 ## License
 
 LinScreen is distributed under the GNU General Public License v3.0. See `LICENSE`.
