@@ -83,3 +83,6 @@ result-*
 
 # direnv
 .direnv
+
+# Local presentation site
+www/
