@@ -2,7 +2,7 @@
 set -eu
 
 repo="${1:-aurelson101/linscreen}"
-project_version="$(sed -n 's/^set(LINSCREEN_VERSION[[:space:]]*\\([0-9][^)]*\\)).*/\\1/p' CMakeLists.txt | head -n 1)"
+project_version="$(sed -n 's/^set(LINSCREEN_VERSION[[:space:]]*\([0-9][^)]*\)).*/\1/p' CMakeLists.txt | head -n 1)"
 tag="${2:-v${project_version}}"
 remote_name="${3:-linscreen}"
 build_dir="${BUILD_DIR:-build-linscreen-release}"
