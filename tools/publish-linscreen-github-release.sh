@@ -26,9 +26,13 @@ if [ ! -f "${build_dir}/linscreen_${project_version}_amd64.deb" ]; then
     tools/package-linscreen-deb.sh "${build_dir}"
 fi
 
+if [ ! -f "${build_dir}/LinScreen-${project_version}-x86_64.AppImage" ]; then
+    tools/package-linscreen-appimage.sh "${build_dir}"
+fi
+
 (
     cd "${build_dir}"
-    sha256sum linscreen_*.deb linscreen-*-linux.tar.gz > SHA256SUMS
+    sha256sum linscreen_*.deb linscreen-*-linux.tar.gz LinScreen-*-x86_64.AppImage > SHA256SUMS
 )
 
 if ! gh repo view "${repo}" >/dev/null 2>&1; then
@@ -52,6 +56,7 @@ if gh release view "${tag}" --repo "${repo}" >/dev/null 2>&1; then
     gh release upload "${tag}" \
         "${build_dir}"/linscreen_*.deb \
         "${build_dir}"/linscreen-*-linux.tar.gz \
+        "${build_dir}"/LinScreen-*-x86_64.AppImage \
         "${build_dir}/SHA256SUMS" \
         --repo "${repo}" \
         --clobber
@@ -59,6 +64,7 @@ else
     gh release create "${tag}" \
         "${build_dir}"/linscreen_*.deb \
         "${build_dir}"/linscreen-*-linux.tar.gz \
+        "${build_dir}"/LinScreen-*-x86_64.AppImage \
         "${build_dir}/SHA256SUMS" \
         --repo "${repo}" \
         --title "LinScreen ${tag#v}" \

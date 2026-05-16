@@ -144,17 +144,26 @@ void configureTranslation(QTranslator& translator, QTranslator& qtTranslator)
         }
     }
 
+    const QString qtTranslationsPath =
+      QLibraryInfo::path(QLibraryInfo::TranslationsPath);
     if (ConfigHandler().uiLanguage() == QStringLiteral("auto")) {
+        const QLocale systemLocale = QLocale::system();
         foundTranslation =
-          qtTranslator.load(QLocale::system(),
-                            "qt",
-                            "_",
-                            QLibraryInfo::path(QLibraryInfo::TranslationsPath));
+          qtTranslator.load(systemLocale, "qt", "_", qtTranslationsPath);
+        if (!foundTranslation) {
+            foundTranslation = qtTranslator.load(
+              systemLocale, "qtbase", "_", qtTranslationsPath);
+        }
     } else {
-        foundTranslation = qtTranslator.load(
-          QStringLiteral("qt_") + ConfigHandler().uiLanguage(),
-
-          QLibraryInfo::path(QLibraryInfo::TranslationsPath));
+        const QString language = ConfigHandler().uiLanguage();
+        foundTranslation =
+          qtTranslator.load(QStringLiteral("qt_") + language,
+                            qtTranslationsPath);
+        if (!foundTranslation) {
+            foundTranslation =
+              qtTranslator.load(QStringLiteral("qtbase_") + language,
+                                qtTranslationsPath);
+        }
     }
     if (!foundTranslation) {
         if (ConfigHandler().uiLanguage() == QStringLiteral("auto")) {

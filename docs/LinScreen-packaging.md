@@ -7,6 +7,7 @@ The fork is named **LinScreen**.
 - Desktop/AppStream/DBus ID: `org.linscreen.LinScreen`
 - Debian package name: `linscreen`
 - Flatpak app ID: `org.linscreen.LinScreen`
+- AppImage artifact: `LinScreen-<version>-x86_64.AppImage`
 
 ## Debian package
 
@@ -26,6 +27,30 @@ tools/package-linscreen-deb.sh
 
 The script uses CPack and emits `.deb` and `.tar.gz` artifacts under
 `build-linscreen-release/`.
+
+## AppImage
+
+Install the normal build dependencies plus `curl`. The script downloads
+`linuxdeploy` and `linuxdeploy-plugin-qt` into the build directory if they are
+not already present:
+
+```sh
+tools/package-linscreen-appimage.sh
+```
+
+The AppImage is written as:
+
+```text
+build-linscreen-appimage/LinScreen-<version>-x86_64.AppImage
+```
+
+The AppImage build installs into an AppDir with `CMAKE_INSTALL_PREFIX=/usr`,
+uses relative desktop launcher commands, bundles Qt dependencies through the
+linuxdeploy Qt plugin, and keeps the update checker enabled for portable
+release builds.
+
+The AppImage must include Qt's Wayland platform plugin and English/French Qt
+translation catalogs so it works cleanly on Wayland sessions in both locales.
 
 ## Flatpak
 

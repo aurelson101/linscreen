@@ -11,7 +11,7 @@ It is a rebranded, Wayland-focused fork intended to be packaged as `linscreen` w
 - Wayland capture through `xdg-desktop-portal`.
 - X11 fallback support.
 - GNOME/KDE desktop integration through desktop entry, AppStream metadata, DBus service, icons, completions, and man page.
-- Debian package and Linux tarball generation from one script.
+- Debian package, AppImage, and Linux tarball generation from release scripts.
 - Wayland portal debug helper for tricky GNOME/KDE setups.
 
 ## Install The Debian Package
@@ -60,7 +60,30 @@ Artifacts are written under `build-linscreen-release/`:
 
 - `linscreen_14.0.1_amd64.deb`
 - `linscreen-14.0.1-linux.tar.gz`
+- `LinScreen-14.0.1-x86_64.AppImage`
 - `src/linscreen`
+
+## Install The AppImage
+
+Download the AppImage, make it executable, and run it:
+
+```sh
+chmod +x LinScreen-14.0.1-x86_64.AppImage
+./LinScreen-14.0.1-x86_64.AppImage
+```
+
+The AppImage is portable and does not install desktop files globally. On
+Wayland, make sure a desktop portal backend is available, for example
+`xdg-desktop-portal-gtk`, `xdg-desktop-portal-gnome`,
+`xdg-desktop-portal-kde`, or `xdg-desktop-portal-wlr`.
+
+Build the AppImage locally with:
+
+```sh
+tools/package-linscreen-appimage.sh
+```
+
+The AppImage is written under `build-linscreen-appimage/` by default.
 
 ## Run
 
@@ -143,6 +166,7 @@ tools/publish-linscreen-github-release.sh aurelson101/linscreen
 The script reads `LINSCREEN_VERSION` from `CMakeLists.txt`, builds missing artifacts, pushes the current branch to `main`, tags `v<version>`, and uploads:
 
 - Debian package
+- AppImage
 - Linux tarball
 - `SHA256SUMS`
 
