@@ -4,6 +4,10 @@ LinScreen is a screenshot and annotation tool for Linux desktops, with a focus o
 
 It is a rebranded, Wayland-focused fork intended to be packaged as `linscreen` with desktop ID `org.linscreen.LinScreen`.
 
+Website: <https://linscreen.aurelson.com/>
+
+Releases: <https://github.com/aurelson101/linscreen/releases>
+
 ## Features
 
 - Region, full-screen, and per-monitor screenshots.
@@ -72,7 +76,8 @@ chmod +x LinScreen-14.0.1-x86_64.AppImage
 ./LinScreen-14.0.1-x86_64.AppImage
 ```
 
-The AppImage is portable and does not install desktop files globally. On
+The AppImage is portable and does not install desktop files globally. It bundles
+the Qt Wayland platform plugin and English/French Qt translation catalogs. On
 Wayland, make sure a desktop portal backend is available, for example
 `xdg-desktop-portal-gtk`, `xdg-desktop-portal-gnome`,
 `xdg-desktop-portal-kde`, or `xdg-desktop-portal-wlr`.
