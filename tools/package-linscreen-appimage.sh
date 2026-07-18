@@ -92,9 +92,10 @@ if [ -f "${metainfo_file}" ] && [ ! -f "${appdata_file}" ]; then
     cp "${metainfo_file}" "${appdata_file}"
 fi
 
-if [ -n "${qt_plugins_dir}" ] && [ -f "${qt_plugins_dir}/platforms/libqwayland.so" ]; then
+if [ -n "${qt_plugins_dir}" ] && find "${qt_plugins_dir}/platforms" -maxdepth 1 -name 'libqwayland*.so' | grep -q .; then
     mkdir -p "${appdir}/usr/plugins/platforms"
-    cp "${qt_plugins_dir}/platforms/libqwayland.so" "${appdir}/usr/plugins/platforms/"
+    find "${qt_plugins_dir}/platforms" -maxdepth 1 -name 'libqwayland*.so' \
+        -exec cp {} "${appdir}/usr/plugins/platforms/" \;
 
     for plugin_dir in \
         wayland-decoration-client \

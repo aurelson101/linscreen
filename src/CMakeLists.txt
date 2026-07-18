@@ -311,6 +311,8 @@ foreach (FILE ${QM_FILES})
     add_custom_command(
             TARGET linscreen
             POST_BUILD
+            COMMAND ${CMAKE_COMMAND} -E make_directory
+            ${CMAKE_CURRENT_BINARY_DIR}/translations
             COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/${F_NAME}
             ${CMAKE_CURRENT_BINARY_DIR}/translations/${F_NAME})
 endforeach ()

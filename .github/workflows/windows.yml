@@ -1,0 +1,62 @@
+name: Windows package
+
+on:
+  push:
+    branches: [main, master, 'agent/**']
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  windows:
+    runs-on: windows-2022
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v4
+        with:
+          version: '6.9.3'
+          arch: win64_msvc2022_64
+          cache: true
+
+      - name: Install WiX Toolset
+        shell: pwsh
+        run: choco install wixtoolset --no-progress --yes
+
+      - name: Build Windows packages
+        shell: pwsh
+        run: |
+          ./tools/package-linscreen-windows.ps1 `
+            -BuildDir build-linscreen-windows `
+            -Generator "Visual Studio 17 2022"
+          ./tools/package-linscreen-windows.ps1 `
+            -BuildDir build-linscreen-windows-portable `
+            -Generator "Visual Studio 17 2022" `
+            -Portable
+
+      - name: Verify artifacts
+        shell: pwsh
+        run: |
+          $packages = Get-ChildItem build-linscreen-windows -File |
+            Where-Object { $_.Extension -in '.msi', '.zip' }
+          if (-not ($packages | Where-Object Extension -eq '.msi')) {
+            throw 'The Windows MSI installer was not generated.'
+          }
+          $portablePackages = Get-ChildItem build-linscreen-windows-portable -File |
+            Where-Object Extension -eq '.zip'
+          if (-not $portablePackages) {
+            throw 'The Windows portable ZIP was not generated.'
+          }
+          $packages + $portablePackages | Format-Table Name, Length
+
+      - name: Upload Windows packages
+        uses: actions/upload-artifact@v4
+        with:
+          name: LinScreen-14.0.1-Windows
+          if-no-files-found: error
+          path: |
+            build-linscreen-windows/*.msi
+            build-linscreen-windows-portable/*.zip

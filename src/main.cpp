@@ -31,6 +31,7 @@
 #include <QDir>
 #include <QLibraryInfo>
 #include <QSharedMemory>
+#include <QStandardPaths>
 #include <QTimer>
 #include <QTranslator>
 
@@ -110,10 +111,17 @@ QSharedMemory* guiMutexLock()
 
 void configureTranslation(QTranslator& translator, QTranslator& qtTranslator)
 {
-    bool foundTranslation;
+    bool foundTranslation = false;
+    const QString configuredLanguage = ConfigHandler().uiLanguage();
+    const QLocale requestedLocale = configuredLanguage == QStringLiteral("auto")
+                                      ? QLocale::system()
+                                      : QLocale(configuredLanguage);
+    const bool usesSourceLanguage =
+      requestedLocale.language() == QLocale::C ||
+      requestedLocale.language() == QLocale::English;
     // Configure translations
     for (const QString& path : PathInfo::translationsPaths()) {
-        if (ConfigHandler().uiLanguage() == QStringLiteral("auto")) {
+        if (configuredLanguage == QStringLiteral("auto")) {
             // Load language, which was detected from the system
             foundTranslation =
               translator.load(QLocale(),
@@ -122,17 +130,16 @@ void configureTranslation(QTranslator& translator, QTranslator& qtTranslator)
                               path);
         } else {
             // Load language from settings
-            foundTranslation =
-              translator.load(QStringLiteral("Internationalization_") +
-                                ConfigHandler().uiLanguage(),
-                              path);
+            foundTranslation = translator.load(
+              QStringLiteral("Internationalization_") + configuredLanguage,
+              path);
         }
         if (foundTranslation) {
             break;
         }
     }
-    if (!foundTranslation) {
-        if (ConfigHandler().uiLanguage() == QStringLiteral("auto")) {
+    if (!foundTranslation && !usesSourceLanguage) {
+        if (configuredLanguage == QStringLiteral("auto")) {
             QLocale l;
             qWarning() << QStringLiteral(
                             "No LinScreen translation found for %1")
@@ -140,13 +147,13 @@ void configureTranslation(QTranslator& translator, QTranslator& qtTranslator)
         } else {
             qWarning() << QStringLiteral(
                             "No LinScreen translation found for %1")
-                            .arg(ConfigHandler().uiLanguage());
+                            .arg(configuredLanguage);
         }
     }
 
     const QString qtTranslationsPath =
       QLibraryInfo::path(QLibraryInfo::TranslationsPath);
-    if (ConfigHandler().uiLanguage() == QStringLiteral("auto")) {
+    if (configuredLanguage == QStringLiteral("auto")) {
         const QLocale systemLocale = QLocale::system();
         foundTranslation =
           qtTranslator.load(systemLocale, "qt", "_", qtTranslationsPath);
@@ -155,24 +162,22 @@ void configureTranslation(QTranslator& translator, QTranslator& qtTranslator)
               systemLocale, "qtbase", "_", qtTranslationsPath);
         }
     } else {
-        const QString language = ConfigHandler().uiLanguage();
-        foundTranslation =
-          qtTranslator.load(QStringLiteral("qt_") + language,
-                            qtTranslationsPath);
+        const QString language = configuredLanguage;
+        foundTranslation = qtTranslator.load(QStringLiteral("qt_") + language,
+                                             qtTranslationsPath);
         if (!foundTranslation) {
-            foundTranslation =
-              qtTranslator.load(QStringLiteral("qtbase_") + language,
-                                qtTranslationsPath);
+            foundTranslation = qtTranslator.load(
+              QStringLiteral("qtbase_") + language, qtTranslationsPath);
         }
     }
-    if (!foundTranslation) {
-        if (ConfigHandler().uiLanguage() == QStringLiteral("auto")) {
+    if (!foundTranslation && !usesSourceLanguage) {
+        if (configuredLanguage == QStringLiteral("auto")) {
             qWarning() << QStringLiteral("No Qt translation found for %1")
                             .arg(QLocale::languageToString(
                               QLocale::system().language()));
         } else {
             qWarning() << QStringLiteral("No Qt translation found for %1")
-                            .arg(ConfigHandler().uiLanguage());
+                            .arg(configuredLanguage);
         }
     }
 
@@ -218,12 +223,18 @@ int main(int argc, char* argv[])
     QCoreApplication::setApplicationVersion(APP_VERSION);
     QCoreApplication::setApplicationName(QStringLiteral("linscreen"));
     QCoreApplication::setOrganizationName(QStringLiteral("linscreen"));
-    QGuiApplication::setDesktopFileName(QStringLiteral("org.linscreen.LinScreen"));
+    const QString desktopFileName =
+      QStringLiteral("org.linscreen.LinScreen.desktop");
+    if (!QStandardPaths::locate(QStandardPaths::ApplicationsLocation,
+                                desktopFileName)
+           .isEmpty()) {
+        QGuiApplication::setDesktopFileName(
+          QStringLiteral("org.linscreen.LinScreen"));
+    }
 
     // no arguments, just launch LinScreen
     if (argc == 1) {
         QApplication app(argc, argv);
-        configureTranslation(translator, qtTranslator);
 
 #ifdef USE_KDSINGLEAPPLICATION
 #ifdef Q_OS_UNIX

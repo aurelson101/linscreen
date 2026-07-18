@@ -52,6 +52,10 @@ release builds.
 The AppImage must include Qt's Wayland platform plugin and English/French Qt
 translation catalogs so it works cleanly on Wayland sessions in both locales.
 
+GitHub Actions builds and verifies the AppImage through the `AppImage package`
+workflow. The workflow checks the Wayland plugin, the French LinScreen catalog,
+an autonomous launch and the SHA-256 checksum before uploading the artifact.
+
 ## Flatpak
 
 Install `flatpak-builder`, `org.kde.Platform//6.9`, and `org.kde.Sdk//6.9`,
@@ -71,6 +75,9 @@ Build on Windows with Qt 6, CMake, a supported C++ compiler, WiX Toolset, and
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools/package-linscreen-windows.ps1
 ```
+
+Add `-Portable` to produce the self-contained configuration ZIP instead of the
+system-integrated MSI build.
 
 If Qt is not in `PATH`, pass both the Qt prefix and the deploy tool explicitly:
 
@@ -95,3 +102,8 @@ produce `linscreen.exe`.
 
 The generated executable is `linscreen.exe`, with the console wrapper
 `linscreen-cli.exe`.
+
+GitHub Actions also builds the native Windows installer and portable archive
+through the `Windows package` workflow. Its `LinScreen-<version>-Windows`
+artifact contains both the `.msi` and `.zip` outputs and can be started
+manually with `workflow_dispatch`.

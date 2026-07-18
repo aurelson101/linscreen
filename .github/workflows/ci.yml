@@ -30,7 +30,8 @@ jobs:
             qt6-l10n-tools \
             qt6-svg-dev \
             qt6-tools-dev \
-            qt6-tools-dev-tools
+            qt6-tools-dev-tools \
+            qt6-wayland
 
       - name: Build
         run: tools/package-linscreen-deb.sh build-linscreen-ci
@@ -43,6 +44,9 @@ jobs:
       - name: Smoke test
         run: |
           build-linscreen-ci/src/linscreen --version
+          ctest --test-dir build-linscreen-ci --output-on-failure
+          DESTDIR="$PWD/build-linscreen-ci/stage" cmake --install build-linscreen-ci
+          tools/validate-linscreen-install.sh build-linscreen-ci/stage /usr
           dpkg-deb -I build-linscreen-ci/linscreen_*.deb
 
       - name: Upload packages
