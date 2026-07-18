@@ -28,6 +28,7 @@ Depends:
  libstdc++6 (>= 11),
  hicolor-icon-theme,
  qt6-qpa-plugins (>= 6.2.4~),
+ qt6-wayland (>= 6.2.4~),
  libqt6core6 (>= 6.2.4~),
  libqt6dbus6 (>= 6.2.4~),
  libqt6gui6 (>= 6.2.4~),

@@ -1,5 +1,5 @@
 Name:    linscreen
-Version: 13.3.0
+Version: 14.0.1
 Release: 1%{?dist}
 Summary: Powerful yet simple to use screenshot software
 

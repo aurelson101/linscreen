@@ -151,6 +151,11 @@ endif()
 
 add_subdirectory(src)
 
+include(CTest)
+if(BUILD_TESTING)
+  add_subdirectory(tests)
+endif()
+
 # CPack
 set(CPACK_PACKAGE_VENDOR "LinScreen")
 set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "Wayland-focused screenshot and annotation tool.")
@@ -206,7 +211,7 @@ else()
   set(CPACK_DEBIAN_FILE_NAME DEB-DEFAULT)
   set(CPACK_DEBIAN_PACKAGE_SECTION "graphics")
   set(CPACK_DEBIAN_PACKAGE_MAINTAINER "LinScreen developers <dev@linscreen.local>")
-  set(CPACK_DEBIAN_PACKAGE_DEPENDS "hicolor-icon-theme, qt6-qpa-plugins, libqt6core6, libqt6dbus6, libqt6gui6, libqt6network6, libqt6widgets6, libqt6svg6")
+  set(CPACK_DEBIAN_PACKAGE_DEPENDS "hicolor-icon-theme, qt6-qpa-plugins, qt6-wayland, libqt6core6, libqt6dbus6, libqt6gui6, libqt6network6, libqt6widgets6, libqt6svg6")
   set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "LinScreen is a screenshot and annotation tool focused on reliable Wayland capture through desktop portals, with X11 fallback support.")
   set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
       "${CMAKE_SOURCE_DIR}/cmake/debian/postinst;${CMAKE_SOURCE_DIR}/cmake/debian/postrm")
