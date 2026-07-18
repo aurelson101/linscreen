@@ -46,8 +46,8 @@ void logWaylandPortalContext()
 #ifdef LINSCREEN_DEBUG_CAPTURE
     const auto env = QProcessEnvironment::systemEnvironment();
     qDebug() << QObject::tr("=== Wayland/portal capture context ===");
-    qDebug() << QObject::tr("Qt platform: %1")
-                  .arg(QGuiApplication::platformName());
+    qDebug()
+      << QObject::tr("Qt platform: %1").arg(QGuiApplication::platformName());
     qDebug() << QObject::tr("XDG_SESSION_TYPE: %1")
                   .arg(env.value(QStringLiteral("XDG_SESSION_TYPE")));
     qDebug() << QObject::tr("XDG_CURRENT_DESKTOP: %1")

@@ -3,7 +3,8 @@ param(
     [string]$QtPrefix = $env:Qt6_DIR,
     [string]$ToolchainFile = "",
     [string]$WindeployQt = "",
-    [string]$Generator = ""
+    [string]$Generator = "",
+    [switch]$Portable
 )
 
 $ErrorActionPreference = "Stop"
@@ -58,6 +59,7 @@ $cmakeArgs = @(
     "-B", $BuildDir,
     "-DCMAKE_BUILD_TYPE=Release",
     "-DENABLE_IMGUR=OFF",
+    "-DUSE_PORTABLE_CONFIG=$(if ($Portable) { 'ON' } else { 'OFF' })",
     "-DWINDEPLOYQT_EXECUTABLE=$WindeployQt"
 )
 

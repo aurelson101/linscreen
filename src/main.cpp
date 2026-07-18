@@ -130,10 +130,9 @@ void configureTranslation(QTranslator& translator, QTranslator& qtTranslator)
                               path);
         } else {
             // Load language from settings
-            foundTranslation =
-              translator.load(QStringLiteral("Internationalization_") +
-                                configuredLanguage,
-                              path);
+            foundTranslation = translator.load(
+              QStringLiteral("Internationalization_") + configuredLanguage,
+              path);
         }
         if (foundTranslation) {
             break;
@@ -164,13 +163,11 @@ void configureTranslation(QTranslator& translator, QTranslator& qtTranslator)
         }
     } else {
         const QString language = configuredLanguage;
-        foundTranslation =
-          qtTranslator.load(QStringLiteral("qt_") + language,
-                            qtTranslationsPath);
+        foundTranslation = qtTranslator.load(QStringLiteral("qt_") + language,
+                                             qtTranslationsPath);
         if (!foundTranslation) {
-            foundTranslation =
-              qtTranslator.load(QStringLiteral("qtbase_") + language,
-                                qtTranslationsPath);
+            foundTranslation = qtTranslator.load(
+              QStringLiteral("qtbase_") + language, qtTranslationsPath);
         }
     }
     if (!foundTranslation && !usesSourceLanguage) {
@@ -226,7 +223,8 @@ int main(int argc, char* argv[])
     QCoreApplication::setApplicationVersion(APP_VERSION);
     QCoreApplication::setApplicationName(QStringLiteral("linscreen"));
     QCoreApplication::setOrganizationName(QStringLiteral("linscreen"));
-    const QString desktopFileName = QStringLiteral("org.linscreen.LinScreen.desktop");
+    const QString desktopFileName =
+      QStringLiteral("org.linscreen.LinScreen.desktop");
     if (!QStandardPaths::locate(QStandardPaths::ApplicationsLocation,
                                 desktopFileName)
            .isEmpty()) {

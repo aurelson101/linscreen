@@ -72,6 +72,9 @@ Build on Windows with Qt 6, CMake, a supported C++ compiler, WiX Toolset, and
 powershell -ExecutionPolicy Bypass -File tools/package-linscreen-windows.ps1
 ```
 
+Add `-Portable` to produce the self-contained configuration ZIP instead of the
+system-integrated MSI build.
+
 If Qt is not in `PATH`, pass both the Qt prefix and the deploy tool explicitly:
 
 ```powershell
@@ -95,3 +98,8 @@ produce `linscreen.exe`.
 
 The generated executable is `linscreen.exe`, with the console wrapper
 `linscreen-cli.exe`.
+
+GitHub Actions also builds the native Windows installer and portable archive
+through the `Windows package` workflow. Its `LinScreen-<version>-Windows`
+artifact contains both the `.msi` and `.zip` outputs and can be started
+manually with `workflow_dispatch`.
