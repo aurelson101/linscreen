@@ -23,7 +23,10 @@ QStringList PathInfo::translationsPaths()
       QFileInfo(qApp->applicationDirPath()).absoluteFilePath();
     QString trPath = QDir::toNativeSeparators(binaryPath + "/translations");
 #if defined(Q_OS_LINUX) || defined(Q_OS_UNIX)
+    const QString bundledSharePath = QDir(binaryPath).absoluteFilePath(
+      QStringLiteral("../share/linscreen/translations"));
     return QStringList()
+           << bundledSharePath
            << QStringLiteral(APP_PREFIX) + "/share/linscreen/translations"
            << trPath << QStringLiteral("/usr/share/linscreen/translations")
            << QStringLiteral("/usr/local/share/linscreen/translations");

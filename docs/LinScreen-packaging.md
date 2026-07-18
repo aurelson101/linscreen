@@ -52,6 +52,10 @@ release builds.
 The AppImage must include Qt's Wayland platform plugin and English/French Qt
 translation catalogs so it works cleanly on Wayland sessions in both locales.
 
+GitHub Actions builds and verifies the AppImage through the `AppImage package`
+workflow. The workflow checks the Wayland plugin, the French LinScreen catalog,
+an autonomous launch and the SHA-256 checksum before uploading the artifact.
+
 ## Flatpak
 
 Install `flatpak-builder`, `org.kde.Platform//6.9`, and `org.kde.Sdk//6.9`,

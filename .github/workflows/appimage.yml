@@ -1,0 +1,56 @@
+name: AppImage package
+
+on:
+  push:
+    branches: [main, master, 'agent/**']
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  appimage:
+    runs-on: ubuntu-24.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends \
+            build-essential \
+            cmake \
+            curl \
+            file \
+            git \
+            libgl-dev \
+            qt6-base-dev \
+            qt6-l10n-tools \
+            qt6-svg-dev \
+            qt6-tools-dev \
+            qt6-tools-dev-tools \
+            qt6-wayland
+
+      - name: Build AppImage
+        run: tools/package-linscreen-appimage.sh
+
+      - name: Verify AppImage
+        run: |
+          appimage="build-linscreen-appimage/LinScreen-14.0.1-x86_64.AppImage"
+          test -x "$appimage"
+          APPIMAGE_EXTRACT_AND_RUN=1 "$appimage" --version
+          test -s build-linscreen-appimage/LinScreen.AppDir/usr/plugins/platforms/libqwayland.so
+          test -s build-linscreen-appimage/LinScreen.AppDir/usr/share/linscreen/translations/Internationalization_fr.qm
+          output="$(APPIMAGE_EXTRACT_AND_RUN=1 LANG=fr_FR.UTF-8 "$appimage" --help 2>&1)"
+          ! printf '%s\n' "$output" | grep -q 'No LinScreen translation found'
+          sha256sum "$appimage" > build-linscreen-appimage/SHA256SUMS-AppImage
+
+      - name: Upload AppImage
+        uses: actions/upload-artifact@v4
+        with:
+          name: LinScreen-14.0.1-AppImage
+          if-no-files-found: error
+          path: |
+            build-linscreen-appimage/LinScreen-14.0.1-x86_64.AppImage
+            build-linscreen-appimage/SHA256SUMS-AppImage
