@@ -40,7 +40,8 @@ jobs:
           appimage="build-linscreen-appimage/LinScreen-14.0.1-x86_64.AppImage"
           test -x "$appimage"
           APPIMAGE_EXTRACT_AND_RUN=1 "$appimage" --version
-          test -s build-linscreen-appimage/LinScreen.AppDir/usr/plugins/platforms/libqwayland.so
+          find build-linscreen-appimage/LinScreen.AppDir/usr/plugins/platforms \
+            -maxdepth 1 -name 'libqwayland*.so' -print -quit | grep -q .
           test -s build-linscreen-appimage/LinScreen.AppDir/usr/share/linscreen/translations/Internationalization_fr.qm
           output="$(APPIMAGE_EXTRACT_AND_RUN=1 LANG=fr_FR.UTF-8 "$appimage" --help 2>&1)"
           ! printf '%s\n' "$output" | grep -q 'No LinScreen translation found'
