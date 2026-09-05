@@ -1,0 +1,5 @@
+Contact: https://github.com/aurelson101/linscreen/issues
+Preferred-Languages: en, fr
+Canonical: https://linscreen.aurelson.com/.well-known/security.txt
+Policy: https://github.com/aurelson101/linscreen/security
+Expires: 2027-05-14T00:00:00Z

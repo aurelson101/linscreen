@@ -1,0 +1,27 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://linscreen.aurelson.com/sitemap.xml
+
+# AI crawlers are allowed to index public project information from this site.
+# Source code and releases should be fetched from the official GitHub repository.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /

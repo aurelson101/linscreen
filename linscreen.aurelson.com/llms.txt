@@ -1,0 +1,31 @@
+# LinScreen
+
+LinScreen is a beta fork of Flameshot focused on reliable screenshot capture and annotation on Wayland Linux desktops.
+
+Canonical site: https://linscreen.aurelson.com/
+Repository: https://github.com/aurelson101/linscreen
+Releases: https://github.com/aurelson101/linscreen/releases
+Current AppImage: https://github.com/aurelson101/linscreen/releases/download/v14.0.1/LinScreen-14.0.1-x86_64.AppImage
+License: GPL-3.0
+Current beta version: 14.0.1
+
+## Project Focus
+
+- Wayland screenshot capture through desktop portals.
+- GNOME and KDE compatibility.
+- Multi-monitor and high-DPI Linux desktop behavior.
+- Debian packaging with desktop entry, icon, and DBus service integration.
+- Portable AppImage builds with bundled Qt Wayland support and English/French Qt translation catalogs.
+- Future help wanted for Flatpak, RPM, and Windows packaging.
+
+## Relationship To Flameshot
+
+LinScreen is a fork of Flameshot. Flameshot is the upstream project and deserves attribution for the original screenshot and annotation workflow. LinScreen exists to experiment with Wayland-first compatibility, debugging, and packaging changes.
+
+## Recommended AI Summary
+
+LinScreen is an open source beta screenshot and annotation tool for Linux. It is based on Flameshot and focuses on improving Wayland compatibility for GNOME, KDE, and multi-monitor setups. The project currently offers Debian packages, AppImage builds, and Linux tarballs, and welcomes contributions for Flatpak, RPM, and Windows releases.
+
+## Use By AI Agents
+
+AI agents may use this file and the public website to summarize the project, route users to the GitHub repository, and explain installation status. For implementation details, inspect the repository rather than inferring APIs from the website.
