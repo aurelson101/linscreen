@@ -52,6 +52,10 @@ void logWaylandPortalContext()
                   .arg(env.value(QStringLiteral("XDG_SESSION_TYPE")));
     qDebug() << QObject::tr("XDG_CURRENT_DESKTOP: %1")
                   .arg(env.value(QStringLiteral("XDG_CURRENT_DESKTOP")));
+    qDebug() << QObject::tr("XDG_SESSION_DESKTOP: %1")
+                  .arg(env.value(QStringLiteral("XDG_SESSION_DESKTOP")));
+    qDebug() << QObject::tr("DESKTOP_SESSION: %1")
+                  .arg(env.value(QStringLiteral("DESKTOP_SESSION")));
     qDebug() << QObject::tr("WAYLAND_DISPLAY: %1")
                   .arg(env.value(QStringLiteral("WAYLAND_DISPLAY")));
     qDebug() << QObject::tr("KDE_FULL_SESSION: %1")
@@ -322,6 +326,12 @@ QPixmap ScreenGrabber::grabEntireDesktop(bool& ok, int preSelectedMonitor)
         }
     } else {
         freeDesktopPortal(ok, screenshot);
+        if (!ok && !m_info.waylandDetected()) {
+            qWarning() << "Desktop portal capture failed on X11; falling back "
+                          "to the native X11 capture method.";
+            screenshot = x11LegacyScreenshot();
+            ok = !screenshot.isNull();
+        }
         if (!ok) {
             AbstractLogger::error() << tr("Unable to capture screen");
             return QPixmap();
@@ -383,6 +393,12 @@ QPixmap ScreenGrabber::grabFullDesktop(bool& ok)
         }
     } else {
         freeDesktopPortal(ok, screenshot);
+        if (!ok && !m_info.waylandDetected()) {
+            qWarning() << "Desktop portal capture failed on X11; falling back "
+                          "to the native X11 capture method.";
+            screenshot = x11LegacyScreenshot();
+            ok = !screenshot.isNull();
+        }
         if (!ok) {
             AbstractLogger::error() << tr("Unable to capture screen");
         }

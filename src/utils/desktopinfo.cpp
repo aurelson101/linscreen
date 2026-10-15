@@ -9,6 +9,7 @@ DesktopInfo::DesktopInfo()
 {
     auto e = QProcessEnvironment::systemEnvironment();
     XDG_CURRENT_DESKTOP = e.value(QStringLiteral("XDG_CURRENT_DESKTOP"));
+    XDG_SESSION_DESKTOP = e.value(QStringLiteral("XDG_SESSION_DESKTOP"));
     XDG_SESSION_TYPE = e.value(QStringLiteral("XDG_SESSION_TYPE"));
     WAYLAND_DISPLAY = e.value(QStringLiteral("WAYLAND_DISPLAY"));
     KDE_FULL_SESSION = e.value(QStringLiteral("KDE_FULL_SESSION"));
@@ -27,8 +28,24 @@ bool DesktopInfo::waylandDetected()
 DesktopInfo::WM DesktopInfo::windowManager()
 {
     DesktopInfo::WM res = DesktopInfo::OTHER;
-    QStringList desktops = XDG_CURRENT_DESKTOP.split(QChar(':'));
+    QStringList desktops =
+      (XDG_CURRENT_DESKTOP + QChar(':') + XDG_SESSION_DESKTOP + QChar(':') +
+       DESKTOP_SESSION)
+        .split(QChar(':'), Qt::SkipEmptyParts);
     for (auto& desktop : desktops) {
+        if (desktop.contains(QLatin1String("XFCE"), Qt::CaseInsensitive)) {
+            return DesktopInfo::XFCE;
+        }
+        if (desktop.contains(QLatin1String("Cinnamon"),
+                             Qt::CaseInsensitive)) {
+            return DesktopInfo::CINNAMON;
+        }
+        if (desktop.contains(QLatin1String("MATE"), Qt::CaseInsensitive)) {
+            return DesktopInfo::MATE;
+        }
+        if (desktop.contains(QLatin1String("LXQt"), Qt::CaseInsensitive)) {
+            return DesktopInfo::LXQT;
+        }
         if (desktop.contains(QLatin1String("GNOME"), Qt::CaseInsensitive)) {
             return DesktopInfo::GNOME;
         }
@@ -42,7 +59,8 @@ DesktopInfo::WM DesktopInfo::windowManager()
         if (desktop.contains(QLatin1String("Hyprland"), Qt::CaseInsensitive)) {
             return DesktopInfo::HYPRLAND;
         }
-        if (desktop.contains(QLatin1String("kde-plasma"))) {
+        if (desktop.contains(QLatin1String("KDE"), Qt::CaseInsensitive) ||
+            desktop.contains(QLatin1String("Plasma"), Qt::CaseInsensitive)) {
             return DesktopInfo::KDE;
         }
         if (desktop.contains(QLatin1String("cosmic"), Qt::CaseInsensitive)) {

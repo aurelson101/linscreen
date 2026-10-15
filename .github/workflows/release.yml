@@ -8,13 +8,14 @@ on:
 
 permissions:
   contents: write
+  id-token: write
 
 jobs:
   deb:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Install dependencies
         run: |
@@ -45,19 +46,48 @@ jobs:
             build-linscreen-appimage/LinScreen-*-x86_64.AppImage \
             build-linscreen-release/
 
+      - name: Read version
+        id: version
+        run: |
+          version="$(sed -n 's/^set(LINSCREEN_VERSION[[:space:]]*\([0-9][^)]*\)).*/\1/p' CMakeLists.txt | head -n 1)"
+          test -n "$version"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Generate CycloneDX SBOM
+        uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0
+        with:
+          path: build-linscreen-release
+          format: cyclonedx-json
+          output-file: build-linscreen-release/LinScreen-${{ steps.version.outputs.version }}.cdx.json
+          upload-artifact: false
+          upload-release-assets: false
+
       - name: Checksums
         run: |
           cd build-linscreen-release
           sha256sum \
             linscreen_*.deb \
             linscreen-*-linux.tar.gz \
-            LinScreen-*-x86_64.AppImage > SHA256SUMS
+            LinScreen-*-x86_64.AppImage \
+            LinScreen-*.cdx.json > SHA256SUMS
+
+      - name: Install cosign
+        uses: sigstore/cosign-installer@6f9f17788090df1f26f669e9d70d6ae9567deba6 # v4.1.2
+
+      - name: Sign checksums with GitHub OIDC
+        run: |
+          cosign sign-blob --yes \
+            --bundle build-linscreen-release/SHA256SUMS.sigstore.json \
+            build-linscreen-release/SHA256SUMS
 
       - name: Publish GitHub release
-        uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           files: |
             build-linscreen-release/linscreen_*.deb
             build-linscreen-release/linscreen-*-linux.tar.gz
             build-linscreen-release/LinScreen-*-x86_64.AppImage
+            build-linscreen-release/LinScreen-*.cdx.json
             build-linscreen-release/SHA256SUMS
+            build-linscreen-release/SHA256SUMS.sigstore.json

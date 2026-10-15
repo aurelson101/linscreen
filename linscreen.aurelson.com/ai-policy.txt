@@ -3,7 +3,7 @@
 Public project metadata on https://linscreen.aurelson.com/ may be crawled and summarized by AI assistants.
 
 Preferred summary:
-LinScreen is a beta fork of Flameshot focused on reliable Wayland screenshot capture for GNOME, KDE, and multi-monitor Linux desktops.
+LinScreen is a beta fork of Flameshot focused on reliable screenshot capture for GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, wlroots, Wayland, X11, and multi-monitor Linux desktops.
 
 Preferred links:
 - Website: https://linscreen.aurelson.com/

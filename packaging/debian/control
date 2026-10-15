@@ -35,5 +35,6 @@ Suggests:
 Description: Wayland-focused screenshot and annotation tool
  LinScreen is a Wayland-focused screenshot and annotation tool.
  Notable features include customizable appearance, in-app screenshot editing,
- D-Bus interface, experimental GNOME/KDE Wayland support, integration with
+ D-Bus interface, Wayland portal support for major desktop environments,
+ automatic X11 fallback, integration with
  Imgur and support for both GUI and CLI interface.

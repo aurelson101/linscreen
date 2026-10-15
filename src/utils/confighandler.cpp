@@ -18,6 +18,17 @@
 #include <QVector>
 #include <stdexcept>
 
+namespace {
+void secureSettingsFile(QSettings& settings)
+{
+    settings.sync();
+#ifndef Q_OS_WIN
+    QFile::setPermissions(settings.fileName(),
+                          QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+#endif
+}
+}
+
 #if defined(Q_OS_MACOS)
 #include <QProcess>
 #endif
@@ -418,6 +429,7 @@ void ConfigHandler::setDefaultSettings()
         m_settings.remove(key);
     }
     m_settings.sync();
+    secureSettingsFile(m_settings);
 }
 
 QString ConfigHandler::configFilePath() const
@@ -472,6 +484,7 @@ bool ConfigHandler::setShortcut(const QString& actionName,
     }
 done:
     m_settings.endGroup();
+    secureSettingsFile(m_settings);
     return !errorFlag;
 }
 
@@ -503,6 +516,7 @@ void ConfigHandler::setValue(const QString& key, const QVariant& value)
         m_skipNextErrorCheck = true;
         auto val = valueHandler(key)->representation(value);
         m_settings.setValue(key, val);
+        secureSettingsFile(m_settings);
     }
 }
 
@@ -528,11 +542,13 @@ QVariant ConfigHandler::value(const QString& key) const
 void ConfigHandler::remove(const QString& key)
 {
     m_settings.remove(key);
+    secureSettingsFile(m_settings);
 }
 
 void ConfigHandler::resetValue(const QString& key)
 {
     m_settings.setValue(key, valueHandler(key)->fallback());
+    secureSettingsFile(m_settings);
 }
 
 QSet<QString>& ConfigHandler::recognizedGeneralOptions()
@@ -773,6 +789,10 @@ void ConfigHandler::ensureFileWatched() const
             file.close();
         }
     }
+#ifndef Q_OS_WIN
+    QFile::setPermissions(m_settings.fileName(),
+                          QFileDevice::ReadOwner | QFileDevice::WriteOwner);
+#endif
     if (m_configWatcher != nullptr && m_configWatcher->files().isEmpty() &&
         qApp != nullptr // ensures that the organization name can be accessed
     ) {

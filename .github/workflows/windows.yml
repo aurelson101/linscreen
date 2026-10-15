@@ -7,16 +7,19 @@ on:
     branches: [main, master]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   windows:
     runs-on: windows-2022
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
 
       - name: Install Qt
-        uses: jurplel/install-qt-action@v4
+        uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4
         with:
           version: '6.9.3'
           arch: win64_msvc2022_64
@@ -38,8 +41,11 @@ jobs:
             -Portable
 
       - name: Verify artifacts
+        id: package
         shell: pwsh
         run: |
+          $version = (Select-String -Path CMakeLists.txt -Pattern '^set\(LINSCREEN_VERSION\s+([^\)]+)\)').Matches.Groups[1].Value
+          "version=$version" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
           $packages = Get-ChildItem build-linscreen-windows -File |
             Where-Object { $_.Extension -in '.msi', '.zip' }
           if (-not ($packages | Where-Object Extension -eq '.msi')) {
@@ -53,9 +59,9 @@ jobs:
           $packages + $portablePackages | Format-Table Name, Length
 
       - name: Upload Windows packages
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: LinScreen-14.0.1-Windows
+          name: LinScreen-${{ steps.package.outputs.version }}-Windows
           if-no-files-found: error
           path: |
             build-linscreen-windows/*.msi

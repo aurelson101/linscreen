@@ -3,8 +3,17 @@
 
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
 #include <QProcessEnvironment>
+#include <QSettings>
 #include <QStringList>
+
+namespace {
+constexpr QFileDevice::Permissions privateDirectoryPermissions =
+  QFileDevice::ReadOwner | QFileDevice::WriteOwner | QFileDevice::ExeOwner;
+constexpr QFileDevice::Permissions privateFilePermissions =
+  QFileDevice::ReadOwner | QFileDevice::WriteOwner;
+}
 
 History::History()
 {
@@ -23,6 +32,9 @@ History::History()
     if (!dir.exists()) {
         dir.mkpath(".");
     }
+#ifndef Q_OS_WIN
+    QFile::setPermissions(m_historyPath, privateDirectoryPermissions);
+#endif
 }
 
 const QString& History::path()
@@ -47,9 +59,20 @@ void History::save(const QPixmap& pixmap, const QString& fileName)
     QFile file(path() + fileName);
     if (file.open(QIODevice::WriteOnly)) {
         pixmapScaled.save(&file, "PNG");
+        file.close();
+#ifndef Q_OS_WIN
+        QFile::setPermissions(file.fileName(), privateFilePermissions);
+#endif
     }
 
     history();
+}
+
+void History::remove(const QString& fileName)
+{
+    const QString baseName = QFileInfo(fileName).fileName();
+    QFile(path() + baseName).remove();
+    removeToken(baseName);
 }
 
 const QList<QString>& History::history()
@@ -66,8 +89,7 @@ const QList<QString>& History::history()
         if (++cnt <= max) {
             m_thumbs.append(fileName);
         } else {
-            QFile file(path() + fileName);
-            file.remove();
+            remove(fileName);
         }
     }
     return m_thumbs;
@@ -75,30 +97,35 @@ const QList<QString>& History::history()
 
 const HistoryFileName& History::unpackFileName(const QString& fileNamePacked)
 {
-    int nPathIndex = fileNamePacked.lastIndexOf("/");
-    QStringList unpackedFileName;
-    if (nPathIndex == -1) {
-        unpackedFileName = fileNamePacked.split("-");
-    } else {
-        unpackedFileName = fileNamePacked.mid(nPathIndex + 1).split("-");
+    const QString baseName = QFileInfo(fileNamePacked).fileName();
+    const int firstSeparator = baseName.indexOf('-');
+    m_unpackedFileName = {};
+    if (firstSeparator < 0) {
+        m_unpackedFileName.file = baseName;
+        return m_unpackedFileName;
     }
 
-    switch (unpackedFileName.length()) {
-        case 3:
-            m_unpackedFileName.file = unpackedFileName[2];
-            m_unpackedFileName.token = unpackedFileName[1];
-            m_unpackedFileName.type = unpackedFileName[0];
-            break;
-        case 2:
-            m_unpackedFileName.file = unpackedFileName[1];
-            m_unpackedFileName.token = "";
-            m_unpackedFileName.type = unpackedFileName[0];
-            break;
-        default:
-            m_unpackedFileName.file = unpackedFileName[0];
-            m_unpackedFileName.token = "";
-            m_unpackedFileName.type = "";
-            break;
+    m_unpackedFileName.type = baseName.left(firstSeparator);
+    m_unpackedFileName.token = tokenFor(baseName);
+
+    if (baseName.mid(firstSeparator, 2) == QLatin1String("--")) {
+        m_unpackedFileName.file = baseName.mid(firstSeparator + 2);
+        return m_unpackedFileName;
+    }
+
+    m_unpackedFileName.file = baseName.mid(firstSeparator + 1);
+
+    // Backward compatibility for history created before tokens were moved
+    // out of filenames. Imgur names and delete hashes do not contain '-'.
+    if (m_unpackedFileName.token.isEmpty()) {
+        const int legacySeparator =
+          baseName.indexOf('-', firstSeparator + 1);
+        if (legacySeparator > firstSeparator) {
+            m_unpackedFileName.token =
+              baseName.mid(firstSeparator + 1,
+                           legacySeparator - firstSeparator - 1);
+            m_unpackedFileName.file = baseName.mid(legacySeparator + 1);
+        }
     }
     return m_unpackedFileName;
 }
@@ -109,12 +136,51 @@ const QString& History::packFileName(const QString& storageType,
 {
     m_packedFileName = fileName;
     if (storageType.length() > 0) {
-        if (deleteToken.length() > 0) {
-            m_packedFileName =
-              storageType + "-" + deleteToken + "-" + m_packedFileName;
-        } else {
-            m_packedFileName = storageType + "-" + m_packedFileName;
+        m_packedFileName = storageType + "--" + m_packedFileName;
+        if (!deleteToken.isEmpty()) {
+            storeToken(m_packedFileName, deleteToken);
         }
     }
     return m_packedFileName;
+}
+
+QString History::tokenKey(const QString& fileName) const
+{
+    return QString::fromLatin1(
+      QFileInfo(fileName)
+        .fileName()
+        .toUtf8()
+        .toBase64(QByteArray::Base64UrlEncoding |
+                  QByteArray::OmitTrailingEquals));
+}
+
+QString History::tokenFor(const QString& fileName) const
+{
+    QSettings settings(m_historyPath + "upload-tokens.ini",
+                       QSettings::IniFormat);
+    return settings.value("tokens/" + tokenKey(fileName)).toString();
+}
+
+void History::storeToken(const QString& fileName, const QString& token) const
+{
+    QSettings settings(m_historyPath + "upload-tokens.ini",
+                       QSettings::IniFormat);
+    settings.setValue("tokens/" + tokenKey(fileName), token);
+    settings.sync();
+#ifndef Q_OS_WIN
+    QFile::setPermissions(settings.fileName(), privateFilePermissions);
+#endif
+}
+
+void History::removeToken(const QString& fileName) const
+{
+    QSettings settings(m_historyPath + "upload-tokens.ini",
+                       QSettings::IniFormat);
+    settings.remove("tokens/" + tokenKey(fileName));
+    settings.sync();
+#ifndef Q_OS_WIN
+    if (QFile::exists(settings.fileName())) {
+        QFile::setPermissions(settings.fileName(), privateFilePermissions);
+    }
+#endif
 }

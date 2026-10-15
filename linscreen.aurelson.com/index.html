@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>LinScreen - Wayland Screenshot Tool</title>
-    <meta name="description" content="LinScreen is a beta fork of Flameshot focused on Wayland compatibility for GNOME, KDE, and multi-monitor Linux desktops, with Debian and AppImage beta builds.">
+    <meta name="description" content="LinScreen is a secure screenshot tool for GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, wlroots, Wayland and X11, with Debian and AppImage builds.">
     <meta name="robots" content="index, follow, max-image-preview:large">
     <meta name="author" content="AurelSon101">
     <link rel="canonical" href="https://linscreen.aurelson.com/">
@@ -16,7 +16,7 @@
     <meta property="og:image" content="https://linscreen.aurelson.com/assets/linscreen.svg">
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="LinScreen - Wayland Screenshot Tool">
-    <meta name="twitter:description" content="A beta Flameshot fork focused on reliable Wayland screenshots for GNOME, KDE, and multi-monitor Linux desktops. Debian and AppImage builds are available.">
+    <meta name="twitter:description" content="Reliable screenshots on GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, wlroots, Wayland and X11. Debian and AppImage builds are available.">
     <meta name="twitter:image" content="https://linscreen.aurelson.com/assets/linscreen.svg">
     <link rel="icon" href="assets/linscreen.svg" type="image/svg+xml">
     <link rel="sitemap" type="application/xml" href="/sitemap.xml">
@@ -33,9 +33,9 @@
         "operatingSystem": "Linux",
         "url": "https://linscreen.aurelson.com/",
         "codeRepository": "https://github.com/aurelson101/linscreen",
-        "downloadUrl": "https://github.com/aurelson101/linscreen/releases/download/v14.0.3/LinScreen-14.0.3-x86_64.AppImage",
-        "softwareVersion": "14.0.3",
-        "description": "LinScreen is a beta fork of Flameshot focused on reliable Wayland screenshot capture for GNOME, KDE, and multi-monitor Linux desktops. Debian and AppImage beta builds are available.",
+        "downloadUrl": "https://github.com/aurelson101/linscreen/releases/download/v14.1.0/LinScreen-14.1.0-x86_64.AppImage",
+        "softwareVersion": "14.1.0",
+        "description": "LinScreen provides secure, reliable screenshot capture for GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, wlroots, Wayland and X11.",
         "isBasedOn": "https://github.com/flameshot-org/flameshot",
         "license": "https://github.com/aurelson101/linscreen/blob/main/LICENSE"
       }
@@ -73,10 +73,10 @@
               </div>
               <h1 class="display-4 fw-bold lh-sm mb-4">Screenshot capture that respects modern Wayland desktops.</h1>
               <p class="lead text-body-secondary mb-4">
-                LinScreen is a beta fork of Flameshot focused on making screenshot capture and annotation work reliably on GNOME, KDE, and multi-monitor Wayland sessions.
+                LinScreen is a beta fork of Flameshot focused on reliable capture and annotation across GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, wlroots, Wayland and X11.
               </p>
               <div class="d-flex flex-column flex-sm-row gap-3">
-                <a class="btn btn-info btn-lg" href="https://github.com/aurelson101/linscreen/releases/download/v14.0.3/LinScreen-14.0.3-x86_64.AppImage" target="_blank" rel="noreferrer">
+                <a class="btn btn-info btn-lg" href="https://github.com/aurelson101/linscreen/releases/download/v14.1.0/LinScreen-14.1.0-x86_64.AppImage" target="_blank" rel="noreferrer">
                   <i class="bi bi-download me-2"></i>Download AppImage
                 </a>
                 <a class="btn btn-outline-light btn-lg" href="#install">
@@ -120,7 +120,7 @@ linscreen screen --number 0</code></pre>
               <div class="feature-card h-100">
                 <i class="bi bi-window-stack"></i>
                 <h3>Wayland portals</h3>
-                <p>Built around desktop portal capture flows used by GNOME, KDE, and other modern Linux sessions.</p>
+                <p>Uses desktop portals on Wayland and a safe automatic X11 fallback across major Linux desktops.</p>
               </div>
             </div>
             <div class="col-md-6 col-xl-3">
@@ -209,10 +209,10 @@ linscreen screen --number 0</code></pre>
                 Use the Debian package for desktop integration, or the AppImage for a portable test build with bundled Qt Wayland support.
               </p>
               <div class="d-flex flex-column flex-sm-row gap-3 mt-4">
-                <a class="btn btn-info" href="https://github.com/aurelson101/linscreen/releases/download/v14.0.3/LinScreen-14.0.3-x86_64.AppImage" target="_blank" rel="noreferrer">
+                <a class="btn btn-info" href="https://github.com/aurelson101/linscreen/releases/download/v14.1.0/LinScreen-14.1.0-x86_64.AppImage" target="_blank" rel="noreferrer">
                   <i class="bi bi-download me-2"></i>Download AppImage
                 </a>
-                <a class="btn btn-outline-light" href="https://github.com/aurelson101/linscreen/releases/download/v14.0.3/linscreen_14.0.3_amd64.deb" target="_blank" rel="noreferrer">
+                <a class="btn btn-outline-light" href="https://github.com/aurelson101/linscreen/releases/download/v14.1.0/linscreen_14.1.0_amd64.deb" target="_blank" rel="noreferrer">
                   <i class="bi bi-download me-2"></i>Download Debian package
                 </a>
                 <a class="btn btn-outline-light" href="https://github.com/aurelson101/linscreen/releases" target="_blank" rel="noreferrer">
@@ -227,7 +227,7 @@ linscreen screen --number 0</code></pre>
                   Copy
                 </button>
                 <div class="code-label">Debian package</div>
-                <pre class="mb-0"><code id="installCommand">sudo apt install ./linscreen_14.0.3_amd64.deb
+                <pre class="mb-0"><code id="installCommand">sudo apt install ./linscreen_14.1.0_amd64.deb
 linscreen --version
 gtk-launch org.linscreen.LinScreen</code></pre>
               </div>
@@ -237,9 +237,9 @@ gtk-launch org.linscreen.LinScreen</code></pre>
                   Copy
                 </button>
                 <div class="code-label">AppImage</div>
-                <pre class="mb-0"><code id="appImageCommand">chmod +x LinScreen-14.0.3-x86_64.AppImage
-./LinScreen-14.0.3-x86_64.AppImage --version
-./LinScreen-14.0.3-x86_64.AppImage</code></pre>
+                <pre class="mb-0"><code id="appImageCommand">chmod +x LinScreen-14.1.0-x86_64.AppImage
+./LinScreen-14.1.0-x86_64.AppImage --version
+./LinScreen-14.1.0-x86_64.AppImage</code></pre>
               </div>
               <p class="install-note mt-3 mb-0">
                 AppImage builds are portable and include Qt Wayland plus English/French Qt translation catalogs. Desktop portal packages still come from your distribution.
@@ -256,7 +256,7 @@ gtk-launch org.linscreen.LinScreen</code></pre>
               <p class="text-info text-uppercase small fw-semibold mb-2">Contribute</p>
               <h2 class="h1 fw-bold">Help make Linux screenshots boring again.</h2>
               <p class="text-body-secondary fs-5">
-                Testing is especially welcome on GNOME, KDE, multi-monitor Wayland, Flatpak, RPM-based distributions, and Windows packaging environments.
+                Testing is especially welcome on GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, wlroots, multi-monitor Wayland, RPM-based distributions, and Windows.
               </p>
               <div class="d-flex flex-column flex-sm-row justify-content-center gap-3 mt-4">
                 <a class="btn btn-info btn-lg" href="https://github.com/aurelson101/linscreen" target="_blank" rel="noreferrer">

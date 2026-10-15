@@ -1,69 +1,108 @@
 #include <iostream>
+#include <string>
+#include <vector>
 #include <windows.h>
 
-std::wstring joinArgs(int argc, wchar_t* argv[])
+namespace {
+std::wstring currentExecutablePath()
 {
-    std::wstring result;
+    std::vector<wchar_t> buffer(512);
+    while (true) {
+        const DWORD length = GetModuleFileNameW(
+          nullptr, buffer.data(), static_cast<DWORD>(buffer.size()));
+        if (length == 0) {
+            return {};
+        }
+        if (length < buffer.size() - 1) {
+            return std::wstring(buffer.data(), length);
+        }
+        buffer.resize(buffer.size() * 2);
+    }
+}
+
+std::wstring quoteArgument(const std::wstring& argument)
+{
+    if (!argument.empty() &&
+        argument.find_first_of(L" \t\n\v\"") == std::wstring::npos) {
+        return argument;
+    }
+
+    std::wstring quoted = L"\"";
+    size_t backslashes = 0;
+    for (const wchar_t character : argument) {
+        if (character == L'\\') {
+            ++backslashes;
+        } else if (character == L'\"') {
+            quoted.append(backslashes * 2 + 1, L'\\');
+            quoted += character;
+            backslashes = 0;
+        } else {
+            quoted.append(backslashes, L'\\');
+            backslashes = 0;
+            quoted += character;
+        }
+    }
+    quoted.append(backslashes * 2, L'\\');
+    quoted += L'\"';
+    return quoted;
+}
+
+int callLinScreen(int argc, wchar_t* argv[], bool wait)
+{
+    std::wstring wrapperPath = currentExecutablePath();
+    const size_t separator = wrapperPath.find_last_of(L"\\/");
+    if (wrapperPath.empty() || separator == std::wstring::npos) {
+        std::wcerr << L"Unable to determine the LinScreen installation path\n";
+        return 1;
+    }
+
+    const std::wstring directory = wrapperPath.substr(0, separator);
+    const std::wstring application = directory + L"\\linscreen.exe";
+    std::wstring commandLine = quoteArgument(application);
     for (int i = 1; i < argc; ++i) {
-        if (i > 1) {
-            result += L" ";
-        }
-        result += argv[i];
+        commandLine += L' ';
+        commandLine += quoteArgument(argv[i]);
     }
-    return result;
+
+    STARTUPINFOW startupInfo{};
+    startupInfo.cb = sizeof(startupInfo);
+    PROCESS_INFORMATION processInfo{};
+    if (!CreateProcessW(application.c_str(),
+                        commandLine.data(),
+                        nullptr,
+                        nullptr,
+                        TRUE,
+                        0,
+                        nullptr,
+                        directory.c_str(),
+                        &startupInfo,
+                        &processInfo)) {
+        std::wcerr << L"Unable to start LinScreen (Windows error "
+                   << GetLastError() << L")\n";
+        return 1;
+    }
+
+    CloseHandle(processInfo.hThread);
+    if (!wait) {
+        CloseHandle(processInfo.hProcess);
+        return 0;
+    }
+
+    WaitForSingleObject(processInfo.hProcess, INFINITE);
+    DWORD exitCode = 1;
+    GetExitCodeProcess(processInfo.hProcess, &exitCode);
+    CloseHandle(processInfo.hProcess);
+    return static_cast<int>(exitCode);
+}
 }
 
-void CallLinScreen(const std::wstring args, bool wait)
-{
-    // generate full path for LinScreen executable
-    wchar_t path[MAX_PATH];
-    int pathLength = GetModuleFileNameW(NULL, path, MAX_PATH);
-    std::wstring pathstring(path);
-
-    // Find the last backslash to isolate the filename
-    size_t lastBackslash = pathstring.find_last_of(L'\\');
-    std::wstring directory = (lastBackslash != std::wstring::npos)
-                               ? pathstring.substr(0, lastBackslash + 1)
-                               : L"";
-
-    // generate command string
-    // note: binary path placed within quotes in case of spaces in path
-    int cmdSize = 32 + sizeof(directory) + sizeof(args);
-    wchar_t* cmd = (wchar_t*)malloc(sizeof(wchar_t) * cmdSize);
-    swprintf(cmd,
-             cmdSize,
-             L"\"%s\\linscreen.exe\" %s",
-             directory.c_str(),
-             args.c_str());
-    // call subprocess
-    FILE* stream = _wpopen(cmd, L"r");
-    free(cmd);
-    if (wait) {
-        if (stream) {
-            const int MAX_BUFFER = 2048;
-            char buffer[MAX_BUFFER];
-            while (!feof(stream)) {
-                if (fgets(buffer, MAX_BUFFER, stream) != NULL) {
-                    std::cout << buffer;
-                }
-            }
-        }
-        _pclose(stream);
-    }
-    return;
-}
-
-// Console wrapper for LinScreen on windows
+// Console wrapper for LinScreen on Windows.
 int wmain(int argc, wchar_t* argv[])
 {
-    // if no args, do not wait for stdout
     if (argc == 1) {
         std::cout << "Starting linscreen in daemon mode" << std::endl;
-        CallLinScreen(L"", false);
-    } else {
-        std::wstring argString = joinArgs(argc, argv);
-        CallLinScreen(argString, true);
     }
+    const int exitCode = callLinScreen(argc, argv, argc > 1);
     std::cout.flush();
-    return 0;
+    return exitCode;
 }

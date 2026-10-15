@@ -10,6 +10,7 @@
 
 #include <QApplication>
 #include <QClipboard>
+#include <QDataStream>
 #include <QIODevice>
 #include <QPixmap>
 #include <QRect>
@@ -25,9 +26,28 @@
 #include <QJsonObject>
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QTimer>
 #include <QUrl>
+#include <QVersionNumber>
 #endif
+
+namespace {
+constexpr qsizetype maxInterprocessMessageBytes = 64 * 1024 * 1024;
+constexpr qint64 maxInterprocessPixmapPixels = 100LL * 1024 * 1024;
+
+bool isValidInterprocessPixmap(const QPixmap& pixmap)
+{
+    return !pixmap.isNull() && pixmap.width() > 0 && pixmap.height() > 0 &&
+           static_cast<qint64>(pixmap.width()) * pixmap.height() <=
+             maxInterprocessPixmapPixels;
+}
+
+#if !defined(DISABLE_UPDATE_CHECKER)
+constexpr qint64 maxUpdateResponseBytes = 1024 * 1024;
+constexpr int updateRequestTimeoutMs = 15000;
+#endif
+}
 
 #if defined(USE_KDSINGLEAPPLICATION) &&                                        \
   (defined(Q_OS_MACOS) || defined(Q_OS_WIN))
@@ -214,6 +234,12 @@ void LinScreenDaemon::getLatestAvailableVersion()
     // This features is required for MacOS and Windows user and for Linux users
     // who installed LinScreen not from the repository.
     QNetworkRequest requestCheckUpdates(QUrl(LINSCREEN_APP_VERSION_URL));
+    requestCheckUpdates.setRawHeader("Accept", "application/vnd.github+json");
+    requestCheckUpdates.setRawHeader("User-Agent", "LinScreen-update-checker");
+    requestCheckUpdates.setAttribute(
+      QNetworkRequest::RedirectPolicyAttribute,
+      QNetworkRequest::NoLessSafeRedirectPolicy);
+    requestCheckUpdates.setTransferTimeout(updateRequestTimeoutMs);
     if (nullptr == m_networkCheckUpdates) {
         m_networkCheckUpdates = new QNetworkAccessManager(this);
         connect(m_networkCheckUpdates,
@@ -221,7 +247,16 @@ void LinScreenDaemon::getLatestAvailableVersion()
                 this,
                 &LinScreenDaemon::handleReplyCheckUpdates);
     }
-    m_networkCheckUpdates->get(requestCheckUpdates);
+    QNetworkReply* reply = m_networkCheckUpdates->get(requestCheckUpdates);
+    reply->setReadBufferSize(maxUpdateResponseBytes + 1);
+    connect(reply,
+            &QNetworkReply::downloadProgress,
+            reply,
+            [reply](qint64 received, qint64) {
+                if (received > maxUpdateResponseBytes) {
+                    reply->abort();
+                }
+            });
 
     // check for updates each 24 hours
     QTimer::singleShot(1000 * 60 * 60 * 24, [this]() {
@@ -326,6 +361,10 @@ void LinScreenDaemon::attachScreenshotToClipboard(const QPixmap& pixmap)
 
 void LinScreenDaemon::attachPin(const QByteArray& data)
 {
+    if (data.size() > maxInterprocessMessageBytes) {
+        qWarning() << "Rejected oversized pin payload";
+        return;
+    }
     QDataStream stream(data);
     QPixmap pixmap;
     QRect geometry;
@@ -333,15 +372,28 @@ void LinScreenDaemon::attachPin(const QByteArray& data)
     stream >> pixmap;
     stream >> geometry;
 
+    if (stream.status() != QDataStream::Ok ||
+        !isValidInterprocessPixmap(pixmap)) {
+        qWarning() << "Rejected invalid pin payload";
+        return;
+    }
     attachPin(pixmap, geometry);
 }
 
 void LinScreenDaemon::attachScreenshotToClipboard(const QByteArray& screenshot)
 {
+    if (screenshot.size() > maxInterprocessMessageBytes) {
+        qWarning() << "Rejected oversized screenshot payload";
+        return;
+    }
     QDataStream stream(screenshot);
     QPixmap p;
     stream >> p;
 
+    if (stream.status() != QDataStream::Ok || !isValidInterprocessPixmap(p)) {
+        qWarning() << "Rejected invalid screenshot payload";
+        return;
+    }
     attachScreenshotToClipboard(p);
 }
 
@@ -392,21 +444,55 @@ void LinScreenDaemon::enableTrayIcon(bool enable)
 #if !defined(DISABLE_UPDATE_CHECKER)
 void LinScreenDaemon::handleReplyCheckUpdates(QNetworkReply* reply)
 {
+    reply->deleteLater();
     if (!ConfigHandler().checkForUpdates() &&
         !m_showManualCheckAppUpdateStatus) {
         return;
     }
 
-    if (reply->error() == QNetworkReply::NoError) {
-        QJsonDocument response = QJsonDocument::fromJson(reply->readAll());
-        QJsonObject json = response.object();
-        m_appLatestVersion = json["tag_name"].toString().replace("v", "");
+    const auto reportFailure = [this](const QString& detail) {
+        qWarning() << "Failed to get valid latest-version information:"
+                   << detail;
+        if (m_showManualCheckAppUpdateStatus && LinScreenDaemon::instance()) {
+            LinScreenDaemon::instance()->sendTrayNotification(
+              tr("Failed to get information about the latest version."),
+              "LinScreen");
+        }
+    };
 
-        QVersionNumber appLatestVersion =
-          QVersionNumber::fromString(m_appLatestVersion);
-        if (LinScreen::instance()->getVersion() < appLatestVersion) {
+    const qint64 contentLength =
+      reply->header(QNetworkRequest::ContentLengthHeader).toLongLong();
+    const QByteArray body = reply->readAll();
+    if (reply->error() == QNetworkReply::NoError &&
+        contentLength <= maxUpdateResponseBytes &&
+        body.size() <= maxUpdateResponseBytes) {
+        QJsonParseError parseError;
+        const QJsonDocument response =
+          QJsonDocument::fromJson(body, &parseError);
+        const QJsonObject json = response.object();
+        const QString tagName = json["tag_name"].toString();
+        const QString latestVersion =
+          tagName.startsWith(QChar('v')) ? tagName.mid(1) : tagName;
+        const QVersionNumber appLatestVersion =
+          QVersionNumber::fromString(latestVersion);
+        const QUrl releaseUrl(json["html_url"].toString());
+        const bool validVersion = !appLatestVersion.isNull() &&
+                                  appLatestVersion.toString() == latestVersion;
+        const bool validUrl =
+          releaseUrl.scheme() == QLatin1String("https") &&
+          releaseUrl.host() == QLatin1String("github.com") &&
+          releaseUrl.path() ==
+            QLatin1String("/aurelson101/linscreen/releases/tag/") + tagName;
+
+        if (parseError.error != QJsonParseError::NoError ||
+            !response.isObject() || !validVersion || !validUrl) {
+            reportFailure(parseError.error == QJsonParseError::NoError
+                            ? QStringLiteral("unexpected response fields")
+                            : parseError.errorString());
+        } else if (LinScreen::instance()->getVersion() < appLatestVersion) {
+            m_appLatestVersion = latestVersion;
+            m_appLatestUrl = releaseUrl.toString();
             emit newVersionAvailable(appLatestVersion);
-            m_appLatestUrl = json["html_url"].toString();
             if (m_showManualCheckAppUpdateStatus) {
                 QDesktopServices::openUrl(QUrl(m_appLatestUrl));
             }
@@ -415,15 +501,7 @@ void LinScreenDaemon::handleReplyCheckUpdates(QNetworkReply* reply)
                                  "LinScreen");
         }
     } else {
-        qWarning() << "Failed to get information about the latest version. "
-                   << reply->errorString();
-        if (m_showManualCheckAppUpdateStatus) {
-            if (LinScreenDaemon::instance()) {
-                LinScreenDaemon::instance()->sendTrayNotification(
-                  tr("Failed to get information about the latest version."),
-                  "LinScreen");
-            }
-        }
+        reportFailure(reply->errorString());
     }
     m_showManualCheckAppUpdateStatus = false;
 }
@@ -461,6 +539,10 @@ void LinScreenDaemon::call(const QDBusMessage& m)
 void LinScreenDaemon::messageReceivedFromSecondaryInstance(
   const QByteArray& message)
 {
+    if (message.size() > maxInterprocessMessageBytes) {
+        qWarning() << "Rejected oversized message from secondary instance";
+        return;
+    }
     // qDebug() << "Received message from second instance:" << message;
 
     QByteArray messageCopy = message;
@@ -477,7 +559,8 @@ void LinScreenDaemon::messageReceivedFromSecondaryInstance(
         stream >> capture >> geometry;
         // qDebug() << "Pixmap:" << capture;
         // qDebug() << "Geometry:" << geometry;
-        if (!capture.isNull()) {
+        if (stream.status() == QDataStream::Ok &&
+            isValidInterprocessPixmap(capture)) {
             LinScreenDaemon::instance()->attachPin(capture, geometry);
         } else {
             qWarning() << "Received \"attachPin\" from second instance, but "
@@ -487,7 +570,8 @@ void LinScreenDaemon::messageReceivedFromSecondaryInstance(
         QPixmap capture;
         stream >> capture;
         // qDebug() << "Pixmap:" << capture;
-        if (!capture.isNull()) {
+        if (stream.status() == QDataStream::Ok &&
+            isValidInterprocessPixmap(capture)) {
             LinScreenDaemon::instance()->attachScreenshotToClipboard(capture);
         } else {
             qWarning() << "Received \"attachScreenshotToClipboard\" from "
@@ -499,7 +583,8 @@ void LinScreenDaemon::messageReceivedFromSecondaryInstance(
         stream >> text >> notification;
         // qDebug() << "Text:" << text;
         // qDebug() << "Notification:" << notification;
-        if (!text.isEmpty()) {
+        if (stream.status() == QDataStream::Ok && !text.isEmpty() &&
+            text.size() <= 1024 * 1024 && notification.size() <= 16 * 1024) {
             LinScreenDaemon::instance()->attachTextToClipboard(text,
                                                                notification);
         } else {

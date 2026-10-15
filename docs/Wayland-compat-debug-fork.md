@@ -1,19 +1,23 @@
 # Wayland Compatibility Debug Fork
 
 This branch is a staging area for making LinScreen's Linux capture path easier
-to debug on GNOME, KDE Plasma, and multi-monitor Wayland sessions.
+to debug on GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, wlroots, and
+multi-monitor Wayland sessions.
 
 ## Compatibility target
 
 Wayland does not allow applications to read pixels directly from other
 applications or from the compositor. A compatible LinScreen build must therefore
-use the desktop portal screenshot API on GNOME and KDE, and must treat direct
+use the desktop portal screenshot API on Wayland desktops, and must treat direct
 screen grabbing as an X11-only fallback.
 
 The practical target for this fork is:
 
 - GNOME Wayland through `xdg-desktop-portal-gnome`.
 - KDE Plasma Wayland through `xdg-desktop-portal-kde`.
+- XFCE, Cinnamon, MATE, and LXQt through `xdg-desktop-portal-gtk` or the
+  backend selected by the distribution.
+- Sway, River, and other wlroots compositors through `xdg-desktop-portal-wlr`.
 - One or more monitors, including negative monitor origins and different scale
   factors where the portal returns a single combined image.
 - Explicit monitor selection after the portal capture when a compositor does not
@@ -28,7 +32,7 @@ These are compositor/security constraints, not LinScreen bugs:
 - Capturing the active monitor under the pointer cannot be made fully automatic
   on generic Wayland without compositor-specific APIs or user interaction.
 - Global shortcuts are controlled by the desktop environment. LinScreen can
-  expose commands, but GNOME/KDE decide how shortcuts are registered and invoked.
+  expose commands, but the desktop decides how shortcuts are registered and invoked.
 - The portal may show a permission prompt or compositor UI. LinScreen must handle
   cancellation cleanly.
 

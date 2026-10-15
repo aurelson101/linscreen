@@ -1,5 +1,5 @@
 Name:    linscreen
-Version: 14.0.3
+Version: 14.1.0
 Release: 1%{?dist}
 Summary: Powerful yet simple to use screenshot software
 
@@ -54,6 +54,7 @@ Recommends: qt6-qtimageformats%{?_isa}
 %endif
 
 Recommends: xdg-desktop-portal%{?_isa}
+Recommends: xdg-desktop-portal-gtk%{?_isa}
 Recommends: (xdg-desktop-portal-gnome%{?_isa} if gnome-shell%{?_isa})
 Recommends: (xdg-desktop-portal-kde%{?_isa} if plasma-workspace-wayland%{?_isa})
 Recommends: (xdg-desktop-portal-wlr%{?_isa} if wlroots%{?_isa})

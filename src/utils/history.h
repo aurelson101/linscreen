@@ -20,6 +20,7 @@ public:
     History();
 
     void save(const QPixmap&, const QString&);
+    void remove(const QString&);
     const QList<QString>& history();
     const QString& path();
 
@@ -33,4 +34,9 @@ private:
     // temporary variables
     QString m_packedFileName;
     HistoryFileName m_unpackedFileName;
+
+    QString tokenKey(const QString&) const;
+    QString tokenFor(const QString&) const;
+    void storeToken(const QString&, const QString&) const;
+    void removeToken(const QString&) const;
 };

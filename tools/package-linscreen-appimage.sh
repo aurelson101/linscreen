@@ -11,13 +11,15 @@ qmake="${QMAKE:-qmake6}"
 
 linuxdeploy_url="${LINUXDEPLOY_URL:-https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-${arch}.AppImage}"
 qt_plugin_url="${LINUXDEPLOY_QT_PLUGIN_URL:-https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-${arch}.AppImage}"
+linuxdeploy_sha256="${LINUXDEPLOY_SHA256:-e87ee0815d109282fdda73e34c2361d64d02b0ffaea3674b18f1fd1f6a687dcf}"
+qt_plugin_sha256="${LINUXDEPLOY_QT_PLUGIN_SHA256:-be1b7e166bf9975cfb694ebe6759ba40502ffc6196440d3e64aa90c4dbd67e9f}"
 
 if [ -z "${project_version}" ]; then
     echo "Could not read LINSCREEN_VERSION from CMakeLists.txt" >&2
     exit 1
 fi
 
-for command_name in cmake curl chmod find; do
+for command_name in cmake curl chmod cut find mv rm sha256sum; do
     if ! command -v "${command_name}" >/dev/null 2>&1; then
         echo "${command_name} is required to build the LinScreen AppImage." >&2
         exit 1
@@ -64,15 +66,31 @@ qt_plugin="${tools_dir}/linuxdeploy-plugin-qt"
 download_tool() {
     url="$1"
     destination="$2"
+    expected_sha256="$3"
 
-    if [ ! -x "${destination}" ]; then
-        curl -L --fail --retry 3 -o "${destination}" "${url}"
-        chmod +x "${destination}"
+    if [ -f "${destination}" ]; then
+        actual_sha256="$(sha256sum "${destination}" | cut -d ' ' -f 1)"
+        if [ "${actual_sha256}" != "${expected_sha256}" ]; then
+            echo "Checksum mismatch for cached tool: ${destination}" >&2
+            exit 1
+        fi
+    else
+        temporary="${destination}.download"
+        curl -L --fail --retry 3 -o "${temporary}" "${url}"
+        actual_sha256="$(sha256sum "${temporary}" | cut -d ' ' -f 1)"
+        if [ "${actual_sha256}" != "${expected_sha256}" ]; then
+            rm -f "${temporary}"
+            echo "Checksum mismatch for downloaded tool: ${url}" >&2
+            exit 1
+        fi
+        chmod +x "${temporary}"
+        mv "${temporary}" "${destination}"
     fi
+    chmod +x "${destination}"
 }
 
-download_tool "${linuxdeploy_url}" "${linuxdeploy}"
-download_tool "${qt_plugin_url}" "${qt_plugin}"
+download_tool "${linuxdeploy_url}" "${linuxdeploy}" "${linuxdeploy_sha256}"
+download_tool "${qt_plugin_url}" "${qt_plugin}" "${qt_plugin_sha256}"
 
 rm -rf "${appdir_abs}" "${build_dir_abs}/squashfs-root"
 rm -f "${output_abs}"

@@ -14,6 +14,10 @@ public:
     {
         GNOME,
         KDE,
+        XFCE,
+        CINNAMON,
+        MATE,
+        LXQT,
         COSMIC,
         OTHER,
         QTILE,
@@ -26,6 +30,7 @@ public:
 
 private:
     QString XDG_CURRENT_DESKTOP;
+    QString XDG_SESSION_DESKTOP;
     QString XDG_SESSION_TYPE;
     QString WAYLAND_DISPLAY;
     QString KDE_FULL_SESSION;

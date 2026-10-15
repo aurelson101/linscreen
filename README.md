@@ -1,6 +1,6 @@
 # LinScreen
 
-LinScreen is a screenshot and annotation tool for Linux desktops, with a focus on Wayland sessions on GNOME and KDE, including multi-monitor setups.
+LinScreen is a screenshot and annotation tool for Linux desktops, with portal capture on Wayland and automatic X11 fallback. It targets GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, wlroots compositors, and multi-monitor setups.
 
 It is a rebranded, Wayland-focused fork intended to be packaged as `linscreen` with desktop ID `org.linscreen.LinScreen`.
 
@@ -14,19 +14,19 @@ Releases: <https://github.com/aurelson101/linscreen/releases>
 - Annotation tools for arrows, text, shapes, counters, blur/pixelate, copy, and save.
 - Wayland capture through `xdg-desktop-portal`.
 - X11 fallback support.
-- GNOME/KDE desktop integration through desktop entry, AppStream metadata, DBus service, icons, completions, and man page.
+- Desktop integration for GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, and wlroots sessions.
 - Debian package, AppImage, and Linux tarball generation from release scripts.
-- Wayland portal debug helper for tricky GNOME/KDE setups.
+- Portal debug helper for tricky Wayland desktop setups.
 
 ## Install The Debian Package
 
 Build or download the package, then install it with:
 
 ```sh
-sudo apt install ./build-linscreen-release/linscreen_14.0.3_amd64.deb
+sudo apt install ./build-linscreen-release/linscreen_14.1.0_amd64.deb
 ```
 
-The Debian package refreshes desktop/icon caches after install. If the launcher is still missing in GNOME or KDE, log out and back in once.
+The Debian package refreshes desktop/icon caches after install. If the launcher is still missing, log out and back in once.
 
 Quick checks:
 
@@ -62,9 +62,9 @@ tools/package-linscreen-deb.sh
 
 Artifacts are written under `build-linscreen-release/`:
 
-- `linscreen_14.0.3_amd64.deb`
-- `linscreen-14.0.3-linux.tar.gz`
-- `LinScreen-14.0.3-x86_64.AppImage`
+- `linscreen_14.1.0_amd64.deb`
+- `linscreen-14.1.0-linux.tar.gz`
+- `LinScreen-14.1.0-x86_64.AppImage`
 - `src/linscreen`
 
 ## Install The AppImage
@@ -72,8 +72,8 @@ Artifacts are written under `build-linscreen-release/`:
 Download the AppImage, make it executable, and run it:
 
 ```sh
-chmod +x LinScreen-14.0.3-x86_64.AppImage
-./LinScreen-14.0.3-x86_64.AppImage
+chmod +x LinScreen-14.1.0-x86_64.AppImage
+./LinScreen-14.1.0-x86_64.AppImage
 ```
 
 The AppImage is portable and does not install desktop files globally. It bundles
@@ -124,7 +124,7 @@ gtk-launch org.linscreen.LinScreen
 
 ## Wayland Debugging
 
-For GNOME/KDE Wayland capture issues, build a debug binary and run:
+For Wayland capture issues on any supported desktop, build a debug binary and run:
 
 ```sh
 cmake -S . -B build-wayland-debug \
