@@ -40,7 +40,10 @@ jobs:
       - name: Build packages
         run: |
           tools/package-linscreen-deb.sh build-linscreen-release
-          tools/package-linscreen-appimage.sh build-linscreen-release
+          tools/package-linscreen-appimage.sh build-linscreen-appimage
+          install -m 0755 \
+            build-linscreen-appimage/LinScreen-*-x86_64.AppImage \
+            build-linscreen-release/
 
       - name: Checksums
         run: |

@@ -6,6 +6,7 @@ project_version="$(sed -n 's/^set(LINSCREEN_VERSION[[:space:]]*\([0-9][^)]*\)).*
 tag="${2:-v${project_version}}"
 remote_name="${3:-linscreen}"
 build_dir="${BUILD_DIR:-build-linscreen-release}"
+appimage_build_dir="${APPIMAGE_BUILD_DIR:-${build_dir}-appimage}"
 deb="${build_dir}/linscreen_${project_version}_amd64.deb"
 tarball="${build_dir}/linscreen-${project_version}-linux.tar.gz"
 appimage="${build_dir}/LinScreen-${project_version}-x86_64.AppImage"
@@ -31,7 +32,9 @@ if [ ! -f "${deb}" ]; then
 fi
 
 if [ ! -f "${appimage}" ]; then
-    tools/package-linscreen-appimage.sh "${build_dir}"
+    tools/package-linscreen-appimage.sh "${appimage_build_dir}"
+    cp "${appimage_build_dir}/LinScreen-${project_version}-x86_64.AppImage" \
+        "${appimage}"
 fi
 
 for artifact in "${deb}" "${tarball}" "${appimage}" "${notes}"; do
