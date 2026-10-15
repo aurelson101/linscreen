@@ -6,6 +6,10 @@ project_version="$(sed -n 's/^set(LINSCREEN_VERSION[[:space:]]*\([0-9][^)]*\)).*
 tag="${2:-v${project_version}}"
 remote_name="${3:-linscreen}"
 build_dir="${BUILD_DIR:-build-linscreen-release}"
+deb="${build_dir}/linscreen_${project_version}_amd64.deb"
+tarball="${build_dir}/linscreen-${project_version}-linux.tar.gz"
+appimage="${build_dir}/LinScreen-${project_version}-x86_64.AppImage"
+notes="docs/releases/${tag}.md"
 
 if ! command -v gh >/dev/null 2>&1; then
     echo "gh is required. Install GitHub CLI and run: gh auth login" >&2
@@ -22,17 +26,32 @@ if [ -z "${project_version}" ]; then
     exit 1
 fi
 
-if [ ! -f "${build_dir}/linscreen_${project_version}_amd64.deb" ]; then
+if [ ! -f "${deb}" ]; then
     tools/package-linscreen-deb.sh "${build_dir}"
 fi
 
-if [ ! -f "${build_dir}/LinScreen-${project_version}-x86_64.AppImage" ]; then
+if [ ! -f "${appimage}" ]; then
     tools/package-linscreen-appimage.sh "${build_dir}"
+fi
+
+for artifact in "${deb}" "${tarball}" "${appimage}" "${notes}"; do
+    if [ ! -f "${artifact}" ]; then
+        echo "Missing release file: ${artifact}" >&2
+        exit 1
+    fi
+done
+
+if ! git diff --quiet || ! git diff --cached --quiet; then
+    echo "Refusing to publish from a dirty worktree." >&2
+    exit 1
 fi
 
 (
     cd "${build_dir}"
-    sha256sum linscreen_*.deb linscreen-*-linux.tar.gz LinScreen-*-x86_64.AppImage > SHA256SUMS
+    sha256sum \
+        "$(basename "${deb}")" \
+        "$(basename "${tarball}")" \
+        "$(basename "${appimage}")" > SHA256SUMS
 )
 
 if ! gh repo view "${repo}" >/dev/null 2>&1; then
@@ -49,26 +68,45 @@ else
 fi
 
 git push -u "${remote_name}" HEAD:main
-git tag -f "${tag}"
-git push -f "${remote_name}" "${tag}"
+
+head_commit="$(git rev-parse HEAD)"
+if git rev-parse -q --verify "refs/tags/${tag}" >/dev/null; then
+    tag_commit="$(git rev-list -n 1 "${tag}")"
+    if [ "${tag_commit}" != "${head_commit}" ]; then
+        echo "Refusing to move existing local tag ${tag}." >&2
+        exit 1
+    fi
+else
+    git tag "${tag}"
+fi
+
+remote_tag_commit="$(git ls-remote "${remote_name}" "refs/tags/${tag}^{}" | awk 'NR == 1 { print $1 }')"
+if [ -z "${remote_tag_commit}" ]; then
+    remote_tag_commit="$(git ls-remote "${remote_name}" "refs/tags/${tag}" | awk 'NR == 1 { print $1 }')"
+fi
+if [ -n "${remote_tag_commit}" ] && [ "${remote_tag_commit}" != "${head_commit}" ]; then
+    echo "Refusing to move existing remote tag ${tag}." >&2
+    exit 1
+fi
+git push "${remote_name}" "${tag}"
 
 if gh release view "${tag}" --repo "${repo}" >/dev/null 2>&1; then
     gh release upload "${tag}" \
-        "${build_dir}"/linscreen_*.deb \
-        "${build_dir}"/linscreen-*-linux.tar.gz \
-        "${build_dir}"/LinScreen-*-x86_64.AppImage \
+        "${deb}" \
+        "${tarball}" \
+        "${appimage}" \
         "${build_dir}/SHA256SUMS" \
         --repo "${repo}" \
         --clobber
 else
     gh release create "${tag}" \
-        "${build_dir}"/linscreen_*.deb \
-        "${build_dir}"/linscreen-*-linux.tar.gz \
-        "${build_dir}"/LinScreen-*-x86_64.AppImage \
+        "${deb}" \
+        "${tarball}" \
+        "${appimage}" \
         "${build_dir}/SHA256SUMS" \
         --repo "${repo}" \
         --title "LinScreen ${tag#v}" \
-        --notes-file "docs/releases/${tag}.md"
+        --notes-file "${notes}"
 fi
 
 echo "Published https://github.com/${repo}/releases/tag/${tag}"

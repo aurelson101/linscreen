@@ -36,8 +36,13 @@ jobs:
         run: tools/package-linscreen-appimage.sh
 
       - name: Verify AppImage
+        id: package
+        shell: bash
         run: |
-          appimage="build-linscreen-appimage/LinScreen-14.0.1-x86_64.AppImage"
+          version="$(sed -n 's/^set(LINSCREEN_VERSION[[:space:]]*\([0-9][^)]*\)).*/\1/p' CMakeLists.txt | head -n 1)"
+          appimage="build-linscreen-appimage/LinScreen-${version}-x86_64.AppImage"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "appimage=${appimage}" >> "$GITHUB_OUTPUT"
           test -x "$appimage"
           APPIMAGE_EXTRACT_AND_RUN=1 "$appimage" --version
           find build-linscreen-appimage/LinScreen.AppDir/usr/plugins/platforms \
@@ -50,8 +55,8 @@ jobs:
       - name: Upload AppImage
         uses: actions/upload-artifact@v4
         with:
-          name: LinScreen-14.0.1-AppImage
+          name: LinScreen-${{ steps.package.outputs.version }}-AppImage
           if-no-files-found: error
           path: |
-            build-linscreen-appimage/LinScreen-14.0.1-x86_64.AppImage
+            ${{ steps.package.outputs.appimage }}
             build-linscreen-appimage/SHA256SUMS-AppImage

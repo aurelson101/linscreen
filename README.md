@@ -23,7 +23,7 @@ Releases: <https://github.com/aurelson101/linscreen/releases>
 Build or download the package, then install it with:
 
 ```sh
-sudo apt install ./build-linscreen-release/linscreen_14.0.1_amd64.deb
+sudo apt install ./build-linscreen-release/linscreen_14.0.2_amd64.deb
 ```
 
 The Debian package refreshes desktop/icon caches after install. If the launcher is still missing in GNOME or KDE, log out and back in once.
@@ -62,9 +62,9 @@ tools/package-linscreen-deb.sh
 
 Artifacts are written under `build-linscreen-release/`:
 
-- `linscreen_14.0.1_amd64.deb`
-- `linscreen-14.0.1-linux.tar.gz`
-- `LinScreen-14.0.1-x86_64.AppImage`
+- `linscreen_14.0.2_amd64.deb`
+- `linscreen-14.0.2-linux.tar.gz`
+- `LinScreen-14.0.2-x86_64.AppImage`
 - `src/linscreen`
 
 ## Install The AppImage
@@ -72,8 +72,8 @@ Artifacts are written under `build-linscreen-release/`:
 Download the AppImage, make it executable, and run it:
 
 ```sh
-chmod +x LinScreen-14.0.1-x86_64.AppImage
-./LinScreen-14.0.1-x86_64.AppImage
+chmod +x LinScreen-14.0.2-x86_64.AppImage
+./LinScreen-14.0.2-x86_64.AppImage
 ```
 
 The AppImage is portable and does not install desktop files globally. It bundles

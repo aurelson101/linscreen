@@ -38,8 +38,17 @@ case "${appdir}" in
 esac
 
 case "${build_dir}" in
-    /*) output_abs="${build_dir}/${output_name}" ;;
-    *) output_abs="$(pwd)/${build_dir}/${output_name}" ;;
+    /*) build_dir_abs="${build_dir}" ;;
+    *) build_dir_abs="$(pwd)/${build_dir}" ;;
+esac
+output_abs="${build_dir_abs}/${output_name}"
+
+case "${appdir_abs}" in
+    "${build_dir_abs}"/*) ;;
+    *)
+        echo "APPDIR must be inside the build directory: ${build_dir_abs}" >&2
+        exit 1
+        ;;
 esac
 
 if [ "${arch}" != "x86_64" ]; then
@@ -65,7 +74,8 @@ download_tool() {
 download_tool "${linuxdeploy_url}" "${linuxdeploy}"
 download_tool "${qt_plugin_url}" "${qt_plugin}"
 
-rm -rf "${appdir}" "${build_dir}/squashfs-root"
+rm -rf "${appdir_abs}" "${build_dir_abs}/squashfs-root"
+rm -f "${output_abs}"
 
 cmake -S . -B "${build_dir}" \
     -DCMAKE_BUILD_TYPE=Release \

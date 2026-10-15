@@ -81,10 +81,19 @@ void ScreenGrabber::freeDesktopPortal(bool& ok, QPixmap& res)
 #if !(defined(Q_OS_MACOS) || defined(Q_OS_WIN))
     logWaylandPortalContext();
 
-    auto* connectionInterface = QDBusConnection::sessionBus().interface();
+    const QDBusConnection sessionBus = QDBusConnection::sessionBus();
+    if (!sessionBus.isConnected()) {
+        ok = false;
+        AbstractLogger::error()
+          << tr("Could not connect to the D-Bus session bus");
+        return;
+    }
+
+    auto* connectionInterface = sessionBus.interface();
     auto service = QStringLiteral("org.freedesktop.portal.Desktop");
 
-    if (!connectionInterface->isServiceRegistered(service)) {
+    if (!connectionInterface ||
+        !connectionInterface->isServiceRegistered(service)) {
         ok = false;
         AbstractLogger::error() << tr(
           "Could not locate the `org.freedesktop.portal.Desktop` service");
@@ -110,10 +119,9 @@ void ScreenGrabber::freeDesktopPortal(bool& ok, QPixmap& res)
     auto* request = new OrgFreedesktopPortalRequestInterface(
       service,
       "/org/freedesktop/portal/desktop/request/" +
-        QDBusConnection::sessionBus().baseService().remove(':').replace('.',
-                                                                        '_') +
+        sessionBus.baseService().remove(':').replace('.', '_') +
         "/" + token,
-      QDBusConnection::sessionBus(),
+      sessionBus,
       this);
 
     QEventLoop loop;
