@@ -68,7 +68,7 @@ int callLinScreen(int argc, wchar_t* argv[], bool wait)
     startupInfo.cb = sizeof(startupInfo);
     PROCESS_INFORMATION processInfo{};
     if (!CreateProcessW(application.c_str(),
-                        commandLine.data(),
+                        &commandLine[0],
                         nullptr,
                         nullptr,
                         TRUE,
