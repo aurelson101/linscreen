@@ -119,8 +119,7 @@ void ScreenGrabber::freeDesktopPortal(bool& ok, QPixmap& res)
     auto* request = new OrgFreedesktopPortalRequestInterface(
       service,
       "/org/freedesktop/portal/desktop/request/" +
-        sessionBus.baseService().remove(':').replace('.', '_') +
-        "/" + token,
+        sessionBus.baseService().remove(':').replace('.', '_') + "/" + token,
       sessionBus,
       this);
 
