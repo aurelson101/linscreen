@@ -236,9 +236,8 @@ void LinScreenDaemon::getLatestAvailableVersion()
     QNetworkRequest requestCheckUpdates(QUrl(LINSCREEN_APP_VERSION_URL));
     requestCheckUpdates.setRawHeader("Accept", "application/vnd.github+json");
     requestCheckUpdates.setRawHeader("User-Agent", "LinScreen-update-checker");
-    requestCheckUpdates.setAttribute(
-      QNetworkRequest::RedirectPolicyAttribute,
-      QNetworkRequest::NoLessSafeRedirectPolicy);
+    requestCheckUpdates.setAttribute(QNetworkRequest::RedirectPolicyAttribute,
+                                     QNetworkRequest::NoLessSafeRedirectPolicy);
     requestCheckUpdates.setTransferTimeout(updateRequestTimeoutMs);
     if (nullptr == m_networkCheckUpdates) {
         m_networkCheckUpdates = new QNetworkAccessManager(this);

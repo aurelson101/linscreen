@@ -11,8 +11,8 @@ qmake="${QMAKE:-qmake6}"
 
 linuxdeploy_url="${LINUXDEPLOY_URL:-https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-${arch}.AppImage}"
 qt_plugin_url="${LINUXDEPLOY_QT_PLUGIN_URL:-https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-${arch}.AppImage}"
-linuxdeploy_sha256="${LINUXDEPLOY_SHA256:-e87ee0815d109282fdda73e34c2361d64d02b0ffaea3674b18f1fd1f6a687dcf}"
-qt_plugin_sha256="${LINUXDEPLOY_QT_PLUGIN_SHA256:-be1b7e166bf9975cfb694ebe6759ba40502ffc6196440d3e64aa90c4dbd67e9f}"
+linuxdeploy_sha256="${LINUXDEPLOY_SHA256:-8aea8da0f7f7039d2a2cecb14657d752a222a5e1d3825caeef186c82f751cdd1}"
+qt_plugin_sha256="${LINUXDEPLOY_QT_PLUGIN_SHA256:-cfc1055b2b9dbc08412b579f20990b7b41a17b61beaa5847dc9477c96c9e9617}"
 
 if [ -z "${project_version}" ]; then
     echo "Could not read LINSCREEN_VERSION from CMakeLists.txt" >&2

@@ -11,7 +11,7 @@
 
 rm -rf /tmp/linscreen_path_test 2>/dev/null
 mkdir -p /tmp/linscreen_path_test
-cd /tmp/linscreen_path_test
+cd /tmp/linscreen_path_test || exit 1
 
 echo ">> Nonexistent directory. This command should give an invalid path error."
 "$linscreen" screen -p blah/blah

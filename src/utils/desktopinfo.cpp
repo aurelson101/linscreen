@@ -28,16 +28,14 @@ bool DesktopInfo::waylandDetected()
 DesktopInfo::WM DesktopInfo::windowManager()
 {
     DesktopInfo::WM res = DesktopInfo::OTHER;
-    QStringList desktops =
-      (XDG_CURRENT_DESKTOP + QChar(':') + XDG_SESSION_DESKTOP + QChar(':') +
-       DESKTOP_SESSION)
-        .split(QChar(':'), Qt::SkipEmptyParts);
+    QStringList desktops = (XDG_CURRENT_DESKTOP + QChar(':') +
+                            XDG_SESSION_DESKTOP + QChar(':') + DESKTOP_SESSION)
+                             .split(QChar(':'), Qt::SkipEmptyParts);
     for (auto& desktop : desktops) {
         if (desktop.contains(QLatin1String("XFCE"), Qt::CaseInsensitive)) {
             return DesktopInfo::XFCE;
         }
-        if (desktop.contains(QLatin1String("Cinnamon"),
-                             Qt::CaseInsensitive)) {
+        if (desktop.contains(QLatin1String("Cinnamon"), Qt::CaseInsensitive)) {
             return DesktopInfo::CINNAMON;
         }
         if (desktop.contains(QLatin1String("MATE"), Qt::CaseInsensitive)) {

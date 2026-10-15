@@ -22,7 +22,7 @@ fi
 echo
 
 echo "== Portal backend processes =="
-ps -eo pid,comm,args | grep -E '[x]dg-desktop-portal($|-)' || true
+pgrep -af 'xdg-desktop-portal($|-)' || true
 echo
 
 if [ ! -x "${linscreen_bin}" ]; then

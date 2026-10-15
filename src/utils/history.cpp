@@ -118,12 +118,10 @@ const HistoryFileName& History::unpackFileName(const QString& fileNamePacked)
     // Backward compatibility for history created before tokens were moved
     // out of filenames. Imgur names and delete hashes do not contain '-'.
     if (m_unpackedFileName.token.isEmpty()) {
-        const int legacySeparator =
-          baseName.indexOf('-', firstSeparator + 1);
+        const int legacySeparator = baseName.indexOf('-', firstSeparator + 1);
         if (legacySeparator > firstSeparator) {
-            m_unpackedFileName.token =
-              baseName.mid(firstSeparator + 1,
-                           legacySeparator - firstSeparator - 1);
+            m_unpackedFileName.token = baseName.mid(
+              firstSeparator + 1, legacySeparator - firstSeparator - 1);
             m_unpackedFileName.file = baseName.mid(legacySeparator + 1);
         }
     }
@@ -146,12 +144,8 @@ const QString& History::packFileName(const QString& storageType,
 
 QString History::tokenKey(const QString& fileName) const
 {
-    return QString::fromLatin1(
-      QFileInfo(fileName)
-        .fileName()
-        .toUtf8()
-        .toBase64(QByteArray::Base64UrlEncoding |
-                  QByteArray::OmitTrailingEquals));
+    return QString::fromLatin1(QFileInfo(fileName).fileName().toUtf8().toBase64(
+      QByteArray::Base64UrlEncoding | QByteArray::OmitTrailingEquals));
 }
 
 QString History::tokenFor(const QString& fileName) const

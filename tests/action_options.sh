@@ -68,7 +68,7 @@ display_img() {
 
 
 wait_for_key() {
-    echo "Press Enter to continue..." >&2 && read ____
+    echo "Press Enter to continue..." >&2 && read -r ____
 }
 
 # NOTE: Upload option is intentionally not tested
@@ -88,7 +88,7 @@ done
 echo "The next command will pin a screenshot over your entire screen."
 echo "Make sure to close it afterwards"
 echo "Press Enter to continue..."
-read ____
+read -r ____
 linscreen screen --pin
 sleep 1
 
