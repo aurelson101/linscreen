@@ -5,10 +5,10 @@ LinScreen is a beta fork of Flameshot focused on reliable screenshot capture and
 Canonical site: https://linscreen.aurelson.com/
 Repository: https://github.com/aurelson101/linscreen
 Releases: https://github.com/aurelson101/linscreen/releases
-Current AppImage: https://github.com/aurelson101/linscreen/releases/download/v14.0.2/LinScreen-14.0.2-x86_64.AppImage
-Current Debian package: https://github.com/aurelson101/linscreen/releases/download/v14.0.2/linscreen_14.0.2_amd64.deb
+Current AppImage: https://github.com/aurelson101/linscreen/releases/download/v14.0.3/LinScreen-14.0.3-x86_64.AppImage
+Current Debian package: https://github.com/aurelson101/linscreen/releases/download/v14.0.3/linscreen_14.0.3_amd64.deb
 License: GPL-3.0
-Current beta version: 14.0.2
+Current beta version: 14.0.3
 
 ## Project Focus
 
