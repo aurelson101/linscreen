@@ -457,66 +457,43 @@ endif ()
 
 # macdeployqt
 if (APPLE)
-# Code signing settings - optional, set to empty string to skip signing
+    # Code signing settings - optional, set to empty string for ad hoc signing.
     set(CODE_SIGN_IDENTITY "" CACHE STRING "Code signing identity (leave empty to skip signing)")
     set(DMG_SIGN_IDENTITY "" CACHE STRING "DMG signing identity (leave empty to skip signing)")
-    # Custom target to create DMG (signed or unsigned)
-    add_custom_target(create_dmg
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../packaging/macos/create_dmg.sh 
-            "${CMAKE_CURRENT_BINARY_DIR}/LinScreen.app"
-            "${CMAKE_CURRENT_BINARY_DIR}/LinScreen-${PROJECT_VERSION}.dmg"
-            "${CODE_SIGN_IDENTITY}"
-            "${DMG_SIGN_IDENTITY}"
-    DEPENDS linscreen
-    WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
-    COMMENT "Creating DMG"
-    VERBATIM
-    )
+    find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS ${Qt6_DIR}/../../../bin)
+    if(NOT MACDEPLOYQT_EXECUTABLE)
+        message(FATAL_ERROR "macdeployqt is required to create a distributable macOS package.")
+    endif()
 
-# Always sign the app bundle (either with identity or ad hoc)
     if(CODE_SIGN_IDENTITY AND NOT CODE_SIGN_IDENTITY STREQUAL "")
-        # Identity-based signing (requires Developer ID)
-        add_custom_command(TARGET linscreen POST_BUILD
+        add_custom_target(deploy_macos
+            COMMAND ${MACDEPLOYQT_EXECUTABLE} "$<TARGET_BUNDLE_DIR:linscreen>" -verbose=2
             COMMAND codesign --force --deep --sign "${CODE_SIGN_IDENTITY}"
                     --options runtime --timestamp
                     --entitlements "${CMAKE_SOURCE_DIR}/packaging/macos/linscreen.entitlements"
                     "$<TARGET_BUNDLE_DIR:linscreen>"
-            COMMENT "Code signing app bundle with ${CODE_SIGN_IDENTITY}"
+            COMMENT "Deploying Qt and signing the app with ${CODE_SIGN_IDENTITY}"
+            VERBATIM
         )
     else()
-        # Ad hoc signing 
-        add_custom_command(TARGET linscreen POST_BUILD
+        add_custom_target(deploy_macos
+            COMMAND ${MACDEPLOYQT_EXECUTABLE} "$<TARGET_BUNDLE_DIR:linscreen>" -verbose=2
             COMMAND codesign --force --deep --sign - "$<TARGET_BUNDLE_DIR:linscreen>"
-            COMMENT "Ad hoc code signing app bundle (no identity required)"
+            COMMENT "Deploying Qt and applying an ad hoc app signature"
+            VERBATIM
         )
     endif()
-   # Deploy Qt libraries and dependencies
-   find_program(MACDEPLOYQT_EXECUTABLE macdeployqt HINTS ${Qt6_DIR}/../../../bin)
-    
-   if(MACDEPLOYQT_EXECUTABLE)
-       add_custom_command(TARGET linscreen POST_BUILD
-           COMMAND ${MACDEPLOYQT_EXECUTABLE} "$<TARGET_BUNDLE_DIR:linscreen>" -verbose=2
-           COMMENT "Deploying Qt libraries"
-       )
-       
-       # Re-sign after macdeployqt (it modifies the bundle)
-       if(CODE_SIGN_IDENTITY AND NOT CODE_SIGN_IDENTITY STREQUAL "")
-           add_custom_command(TARGET linscreen POST_BUILD
-               COMMAND codesign --force --deep --sign "${CODE_SIGN_IDENTITY}"
-                       --options runtime --timestamp
-                       --entitlements "${CMAKE_SOURCE_DIR}/packaging/macos/linscreen.entitlements"
-                       "$<TARGET_BUNDLE_DIR:linscreen>"
-               COMMENT "Re-signing app bundle after Qt deployment"
-           )
-       else()
-           add_custom_command(TARGET linscreen POST_BUILD
-               COMMAND codesign --force --deep --sign - "$<TARGET_BUNDLE_DIR:linscreen>"
-               COMMENT "Re-signing app bundle after Qt deployment (ad hoc)"
-           )
-       endif()
-   else()
-       message(WARNING "macdeployqt not found. App may not run on systems without Qt installed.")
-   endif()
+    add_dependencies(deploy_macos linscreen)
 
-
+    add_custom_target(create_dmg
+        COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/../packaging/macos/create_dmg.sh
+                "${CMAKE_CURRENT_BINARY_DIR}/LinScreen.app"
+                "${CMAKE_CURRENT_BINARY_DIR}/LinScreen-${PROJECT_VERSION}.dmg"
+                "${CODE_SIGN_IDENTITY}"
+                "${DMG_SIGN_IDENTITY}"
+        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+        COMMENT "Creating DMG"
+        VERBATIM
+    )
+    add_dependencies(create_dmg deploy_macos)
 endif ()
