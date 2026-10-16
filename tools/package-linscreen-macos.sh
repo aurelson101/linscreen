@@ -51,9 +51,11 @@ elif [ -n "${QT_ROOT_DIR:-}" ]; then
     cmake_args+=("-DCMAKE_PREFIX_PATH=${QT_ROOT_DIR}")
 fi
 
+echo "[$(date -u +%H:%M:%S)] Configuring the macOS build"
 cmake "${cmake_args[@]}"
-cmake --build "$BUILD_DIR" --config Release --parallel
-cmake --build "$BUILD_DIR" --config Release --target create_dmg
+echo "[$(date -u +%H:%M:%S)] Building the app and DMG"
+cmake --build "$BUILD_DIR" --config Release --target create_dmg --parallel
+echo "[$(date -u +%H:%M:%S)] Verifying the app and DMG"
 
 APP_PATH="$BUILD_DIR/src/LinScreen.app"
 DMG_PATH=$(find "$BUILD_DIR/src" -maxdepth 1 -type f -name 'LinScreen-*.dmg' -print -quit)

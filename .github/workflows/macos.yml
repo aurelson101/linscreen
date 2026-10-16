@@ -14,6 +14,7 @@ permissions:
 jobs:
   macos:
     runs-on: macos-14
+    timeout-minutes: 30
     outputs:
       version: ${{ steps.package.outputs.version }}
 
