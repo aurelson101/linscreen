@@ -10,6 +10,7 @@
 #include "utils/screenshotsaver.h"
 
 #include <QGuiApplication>
+#include <QGridLayout>
 #include <QIntValidator>
 #include <QLineEdit>
 #include <QMimeData>
@@ -27,6 +28,7 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
 {
     qApp->installEventFilter(this); // see eventFilter()
     ui->setupUi(this);
+    ui->gridLayout_3->setColumnStretch(1, 1);
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowIcon(QIcon(GlobalValues::iconPath()));
     bool ok;
