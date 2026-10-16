@@ -26,6 +26,8 @@
     <string>${CMAKE_OSX_DEPLOYMENT_TARGET}</string>
     <key>NSHighResolutionCapable</key>
     <true/>
+    <key>NSScreenCaptureUsageDescription</key>
+    <string>LinScreen needs screen recording access to capture screenshots selected by the user.</string>
     <key>LSUIElement</key>
     <true/>
 </dict>

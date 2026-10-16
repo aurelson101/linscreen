@@ -1,0 +1,127 @@
+name: macOS package
+
+on:
+  push:
+    branches: [main, master, 'agent/**']
+    tags: ['v*']
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-14
+    outputs:
+      version: ${{ steps.package.outputs.version }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+
+      - name: Install Qt
+        uses: jurplel/install-qt-action@a9c63c7c123f3069cff414e7e482d95dfa9d8125 # v4
+        with:
+          version: '6.9.3'
+          arch: clang_64
+          cache: true
+
+      - name: Import release signing credentials
+        if: startsWith(github.ref, 'refs/tags/v')
+        shell: bash
+        env:
+          MACOS_CERTIFICATE_BASE64: ${{ secrets.MACOS_CERTIFICATE_BASE64 }}
+          MACOS_CERTIFICATE_PASSWORD: ${{ secrets.MACOS_CERTIFICATE_PASSWORD }}
+          MACOS_SIGN_IDENTITY: ${{ secrets.MACOS_SIGN_IDENTITY }}
+          APPLE_API_KEY_BASE64: ${{ secrets.APPLE_API_KEY_BASE64 }}
+          APPLE_API_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          APPLE_API_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          for variable in MACOS_CERTIFICATE_BASE64 MACOS_CERTIFICATE_PASSWORD MACOS_SIGN_IDENTITY \
+                          APPLE_API_KEY_BASE64 APPLE_API_KEY_ID APPLE_API_ISSUER_ID; do
+            if [ -z "${!variable:-}" ]; then
+              echo "Missing required release secret: $variable" >&2
+              exit 1
+            fi
+          done
+
+          certificate_path="$RUNNER_TEMP/linscreen-code-signing.p12"
+          keychain_path="$RUNNER_TEMP/linscreen-signing.keychain-db"
+          notary_key_path="$RUNNER_TEMP/AuthKey.p8"
+          keychain_password="$(openssl rand -hex 24)"
+          echo "::add-mask::$keychain_password"
+
+          printf '%s' "$MACOS_CERTIFICATE_BASE64" | /usr/bin/base64 -D > "$certificate_path"
+          printf '%s' "$APPLE_API_KEY_BASE64" | /usr/bin/base64 -D > "$notary_key_path"
+          chmod 600 "$certificate_path" "$notary_key_path"
+
+          security create-keychain -p "$keychain_password" "$keychain_path"
+          security set-keychain-settings -lut 21600 "$keychain_path"
+          security unlock-keychain -p "$keychain_password" "$keychain_path"
+          security import "$certificate_path" -k "$keychain_path" \
+            -P "$MACOS_CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s \
+            -k "$keychain_password" "$keychain_path"
+          security list-keychains -d user -s "$keychain_path"
+
+      - name: Build macOS package
+        shell: bash
+        env:
+          MACOS_SIGN_IDENTITY: ${{ secrets.MACOS_SIGN_IDENTITY }}
+          MACOS_NOTARY_KEY: ${{ runner.temp }}/AuthKey.p8
+          MACOS_NOTARY_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          MACOS_NOTARY_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            REQUIRE_SIGNING=1 ./tools/package-linscreen-macos.sh
+          else
+            MACOS_SIGN_IDENTITY='' REQUIRE_SIGNING=0 ./tools/package-linscreen-macos.sh
+          fi
+
+      - name: Verify artifact
+        id: package
+        shell: bash
+        run: |
+          set -euo pipefail
+          version=$(sed -nE 's/^set\(LINSCREEN_VERSION[[:space:]]+([^\)]+)\).*/\1/p' CMakeLists.txt)
+          test -n "$version"
+          test -f "build-linscreen-macos/src/LinScreen-${version}.dmg"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+          shasum -a 256 "build-linscreen-macos/src/LinScreen-${version}.dmg"
+
+      - name: Upload macOS package
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: LinScreen-${{ steps.package.outputs.version }}-macOS
+          if-no-files-found: error
+          path: build-linscreen-macos/src/LinScreen-*.dmg
+
+      - name: Remove signing credentials
+        if: always()
+        shell: bash
+        run: |
+          security delete-keychain "$RUNNER_TEMP/linscreen-signing.keychain-db" 2>/dev/null || true
+          rm -f "$RUNNER_TEMP/linscreen-code-signing.p12" "$RUNNER_TEMP/AuthKey.p8"
+
+  publish-macos:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: macos
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download notarized macOS package
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: LinScreen-${{ needs.macos.outputs.version }}-macOS
+          path: dist/macos
+
+      - name: Attach macOS package to the release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          files: dist/macos/*
+          fail_on_unmatched_files: true

@@ -477,8 +477,10 @@ if (APPLE)
     if(CODE_SIGN_IDENTITY AND NOT CODE_SIGN_IDENTITY STREQUAL "")
         # Identity-based signing (requires Developer ID)
         add_custom_command(TARGET linscreen POST_BUILD
-            COMMAND codesign --force --deep --sign "${CODE_SIGN_IDENTITY}" 
-                    --options runtime --timestamp "$<TARGET_BUNDLE_DIR:linscreen>"
+            COMMAND codesign --force --deep --sign "${CODE_SIGN_IDENTITY}"
+                    --options runtime --timestamp
+                    --entitlements "${CMAKE_SOURCE_DIR}/packaging/macos/linscreen.entitlements"
+                    "$<TARGET_BUNDLE_DIR:linscreen>"
             COMMENT "Code signing app bundle with ${CODE_SIGN_IDENTITY}"
         )
     else()
@@ -500,8 +502,10 @@ if (APPLE)
        # Re-sign after macdeployqt (it modifies the bundle)
        if(CODE_SIGN_IDENTITY AND NOT CODE_SIGN_IDENTITY STREQUAL "")
            add_custom_command(TARGET linscreen POST_BUILD
-               COMMAND codesign --force --deep --sign "${CODE_SIGN_IDENTITY}" 
-                       --options runtime --timestamp "$<TARGET_BUNDLE_DIR:linscreen>"
+               COMMAND codesign --force --deep --sign "${CODE_SIGN_IDENTITY}"
+                       --options runtime --timestamp
+                       --entitlements "${CMAKE_SOURCE_DIR}/packaging/macos/linscreen.entitlements"
+                       "$<TARGET_BUNDLE_DIR:linscreen>"
                COMMENT "Re-signing app bundle after Qt deployment"
            )
        else()

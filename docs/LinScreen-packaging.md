@@ -103,7 +103,52 @@ produce `linscreen.exe`.
 The generated executable is `linscreen.exe`, with the console wrapper
 `linscreen-cli.exe`.
 
+For a public release, provide an Authenticode `.pfx` certificate. The script
+signs and verifies `linscreen.exe`, `linscreen-cli.exe`, and the MSI with
+SHA-256 plus an RFC 3161 timestamp:
+
+```powershell
+tools/package-linscreen-windows.ps1 `
+  -SigningCertificatePath C:\secure\linscreen.pfx `
+  -SigningCertificatePassword $env:WINDOWS_CERTIFICATE_PASSWORD `
+  -RequireSigning
+```
+
+The GitHub release workflow expects `WINDOWS_CERTIFICATE_BASE64` and
+`WINDOWS_CERTIFICATE_PASSWORD`. A tag build fails if signing is unavailable.
+Authenticode substantially improves publisher trust, but SmartScreen reputation
+still depends on a certificate issued by a trusted CA and on download history.
+
 GitHub Actions also builds the native Windows installer and portable archive
 through the `Windows package` workflow. Its `LinScreen-<version>-Windows`
 artifact contains both the `.msi` and `.zip` outputs and can be started
 manually with `workflow_dispatch`.
+
+## macOS
+
+Development DMGs can be built on macOS with:
+
+```sh
+tools/package-linscreen-macos.sh
+```
+
+The Qt 6.9 build targets macOS 12 or newer, matching Qt's supported platform
+baseline.
+
+Public releases require a Developer ID Application certificate and Apple
+notarization. The tag workflow imports the certificate into a temporary
+keychain, signs the app and DMG with the hardened runtime, submits the DMG to
+Apple, staples the notarization ticket, validates it with Gatekeeper, and only
+then attaches it to the GitHub release.
+
+Configure these GitHub Actions secrets:
+
+- `MACOS_CERTIFICATE_BASE64`
+- `MACOS_CERTIFICATE_PASSWORD`
+- `MACOS_SIGN_IDENTITY`
+- `APPLE_API_KEY_BASE64`
+- `APPLE_API_KEY_ID`
+- `APPLE_API_ISSUER_ID`
+
+Ad hoc development builds remain available for testing but are deliberately
+not published by a release tag.

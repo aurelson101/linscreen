@@ -86,3 +86,9 @@ result-*
 
 # Local presentation site
 www/
+
+# Local code-signing credentials
+*.p12
+*.pfx
+AuthKey_*.p8
+*.keychain-db

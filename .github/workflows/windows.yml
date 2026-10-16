@@ -3,6 +3,7 @@ name: Windows package
 on:
   push:
     branches: [main, master, 'agent/**']
+    tags: ['v*']
   pull_request:
     branches: [main, master]
   workflow_dispatch:
@@ -13,6 +14,8 @@ permissions:
 jobs:
   windows:
     runs-on: windows-2022
+    outputs:
+      version: ${{ steps.package.outputs.version }}
 
     steps:
       - name: Checkout
@@ -31,14 +34,43 @@ jobs:
 
       - name: Build Windows packages
         shell: pwsh
+        env:
+          WINDOWS_CERTIFICATE_BASE64: ${{ secrets.WINDOWS_CERTIFICATE_BASE64 }}
+          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
         run: |
+          $isRelease = "${{ startsWith(github.ref, 'refs/tags/v') }}" -eq "true"
+          $certificatePath = Join-Path $env:RUNNER_TEMP "linscreen-code-signing.pfx"
+          $signingArguments = @()
+
+          if ($env:WINDOWS_CERTIFICATE_BASE64) {
+            if ($isRelease -and -not $env:WINDOWS_CERTIFICATE_PASSWORD) {
+              throw "WINDOWS_CERTIFICATE_PASSWORD is required for a release tag."
+            }
+            [IO.File]::WriteAllBytes(
+              $certificatePath,
+              [Convert]::FromBase64String($env:WINDOWS_CERTIFICATE_BASE64)
+            )
+            $signingArguments += @(
+              "-SigningCertificatePath", $certificatePath,
+              "-SigningCertificatePassword", $env:WINDOWS_CERTIFICATE_PASSWORD
+            )
+          } elseif ($isRelease) {
+            throw "WINDOWS_CERTIFICATE_BASE64 is required for a release tag."
+          }
+
+          if ($isRelease) {
+            $signingArguments += "-RequireSigning"
+          }
+
           ./tools/package-linscreen-windows.ps1 `
             -BuildDir build-linscreen-windows `
-            -Generator "Visual Studio 17 2022"
+            -Generator "Visual Studio 17 2022" `
+            @signingArguments
           ./tools/package-linscreen-windows.ps1 `
             -BuildDir build-linscreen-windows-portable `
             -Generator "Visual Studio 17 2022" `
-            -Portable
+            -Portable `
+            @signingArguments
 
       - name: Verify artifacts
         id: package
@@ -66,3 +98,27 @@ jobs:
           path: |
             build-linscreen-windows/*.msi
             build-linscreen-windows-portable/*.zip
+
+      - name: Remove signing certificate
+        if: always()
+        shell: pwsh
+        run: Remove-Item -LiteralPath "$env:RUNNER_TEMP/linscreen-code-signing.pfx" -Force -ErrorAction SilentlyContinue
+
+  publish-windows:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: windows
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - name: Download signed Windows packages
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: LinScreen-${{ needs.windows.outputs.version }}-Windows
+          path: dist/windows
+
+      - name: Attach Windows packages to the release
+        uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          files: dist/windows/*
+          fail_on_unmatched_files: true
