@@ -9,8 +9,8 @@
 #include "utils/globalvalues.h"
 #include "utils/screenshotsaver.h"
 
-#include <QGuiApplication>
 #include <QGridLayout>
+#include <QGuiApplication>
 #include <QIntValidator>
 #include <QLineEdit>
 #include <QMimeData>
