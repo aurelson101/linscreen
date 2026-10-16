@@ -56,8 +56,7 @@ ConfigWindow::ConfigWindow(QWidget* parent)
         const QSize available = screen->availableGeometry().size();
         const QSize maximum(qMax(320, available.width() - 48),
                             qMax(280, available.height() - 48));
-        setMinimumSize(qMin(440, maximum.width()),
-                       qMin(360, maximum.height()));
+        setMinimumSize(qMin(440, maximum.width()), qMin(360, maximum.height()));
         resize(qMin(860, maximum.width()), qMin(680, maximum.height()));
     }
 

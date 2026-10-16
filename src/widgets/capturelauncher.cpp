@@ -148,7 +148,8 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
     adjustSize();
     QScreen* screen = QGuiAppCurrentScreen().currentScreen();
     if (screen != nullptr) {
-        const int availableWidth = qMax(320, screen->availableGeometry().width() - 32);
+        const int availableWidth =
+          qMax(320, screen->availableGeometry().width() - 32);
         resize(qMin(qMax(sizeHint().width(), 440), availableWidth), height());
     }
     show();
