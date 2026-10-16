@@ -7,6 +7,7 @@
 #include "config/generalconf.h"
 #include "config/shortcutswidget.h"
 #include "config/visualseditor.h"
+#include "core/qguiappcurrentscreen.h"
 #include "utils/colorutils.h"
 #include "utils/confighandler.h"
 #include "utils/globalvalues.h"
@@ -18,7 +19,9 @@
 #include <QIcon>
 #include <QKeyEvent>
 #include <QLabel>
+#include <QScreen>
 #include <QSizePolicy>
+#include <QStyle>
 #include <QTabBar>
 #include <QTextStream>
 #include <QVBoxLayout>
@@ -30,8 +33,14 @@ ConfigWindow::ConfigWindow(QWidget* parent)
 {
     // We wrap QTabWidget in a QWidget because of a Qt bug
     auto* layout = new QVBoxLayout(this);
+    const int margin = style()->pixelMetric(QStyle::PM_LayoutLeftMargin);
+    const int spacing = style()->pixelMetric(QStyle::PM_LayoutVerticalSpacing);
+    layout->setContentsMargins(margin, margin, margin, margin);
+    layout->setSpacing(spacing);
     m_tabWidget = new QTabWidget(this);
-    m_tabWidget->tabBar()->setUsesScrollButtons(false);
+    m_tabWidget->tabBar()->setUsesScrollButtons(true);
+    m_tabWidget->tabBar()->setElideMode(Qt::ElideRight);
+    m_tabWidget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 #if defined(Q_OS_MACOS)
     // Fix Qt6 macOS bug where tab pane content renders behind the tab bar
     m_tabWidget->setStyleSheet(
@@ -42,6 +51,15 @@ ConfigWindow::ConfigWindow(QWidget* parent)
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowIcon(QIcon(GlobalValues::iconPath()));
     setWindowTitle(tr("Configuration"));
+
+    if (QScreen* screen = QGuiAppCurrentScreen().currentScreen()) {
+        const QSize available = screen->availableGeometry().size();
+        const QSize maximum(qMax(320, available.width() - 48),
+                            qMax(280, available.height() - 48));
+        setMinimumSize(qMin(440, maximum.width()),
+                       qMin(360, maximum.height()));
+        resize(qMin(860, maximum.width()), qMin(680, maximum.height()));
+    }
 
     connect(ConfigHandler::getInstance(),
             &ConfigHandler::fileChanged,

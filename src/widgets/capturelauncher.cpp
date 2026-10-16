@@ -10,8 +10,11 @@
 #include "utils/screenshotsaver.h"
 
 #include <QGuiApplication>
+#include <QIntValidator>
+#include <QLineEdit>
 #include <QMimeData>
 #include <QScreen>
+#include <QSizePolicy>
 
 // https://github.com/KDE/spectacle/blob/941c1a517be82bed25d1254ebd735c29b0d2951c/src/Gui/KSWidget.cpp
 // https://github.com/KDE/spectacle/blob/941c1a517be82bed25d1254ebd735c29b0d2951c/src/Gui/KSMainWindow.cpp
@@ -69,7 +72,12 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
 #endif
 
     ui->delayTime->setSpecialValueText(tr("No Delay"));
+    ui->captureType->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+    ui->monitorSelection->setSizePolicy(QSizePolicy::Expanding,
+                                        QSizePolicy::Fixed);
     ui->launchButton->setFocus();
+    ui->launchButton->setDefault(true);
+    setSizeGripEnabled(true);
 
     ui->countdownLabel->setVisible(false);
     ui->countdownLabel->setStyleSheet(
@@ -123,18 +131,34 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
     ui->screenshotWidth->setText(QString::number(lastRegion.width()));
     ui->screenshotHeight->setText(QString::number(lastRegion.height()));
 
-    ui->screenshotWidth->setMaximumWidth(70);
-    ui->screenshotHeight->setMaximumWidth(70);
-    ui->screenshotX->setMaximumWidth(70);
-    ui->screenshotY->setMaximumWidth(70);
+    ui->screenshotWidth->setValidator(new QIntValidator(0, 100000, this));
+    ui->screenshotHeight->setValidator(new QIntValidator(0, 100000, this));
+    ui->screenshotX->setValidator(new QIntValidator(-100000, 100000, this));
+    ui->screenshotY->setValidator(new QIntValidator(-100000, 100000, this));
+
+    for (QLineEdit* field : { ui->screenshotWidth,
+                              ui->screenshotHeight,
+                              ui->screenshotX,
+                              ui->screenshotY }) {
+        field->setMinimumWidth(56);
+        field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+        field->setClearButtonEnabled(true);
+    }
+
     adjustSize();
+    QScreen* screen = QGuiAppCurrentScreen().currentScreen();
+    if (screen != nullptr) {
+        const int availableWidth = qMax(320, screen->availableGeometry().width() - 32);
+        resize(qMin(qMax(sizeHint().width(), 440), availableWidth), height());
+    }
     show();
     // Call show() first, otherwise the correct geometry cannot be fetched
     // for centering the window on the screen
     QRect position = frameGeometry();
-    QScreen* screen = QGuiAppCurrentScreen().currentScreen();
-    position.moveCenter(screen->availableGeometry().center());
-    move(position.topLeft());
+    if (screen != nullptr) {
+        position.moveCenter(screen->availableGeometry().center());
+        move(position.topLeft());
+    }
 }
 
 // HACK:
