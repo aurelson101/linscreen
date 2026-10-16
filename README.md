@@ -1,12 +1,17 @@
 # LinScreen
 
-LinScreen is a screenshot and annotation tool for Linux desktops, with portal capture on Wayland and automatic X11 fallback. It targets GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, wlroots compositors, and multi-monitor setups.
+LinScreen is a screenshot and annotation tool for Linux desktops, with portal capture on Wayland and automatic X11 fallback. It targets GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, wlroots compositors, and multi-monitor setups. Windows and macOS packages are also built in CI for compatibility testing.
 
 It is a rebranded, Wayland-focused fork intended to be packaged as `linscreen` with desktop ID `org.linscreen.LinScreen`.
 
 Website: <https://linscreen.aurelson.com/>
 
 Releases: <https://github.com/aurelson101/linscreen/releases>
+
+Current release: **14.1.0**
+
+- [Download the AppImage](https://github.com/aurelson101/linscreen/releases/download/v14.1.0/LinScreen-14.1.0-x86_64.AppImage)
+- [Download the Debian package](https://github.com/aurelson101/linscreen/releases/download/v14.1.0/linscreen_14.1.0_amd64.deb)
 
 ## Features
 
@@ -15,7 +20,10 @@ Releases: <https://github.com/aurelson101/linscreen/releases>
 - Wayland capture through `xdg-desktop-portal`.
 - X11 fallback support.
 - Desktop integration for GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, and wlroots sessions.
+- Responsive, system-themed configuration and capture dialogs for compact and high-DPI displays.
+- Scrollable configuration tabs, accessible region fields, validated coordinates, and safer multi-monitor window placement.
 - Debian package, AppImage, and Linux tarball generation from release scripts.
+- Windows MSI/ZIP and macOS DMG packaging workflows, with release signing and notarization support.
 - Portal debug helper for tricky Wayland desktop setups.
 
 ## Install The Debian Package
@@ -159,6 +167,32 @@ powershell -ExecutionPolicy Bypass -File tools/package-linscreen-windows.ps1 `
 
 A native Linux Qt installation cannot produce `linscreen.exe`.
 
+Public Windows releases must use an Authenticode certificate. The packaging
+script signs and verifies the executables and MSI when a certificate is
+provided:
+
+```powershell
+$env:WINDOWS_SIGNING_CERTIFICATE_PATH = "C:\secure\certificate.pfx"
+$env:WINDOWS_SIGNING_CERTIFICATE_PASSWORD = "<secret>"
+./tools/package-linscreen-windows.ps1 -RequireSigning
+```
+
+Keep the certificate and password outside the repository. Unsigned packages
+are development artifacts and may trigger Microsoft SmartScreen.
+
+## macOS
+
+On macOS with Qt 6 and CMake installed, build the app and DMG with:
+
+```sh
+tools/package-linscreen-macos.sh
+```
+
+Public macOS releases require a Developer ID identity and App Store Connect API
+credentials. With `REQUIRE_SIGNING=1`, the script signs the app and DMG,
+submits the DMG for notarization, staples the ticket, and validates it with
+Gatekeeper. Ad hoc builds are intended only for development.
+
 ## Release
 
 Create or update the GitHub release with:
@@ -173,7 +207,13 @@ The script reads `LINSCREEN_VERSION` from `CMakeLists.txt`, builds missing artif
 - Debian package
 - AppImage
 - Linux tarball
+- CycloneDX SBOM
 - `SHA256SUMS`
+- Sigstore bundle for `SHA256SUMS`
+
+Tag builds also attach the Windows and macOS packages. Trusted public Windows
+and macOS releases require their signing secrets to be configured in GitHub
+Actions.
 
 
 ## License
