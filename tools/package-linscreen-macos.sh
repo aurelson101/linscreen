@@ -53,6 +53,10 @@ elif [ -n "${QT_ROOT_DIR:-}" ]; then
     cmake_args+=("-DCMAKE_PREFIX_PATH=${QT_ROOT_DIR}")
 fi
 
+if command -v ninja >/dev/null 2>&1 && [ ! -f "$BUILD_DIR/CMakeCache.txt" ]; then
+    cmake_args=(-G Ninja "${cmake_args[@]}")
+fi
+
 configure_build() {
     echo "[$(date -u +%H:%M:%S)] Configuring the macOS build"
     cmake "${cmake_args[@]}"
