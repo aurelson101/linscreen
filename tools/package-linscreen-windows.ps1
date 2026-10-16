@@ -111,6 +111,7 @@ $cmakeArgs = @(
     "-S", ".",
     "-B", $BuildDir,
     "-DCMAKE_BUILD_TYPE=Release",
+    "-DBUILD_TESTING=OFF",
     "-DENABLE_IMGUR=OFF",
     "-DUSE_PORTABLE_CONFIG=$(if ($Portable) { 'ON' } else { 'OFF' })",
     "-DWINDEPLOYQT_EXECUTABLE=$WindeployQt"

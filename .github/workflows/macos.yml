@@ -68,7 +68,7 @@ jobs:
             -k "$keychain_password" "$keychain_path"
           security list-keychains -d user -s "$keychain_path"
 
-      - name: Build macOS package
+      - name: Configure macOS package
         shell: bash
         env:
           MACOS_SIGN_IDENTITY: ${{ secrets.MACOS_SIGN_IDENTITY }}
@@ -78,9 +78,39 @@ jobs:
         run: |
           set -euo pipefail
           if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
-            REQUIRE_SIGNING=1 ./tools/package-linscreen-macos.sh
+            REQUIRE_SIGNING=1 ./tools/package-linscreen-macos.sh build-linscreen-macos configure
           else
-            MACOS_SIGN_IDENTITY='' REQUIRE_SIGNING=0 ./tools/package-linscreen-macos.sh
+            MACOS_SIGN_IDENTITY='' REQUIRE_SIGNING=0 ./tools/package-linscreen-macos.sh build-linscreen-macos configure
+          fi
+
+      - name: Build macOS app
+        shell: bash
+        env:
+          MACOS_SIGN_IDENTITY: ${{ secrets.MACOS_SIGN_IDENTITY }}
+          MACOS_NOTARY_KEY: ${{ runner.temp }}/AuthKey.p8
+          MACOS_NOTARY_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          MACOS_NOTARY_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            REQUIRE_SIGNING=1 ./tools/package-linscreen-macos.sh build-linscreen-macos build
+          else
+            MACOS_SIGN_IDENTITY='' REQUIRE_SIGNING=0 ./tools/package-linscreen-macos.sh build-linscreen-macos build
+          fi
+
+      - name: Create macOS DMG
+        shell: bash
+        env:
+          MACOS_SIGN_IDENTITY: ${{ secrets.MACOS_SIGN_IDENTITY }}
+          MACOS_NOTARY_KEY: ${{ runner.temp }}/AuthKey.p8
+          MACOS_NOTARY_KEY_ID: ${{ secrets.APPLE_API_KEY_ID }}
+          MACOS_NOTARY_ISSUER_ID: ${{ secrets.APPLE_API_ISSUER_ID }}
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_REF" == refs/tags/v* ]]; then
+            REQUIRE_SIGNING=1 ./tools/package-linscreen-macos.sh build-linscreen-macos package
+          else
+            MACOS_SIGN_IDENTITY='' REQUIRE_SIGNING=0 ./tools/package-linscreen-macos.sh build-linscreen-macos package
           fi
 
       - name: Verify artifact
