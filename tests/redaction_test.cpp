@@ -17,6 +17,11 @@ int main(int argc, char** argv)
             QPixmap source(QSize(80, 60) * scale);
             source.setDevicePixelRatio(scale);
             source.fill(QColor(255, 0, 120, 140));
+            {
+                QPainter control(&source);
+                control.setCompositionMode(QPainter::CompositionMode_Source);
+                control.fillRect(QRect(0, 0, 2, 2), QColor(12, 33, 44));
+            }
             QPixmap output = source.copy();
             RedactTool tool;
             tool.move(reverse ? QPoint(50, 40) : QPoint(10, 10));
@@ -29,10 +34,12 @@ int main(int argc, char** argv)
                 painter.setOpacity(0.15);
                 painter.setCompositionMode(
                   QPainter::CompositionMode_DestinationOver);
+                const qreal previousOpacity = painter.opacity();
                 clone->process(painter, source);
-                if (painter.opacity() != 0.15 ||
+                if (painter.opacity() != previousOpacity ||
                     painter.compositionMode() !=
                       QPainter::CompositionMode_DestinationOver) {
+                    std::fprintf(stderr, "Painter state was not restored\n");
                     return 1;
                 }
             }
@@ -40,6 +47,7 @@ int main(int argc, char** argv)
             QBuffer buffer(&bytes);
             buffer.open(QIODevice::WriteOnly);
             if (!output.save(&buffer, "PNG")) {
+                std::fprintf(stderr, "PNG export failed\n");
                 return 2;
             }
             QImage exported = QImage::fromData(bytes, "PNG");
@@ -54,6 +62,7 @@ int main(int argc, char** argv)
             }
             if (exported.pixelColor(0, 0) !=
                 source.toImage().pixelColor(0, 0)) {
+                std::fprintf(stderr, "Unmasked control pixel changed\n");
                 return 4;
             }
         }
