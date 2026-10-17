@@ -23,6 +23,7 @@ InfoWindow::InfoWindow(QWidget* parent)
   , ui(new Ui::InfoWindow)
 {
     ui->setupUi(this);
+    ui->verticalLayout->setAlignment(Qt::AlignTop);
     setAttribute(Qt::WA_DeleteOnClose);
 
     ui->IconSVG->setPixmap(QIcon(GlobalValues::iconPath())

@@ -62,6 +62,11 @@ int main(int argc, char** argv)
         app.processEvents();
         if (window->width() != 640 || window->height() != 520)
             return 5;
+        auto* license = window->findChild<QLabel*>("LicenseDetails");
+        auto* heading = window->findChild<QLabel*>("Version");
+        if (!license || !heading ||
+            heading->y() - (license->y() + license->height()) > 80)
+            return 10;
         if (!window->grab().save("about-" + style + "-expanded.png"))
             return 9;
         QKeyEvent escape(QEvent::KeyPress, Qt::Key_Escape, Qt::NoModifier);
