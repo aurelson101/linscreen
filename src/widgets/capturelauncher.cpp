@@ -211,7 +211,7 @@ void CaptureLauncher::startCapture()
 
     auto const additionalDelayToHideUI = 600;
     auto const secondsToMilliseconds = 1000;
-    CaptureRequest req(mode, 0);
+    CaptureRequest req(mode, additionalDelayToHideUI);
 
     if (mode == CaptureRequest::CaptureMode::GRAPHICAL_MODE) {
         req.setInitialSelection(QRect(ui->screenshotX->text().toInt(),
@@ -232,14 +232,16 @@ void CaptureLauncher::startCapture()
       &QTimer::timeout,
       this,
       [this, req]() {
+          m_countdownTimer->stop();
+          ui->countdownLabel->hide();
           ui->cancelButton->hide();
+          hide();
           connectCaptureSlots();
           LinScreen::instance()->requestCapture(req);
       },
       Qt::SingleShotConnection);
     ui->cancelButton->show();
-    m_captureTimer->start(additionalDelayToHideUI +
-                          delaySeconds * secondsToMilliseconds);
+    m_captureTimer->start(delaySeconds * secondsToMilliseconds);
 }
 
 void CaptureLauncher::cancelPendingCapture()

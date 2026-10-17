@@ -9,6 +9,20 @@
 #include <cstdio>
 #include <memory>
 
+// Qt's generated metatype code references CaptureContext's default request.
+// This rendering-only test must not load the application's user configuration.
+CaptureRequest::CaptureRequest(CaptureMode mode,
+                               const uint delay,
+                               QVariant data,
+                               ExportTask tasks)
+  : m_mode(mode)
+  , m_delay(delay)
+  , m_tasks(tasks)
+  , m_data(data)
+  , m_selectedMonitor(-1)
+  , m_hasSelectedMonitor(false)
+{}
+
 int main(int argc, char** argv)
 {
     QApplication app(argc, argv);
