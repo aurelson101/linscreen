@@ -9,6 +9,7 @@ set_tests_properties(cli_help PROPERTIES
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 add_executable(linscreen_redaction_test
   redaction_test.cpp
+  request_fixture.cpp
   ../src/tools/redact/redacttool.cpp
   ../src/tools/redact/redacttool.h
   ../src/tools/abstracttwopointtool.cpp
@@ -40,6 +41,25 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
 endif()
 add_test(NAME diagnostics_privacy COMMAND linscreen_diagnostics_test)
 set_tests_properties(diagnostics_privacy PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
+
+add_executable(linscreen_launcher_test
+  launcher_test.cpp
+  request_fixture.cpp
+  fixtures/core/linscreen.h
+  ../src/widgets/capturelauncher.cpp
+  ../src/widgets/capturelauncher.h
+  ../src/widgets/capturelauncher.ui
+  ../src/core/qguiappcurrentscreen.cpp
+  ../src/utils/globalvalues.cpp)
+set_target_properties(linscreen_launcher_test PROPERTIES AUTOMOC ON AUTOUIC ON)
+target_include_directories(linscreen_launcher_test PRIVATE fixtures ../src)
+target_compile_features(linscreen_launcher_test PRIVATE cxx_std_20)
+target_compile_definitions(linscreen_launcher_test PRIVATE
+  APP_VERSION="v${PROJECT_VERSION}" LINSCREEN_GIT_HASH="test")
+target_link_libraries(linscreen_launcher_test PRIVATE Qt6::Widgets)
+add_test(NAME launcher_cancellation COMMAND linscreen_launcher_test)
+set_tests_properties(launcher_cancellation PROPERTIES
+  ENVIRONMENT "QT_QPA_PLATFORM=offscreen" TIMEOUT 15)
 
 add_test(
   NAME build_artifacts
