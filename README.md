@@ -8,10 +8,10 @@ Website: <https://linscreen.aurelson.com/>
 
 Releases: <https://github.com/aurelson101/linscreen/releases>
 
-Current release: **14.1.1** — [release notes](docs/releases/v14.1.1.md).
+Current release: **14.1.2** — [release notes](docs/releases/v14.1.2.md).
 
-- [Download the AppImage](https://github.com/aurelson101/linscreen/releases/download/v14.1.1/LinScreen-14.1.1-x86_64.AppImage)
-- [Download the Debian package](https://github.com/aurelson101/linscreen/releases/download/v14.1.1/linscreen_14.1.1_amd64.deb)
+- [Download the AppImage](https://github.com/aurelson101/linscreen/releases/download/v14.1.2/LinScreen-14.1.2-x86_64.AppImage)
+- [Download the Debian package](https://github.com/aurelson101/linscreen/releases/download/v14.1.2/linscreen_14.1.2_amd64.deb)
 
 ## Features
 
@@ -32,7 +32,7 @@ Current release: **14.1.1** — [release notes](docs/releases/v14.1.1.md).
 Build or download the package, then install it with:
 
 ```sh
-sudo apt install ./linscreen_14.1.1_amd64.deb
+sudo apt install ./linscreen_14.1.2_amd64.deb
 ```
 
 Run this command in the download directory. Locally built packages are under
@@ -73,9 +73,9 @@ tools/package-linscreen-deb.sh
 
 Artifacts are written under `build-linscreen-release/`:
 
-- `linscreen_14.1.1_amd64.deb`
-- `linscreen-14.1.1-linux.tar.gz`
-- `LinScreen-14.1.1-x86_64.AppImage`
+- `linscreen_14.1.2_amd64.deb`
+- `linscreen-14.1.2-linux.tar.gz`
+- `LinScreen-14.1.2-x86_64.AppImage`
 - `src/linscreen`
 
 ## Install The AppImage
@@ -83,8 +83,8 @@ Artifacts are written under `build-linscreen-release/`:
 Download the AppImage, make it executable, and run it:
 
 ```sh
-chmod +x LinScreen-14.1.1-x86_64.AppImage
-./LinScreen-14.1.1-x86_64.AppImage
+chmod +x LinScreen-14.1.2-x86_64.AppImage
+./LinScreen-14.1.2-x86_64.AppImage
 ```
 
 The AppImage is portable and does not install desktop files globally. It bundles

@@ -129,6 +129,7 @@ ConfigWindow::ConfigWindow(QWidget* parent)
     initErrorIndicator(m_shortcutsTab, m_shortcuts);
 
     // Keep every setting reachable when the screen is smaller than a page.
+    const int currentIndex = m_tabWidget->currentIndex();
     for (int i = 0; i < m_tabWidget->count(); ++i) {
         QWidget* page = m_tabWidget->widget(i);
         const QIcon icon = m_tabWidget->tabIcon(i);
@@ -140,6 +141,7 @@ ConfigWindow::ConfigWindow(QWidget* parent)
         scrollArea->setWidget(page);
         m_tabWidget->insertTab(i, scrollArea, icon, title);
     }
+    m_tabWidget->setCurrentIndex(currentIndex);
 }
 
 void ConfigWindow::keyPressEvent(QKeyEvent* e)
