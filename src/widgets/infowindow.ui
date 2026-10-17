@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>182</width>
-    <height>262</height>
+    <width>480</width>
+    <height>520</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,6 +19,11 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
+    <widget class="QScrollArea" name="infoScrollArea">
+     <property name="frameShape"><enum>QFrame::NoFrame</enum></property>
+     <property name="horizontalScrollBarPolicy"><enum>Qt::ScrollBarAlwaysOff</enum></property>
+     <property name="widgetResizable"><bool>true</bool></property>
+     <widget class="QWidget" name="infoContent">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLabel" name="IconSVG">
@@ -36,7 +41,6 @@
         <font>
          <weight>75</weight>
          <bold>true</bold>
-         <underline>true</underline>
         </font>
        </property>
        <property name="text">
@@ -82,7 +86,6 @@
         <font>
          <weight>75</weight>
          <bold>true</bold>
-         <underline>true</underline>
         </font>
        </property>
        <property name="text">
@@ -122,14 +125,16 @@
        </property>
       </widget>
      </item>
-     <item>
+    </layout>
+     </widget>
+    </widget>
+   </item>
+   <item row="1" column="0">
       <widget class="QPushButton" name="CopyInfoButton">
        <property name="text">
         <string>Copy Info</string>
        </property>
       </widget>
-     </item>
-    </layout>
    </item>
   </layout>
  </widget>

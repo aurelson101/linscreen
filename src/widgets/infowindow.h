@@ -23,7 +23,7 @@ private:
     Ui::InfoWindow* ui;
 
 protected:
-    void keyPressEvent(QKeyEvent* event);
+    void keyPressEvent(QKeyEvent* event) override;
 
 private slots:
     void copyInfo();

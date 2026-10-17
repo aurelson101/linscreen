@@ -62,6 +62,26 @@ endif()
 add_test(NAME diagnostics_privacy COMMAND linscreen_diagnostics_test)
 set_tests_properties(diagnostics_privacy PROPERTIES ENVIRONMENT "QT_QPA_PLATFORM=offscreen")
 
+add_executable(linscreen_infowindow_test
+  infowindow_test.cpp
+  ../src/widgets/infowindow.cpp ../src/widgets/infowindow.h
+  ../src/widgets/infowindow.ui ../src/core/qguiappcurrentscreen.cpp
+  ../data/graphics.qrc
+  ../src/utils/diagnostics.cpp ../src/utils/desktopinfo.cpp
+  ../src/utils/globalvalues.cpp)
+set_target_properties(linscreen_infowindow_test PROPERTIES AUTOMOC ON AUTOUIC ON AUTORCC ON)
+target_include_directories(linscreen_infowindow_test PRIVATE fixtures ../src)
+target_compile_features(linscreen_infowindow_test PRIVATE cxx_std_20)
+target_compile_definitions(linscreen_infowindow_test PRIVATE
+  APP_VERSION="v${PROJECT_VERSION}" LINSCREEN_GIT_HASH="test")
+target_link_libraries(linscreen_infowindow_test PRIVATE Qt6::Widgets)
+if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
+  target_link_libraries(linscreen_infowindow_test PRIVATE Qt6::DBus)
+endif()
+add_test(NAME about_responsive COMMAND linscreen_infowindow_test)
+set_tests_properties(about_responsive PROPERTIES
+  ENVIRONMENT "QT_QPA_PLATFORM=offscreen;QT_SCALE_FACTOR=2" TIMEOUT 15)
+
 add_executable(linscreen_launcher_test
   launcher_test.cpp
   request_fixture.cpp

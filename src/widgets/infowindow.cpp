@@ -10,6 +10,7 @@
 
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QIcon>
 #include <QKeyEvent>
 #include <QLabel>
 #include <QPlainTextEdit>
@@ -24,24 +25,37 @@ InfoWindow::InfoWindow(QWidget* parent)
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose);
 
-    ui->IconSVG->setPixmap(QPixmap(GlobalValues::iconPath()));
+    ui->IconSVG->setPixmap(QIcon(GlobalValues::iconPath())
+                             .pixmap(QSize(64, 64), devicePixelRatioF()));
+    ui->IconSVG->setAccessibleName(QStringLiteral("LinScreen"));
+    for (auto* label : { ui->VersionDetails, ui->OperatingSystemDetails }) {
+        label->setTextFormat(Qt::PlainText);
+        label->setWordWrap(true);
+        label->setMinimumWidth(0);
+        label->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
+    }
     ui->VersionDetails->setText(GlobalValues::versionInfo());
     ui->OperatingSystemDetails->setText(generateKernelString());
 
     connect(
       ui->CopyInfoButton, &QPushButton::clicked, this, &InfoWindow::copyInfo);
     auto* diagnosticsButton = new QPushButton(tr("Capture diagnostics"), this);
-    ui->verticalLayout->addWidget(diagnosticsButton);
+    diagnosticsButton->setObjectName("diagnosticsButton");
+    ui->gridLayout->addWidget(diagnosticsButton, 2, 0);
     connect(diagnosticsButton,
             &QPushButton::clicked,
             this,
             &InfoWindow::showDiagnostics);
 
+    QScreen* screen = QGuiAppCurrentScreen().currentScreen();
+    const QSize available =
+      screen ? screen->availableGeometry().size() : QSize(800, 600);
+    resize(qMin(480, qMax(1, available.width() - 32)),
+           qMin(520, qMax(1, available.height() - 64)));
     show();
     // Call show() first, otherwise the correct geometry cannot be fetched for
     // centering the window on the screen
     QRect position = frameGeometry();
-    QScreen* screen = QGuiAppCurrentScreen().currentScreen();
     if (screen != nullptr) {
         position.moveCenter(screen->availableGeometry().center());
         move(position.topLeft());
@@ -57,6 +71,8 @@ void InfoWindow::keyPressEvent(QKeyEvent* event)
 {
     if (event->key() == Qt::Key_Escape) {
         close();
+    } else {
+        QWidget::keyPressEvent(event);
     }
 }
 

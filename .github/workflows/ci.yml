@@ -61,3 +61,4 @@ jobs:
           path: |
             build-linscreen-ci/linscreen_*.deb
             build-linscreen-ci/linscreen-*-linux.tar.gz
+            build-linscreen-ci/tests/about-*.png

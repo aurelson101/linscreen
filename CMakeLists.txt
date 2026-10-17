@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 # cmake_policy(SET CMP0076 OLD)
 
-set(LINSCREEN_VERSION 14.3.1)
+set(LINSCREEN_VERSION 14.3.2)
 
 # LinScreen fork
 set(GIT_API_URL "https://api.github.com/repos/aurelson101/linscreen/releases/latest")
