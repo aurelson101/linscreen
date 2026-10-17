@@ -8,7 +8,7 @@
 namespace {
 constexpr qsizetype MAX_OUTPUT = 1024 * 1024;
 constexpr qint64 MAX_PIXELS = 16000000;
-constexpr qsizetype MAX_INPUT = 16 * 1024 * 1024;
+constexpr qsizetype OCR_MAX_INPUT_BYTES = 16 * 1024 * 1024;
 }
 
 LocalOcr::LocalOcr(QObject* parent)
@@ -83,7 +83,7 @@ void LocalOcr::start(const QImage& image,
     QBuffer buffer(&m_input);
     m_input.clear();
     buffer.open(QIODevice::WriteOnly);
-    if (!image.save(&buffer, "PNG") || m_input.size() > MAX_INPUT) {
+    if (!image.save(&buffer, "PNG") || m_input.size() > OCR_MAX_INPUT_BYTES) {
         m_input.clear();
         emit failed(tr("The selected image is too large for local OCR."));
         return;
