@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.22)
 # cmake_policy(SET CMP0076 OLD)
 
-set(LINSCREEN_VERSION 14.2.0)
+set(LINSCREEN_VERSION 14.3.0)
 
 # LinScreen fork
 set(GIT_API_URL "https://api.github.com/repos/aurelson101/linscreen/releases/latest")
@@ -213,6 +213,7 @@ else()
   set(CPACK_DEBIAN_PACKAGE_MAINTAINER "LinScreen developers <dev@linscreen.local>")
   set(CPACK_DEBIAN_PACKAGE_SHLIBDEPS ON)
   set(CPACK_DEBIAN_PACKAGE_DEPENDS "hicolor-icon-theme, qt6-qpa-plugins, qt6-wayland")
+  set(CPACK_DEBIAN_PACKAGE_RECOMMENDS "tesseract-ocr, tesseract-ocr-eng, tesseract-ocr-fra")
   set(CPACK_DEBIAN_PACKAGE_DESCRIPTION "LinScreen is a screenshot and annotation tool focused on reliable Wayland capture through desktop portals, with X11 fallback support.")
   set(CPACK_DEBIAN_PACKAGE_CONTROL_EXTRA
       "${CMAKE_SOURCE_DIR}/cmake/debian/postinst;${CMAKE_SOURCE_DIR}/cmake/debian/postrm")

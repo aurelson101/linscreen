@@ -16,6 +16,7 @@
 #include "tools/line/linetool.h"
 #include "tools/marker/markertool.h"
 #include "tools/move/movetool.h"
+#include "tools/ocr/ocrtool.h"
 #include "tools/pencil/penciltool.h"
 #include "tools/pin/pintool.h"
 #include "tools/pixelate/pixelatetool.h"
@@ -60,6 +61,7 @@ CaptureTool* ToolFactory::CreateTool(CaptureTool::Type t, QObject* parent)
 #endif
         if_TYPE_return_TOOL(TYPE_PIXELATE, PixelateTool);
         if_TYPE_return_TOOL(TYPE_REDACT, RedactTool);
+        if_TYPE_return_TOOL(TYPE_OCR, OcrTool);
         if_TYPE_return_TOOL(TYPE_REDO, RedoTool);
         if_TYPE_return_TOOL(TYPE_PIN, PinTool);
         if_TYPE_return_TOOL(TYPE_TEXT, TextTool);

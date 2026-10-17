@@ -3403,4 +3403,38 @@ Vous devrez probablement remplacer le signe &apos;#&apos; par &apos;\#FFF&apos;<
         <translation>Masquez les informations sensibles en noir opaque. Le masque est intégré aux images exportées ; l’annulation reste possible pendant l’édition.</translation>
     </message>
 </context>
+<context>
+    <name>OcrTool</name>
+    <message><source>Extract text (OCR)</source><translation>Extraire le texte (OCR)</translation></message>
+    <message><source>Recognize text locally in the selected area; review before copying</source><translation>Reconnaître localement le texte de la zone sélectionnée ; relire avant de copier</translation></message>
+</context>
+<context>
+    <name>OcrDialog</name>
+    <message><source>Extract text locally</source><translation>Extraire le texte localement</translation></message>
+    <message><source>Local OCR with Tesseract. No upload or temporary image file. Review and correct the recognized text before copying.</source><translation>OCR local avec Tesseract. Aucun envoi ni fichier image temporaire. Relisez et corrigez le texte reconnu avant de le copier.</translation></message>
+    <message><source>OCR language</source><translation>Langue de reconnaissance</translation></message>
+    <message><source>French + English</source><translation>Français + anglais</translation></message>
+    <message><source>French</source><translation>Français</translation></message>
+    <message><source>English</source><translation>Anglais</translation></message>
+    <message><source>Recognized text (editable)</source><translation>Texte reconnu (modifiable)</translation></message>
+    <message><source>Select a language, then recognize the text.</source><translation>Choisissez une langue, puis lancez la reconnaissance.</translation></message>
+    <message><source>Recognize</source><translation>Reconnaître</translation></message>
+    <message><source>Cancel OCR</source><translation>Annuler l’OCR</translation></message>
+    <message><source>Copy text</source><translation>Copier le texte</translation></message>
+    <message><source>Recognizing locally…</source><translation>Reconnaissance locale…</translation></message>
+    <message><source>No text recognized.</source><translation>Aucun texte reconnu.</translation></message>
+    <message><source>Review the text before copying.</source><translation>Relisez le texte avant de le copier.</translation></message>
+</context>
+<context>
+    <name>LocalOcr</name>
+    <message><source>Could not start the local OCR engine.</source><translation>Impossible de démarrer le moteur OCR local.</translation></message>
+    <message><source>OCR timed out. Select a smaller area and retry.</source><translation>Délai OCR dépassé. Sélectionnez une zone plus petite et réessayez.</translation></message>
+    <message><source>Unsupported OCR language.</source><translation>Langue OCR non prise en charge.</translation></message>
+    <message><source>Select a non-empty area of at most 16 million pixels.</source><translation>Sélectionnez une zone non vide de 16 millions de pixels maximum.</translation></message>
+    <message><source>Install Tesseract and the French/English language data, then retry. Nothing was uploaded.</source><translation>Installez Tesseract et les données français/anglais, puis réessayez. Aucune image n’a été envoyée.</translation></message>
+    <message><source>The selected image is too large for local OCR.</source><translation>L’image sélectionnée est trop volumineuse pour l’OCR local.</translation></message>
+    <message><source>OCR cancelled.</source><translation>OCR annulé.</translation></message>
+    <message><source>OCR output exceeded the safety limit.</source><translation>La sortie OCR dépasse la limite de sécurité.</translation></message>
+    <message><source>Recognition failed. Check that the selected language data is installed, or try another language.</source><translation>Échec de reconnaissance. Vérifiez les données de la langue sélectionnée ou essayez une autre langue.</translation></message>
+</context>
 </TS>

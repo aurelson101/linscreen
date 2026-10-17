@@ -7,6 +7,22 @@ set_tests_properties(cli_help PROPERTIES
   PASS_REGULAR_EXPRESSION "Usage:.*linscreen")
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
+add_executable(linscreen_ocr_test
+  localocr_test.cpp ../src/utils/localocr.cpp ../src/utils/localocr.h)
+set_target_properties(linscreen_ocr_test PROPERTIES AUTOMOC ON)
+target_include_directories(linscreen_ocr_test PRIVATE ../src)
+target_compile_features(linscreen_ocr_test PRIVATE cxx_std_20)
+target_link_libraries(linscreen_ocr_test PRIVATE Qt6::Widgets)
+add_test(NAME local_ocr_safety COMMAND linscreen_ocr_test)
+set_tests_properties(local_ocr_safety PROPERTIES
+  ENVIRONMENT "QT_QPA_PLATFORM=offscreen" TIMEOUT 15)
+find_program(TESSERACT_EXECUTABLE tesseract)
+if(TESSERACT_EXECUTABLE)
+  add_test(NAME local_ocr_real COMMAND linscreen_ocr_test --real)
+  set_tests_properties(local_ocr_real PROPERTIES
+    ENVIRONMENT "QT_QPA_PLATFORM=offscreen" TIMEOUT 10)
+endif()
+
 add_executable(linscreen_redaction_test
   redaction_test.cpp
   request_fixture.cpp

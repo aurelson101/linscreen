@@ -190,6 +190,7 @@ static QMap<QString, QSharedPointer<KeySequence>> recognizedShortcuts = {
 #endif
     SHORTCUT("TYPE_PIXELATE"            ,   "B"                     ),
     SHORTCUT("TYPE_REDACT"              ,   "Shift+R"               ),
+    SHORTCUT("TYPE_OCR"                 ,   "Shift+T"               ),
     SHORTCUT("TYPE_INVERT"              ,   "I"                     ),
     SHORTCUT("TYPE_REDO"                ,   "Ctrl+Shift+Z"          ),
     SHORTCUT("TYPE_TEXT"                ,   "T"                     ),

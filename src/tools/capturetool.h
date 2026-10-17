@@ -52,6 +52,7 @@ public:
         TYPE_ACCEPT = 23,
         TYPE_CANCEL = 24,
         TYPE_REDACT = 25,
+        TYPE_OCR = 26,
     };
     Q_ENUM(Type);
 

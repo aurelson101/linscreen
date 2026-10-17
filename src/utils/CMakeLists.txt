@@ -23,6 +23,8 @@ target_sources(
           desktopfileparse.cpp
           desktopinfo.cpp
           diagnostics.cpp
+          localocr.cpp
+          localocr.h
           waylandutils.cpp
           pathinfo.cpp
           colorutils.cpp

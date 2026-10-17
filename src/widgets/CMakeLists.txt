@@ -13,6 +13,7 @@ target_sources(
         imagelabel.h
         trayicon.h
         infowindow.h
+        ocrdialog.h
         loadspinner.h
         notificationwidget.h
         orientablepushbutton.h
@@ -41,6 +42,7 @@ target_sources(
         imagelabel.cpp
         trayicon.cpp
         infowindow.cpp
+        ocrdialog.cpp
         loadspinner.cpp
         notificationwidget.cpp
         orientablepushbutton.cpp

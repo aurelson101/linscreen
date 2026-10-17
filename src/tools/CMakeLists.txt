@@ -1,6 +1,7 @@
 target_sources(linscreen PRIVATE arrow/arrowtool.h arrow/arrowtool.cpp)
 target_sources(linscreen PRIVATE pixelate/pixelatetool.h pixelate/pixelatetool.cpp)
 target_sources(linscreen PRIVATE redact/redacttool.h redact/redacttool.cpp)
+target_sources(linscreen PRIVATE ocr/ocrtool.h ocr/ocrtool.cpp)
 target_sources(linscreen PRIVATE circle/circletool.h circle/circletool.cpp)
 target_sources(linscreen PRIVATE circlecount/circlecounttool.h circlecount/circlecounttool.cpp)
 target_sources(linscreen PRIVATE copy/copytool.h copy/copytool.cpp)
