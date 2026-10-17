@@ -22,6 +22,7 @@ target_sources(
           globalvalues.cpp
           desktopfileparse.cpp
           desktopinfo.cpp
+          diagnostics.cpp
           waylandutils.cpp
           pathinfo.cpp
           colorutils.cpp

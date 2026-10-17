@@ -23,14 +23,20 @@ public:
 private:
     Ui::CaptureLauncher* ui;
     QTimer* m_countdownTimer;
+    QTimer* m_captureTimer;
     int m_remainingSeconds;
     void setCaptureControlsEnabled(bool enabled);
     void connectCaptureSlots() const;
     void disconnectCaptureSlots() const;
     void updateCountdown();
 
+protected:
+    void reject() override;
+    void closeEvent(QCloseEvent* event) override;
+
 private slots:
     void startCapture();
+    void cancelPendingCapture();
     void onCaptureTaken(QPixmap const& p);
     void onCaptureFailed();
 };

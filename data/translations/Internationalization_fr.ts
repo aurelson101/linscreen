@@ -111,6 +111,10 @@
 <context>
     <name>CaptureLauncher</name>
     <message>
+        <source>Cancel capture</source>
+        <translation>Annuler la capture</translation>
+    </message>
+    <message>
         <source>&lt;b&gt;Capture Mode&lt;/b&gt;</source>
         <translation type="vanished">&lt;b&gt;Mode de capture&lt;/b&gt;</translation>
     </message>
@@ -1622,6 +1626,26 @@ Veuillez résoudre ce problème manuellement depuis le fichier de configuration.
 </context>
 <context>
     <name>InfoWindow</name>
+    <message>
+        <source>Capture diagnostics</source>
+        <translation>Diagnostic de capture</translation>
+    </message>
+    <message>
+        <source>Local technical report: no usernames, hostnames, paths or images. Review it before copying. Nothing is sent automatically.</source>
+        <translation>Rapport technique local : aucun nom d’utilisateur, nom de machine, chemin ou image. Relisez-le avant de le copier. Aucun envoi automatique.</translation>
+    </message>
+    <message>
+        <source>Anonymized capture diagnostics</source>
+        <translation>Diagnostic de capture anonymisé</translation>
+    </message>
+    <message>
+        <source>Refresh</source>
+        <translation>Actualiser</translation>
+    </message>
+    <message>
+        <source>Copy report</source>
+        <translation>Copier le rapport</translation>
+    </message>
     <message>
         <location filename="../../src/widgets/infowindow.ui" line="14"/>
         <location filename="../../build/src/linscreen_autogen/include/ui_infowindow.h" line="116"/>
@@ -3366,6 +3390,17 @@ Vous devrez probablement remplacer le signe &apos;#&apos; par &apos;\#FFF&apos;<
         <location filename="../../build/_deps/qtcolorwidgets-src/src/QtColorWidgets/swatch.cpp" line="864"/>
         <source>%1 (%2)</source>
         <translation>%1 (%2)</translation>
+    </message>
+</context>
+<context>
+    <name>RedactTool</name>
+    <message>
+        <source>Redact</source>
+        <translation>Caviarder</translation>
+    </message>
+    <message>
+        <source>Cover sensitive information with opaque black. Exported images contain the mask; undo remains available while editing.</source>
+        <translation>Masquez les informations sensibles en noir opaque. Le masque est intégré aux images exportées ; l’annulation reste possible pendant l’édition.</translation>
     </message>
 </context>
 </TS>

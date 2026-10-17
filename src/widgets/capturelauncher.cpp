@@ -9,6 +9,7 @@
 #include "utils/globalvalues.h"
 #include "utils/screenshotsaver.h"
 
+#include <QCloseEvent>
 #include <QGridLayout>
 #include <QGuiApplication>
 #include <QIntValidator>
@@ -25,10 +26,17 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
   : QDialog(parent)
   , ui(new Ui::CaptureLauncher)
   , m_countdownTimer(new QTimer(this))
+  , m_captureTimer(new QTimer(this))
   , m_remainingSeconds(0)
 {
     qApp->installEventFilter(this); // see eventFilter()
     ui->setupUi(this);
+    m_captureTimer->setSingleShot(true);
+    ui->cancelButton->hide();
+    connect(ui->cancelButton,
+            &QPushButton::clicked,
+            this,
+            &CaptureLauncher::cancelPendingCapture);
     ui->gridLayout_3->setColumnStretch(1, 1);
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowIcon(QIcon(GlobalValues::iconPath()));
@@ -203,8 +211,7 @@ void CaptureLauncher::startCapture()
 
     auto const additionalDelayToHideUI = 600;
     auto const secondsToMilliseconds = 1000;
-    CaptureRequest req(
-      mode, additionalDelayToHideUI + delaySeconds * secondsToMilliseconds);
+    CaptureRequest req(mode, 0);
 
     if (mode == CaptureRequest::CaptureMode::GRAPHICAL_MODE) {
         req.setInitialSelection(QRect(ui->screenshotX->text().toInt(),
@@ -220,8 +227,50 @@ void CaptureLauncher::startCapture()
     req.setSelectedMonitor(-1);
 #endif
 
-    connectCaptureSlots();
-    LinScreen::instance()->requestCapture(req);
+    connect(
+      m_captureTimer,
+      &QTimer::timeout,
+      this,
+      [this, req]() {
+          ui->cancelButton->hide();
+          connectCaptureSlots();
+          LinScreen::instance()->requestCapture(req);
+      },
+      Qt::SingleShotConnection);
+    ui->cancelButton->show();
+    m_captureTimer->start(additionalDelayToHideUI +
+                          delaySeconds * secondsToMilliseconds);
+}
+
+void CaptureLauncher::cancelPendingCapture()
+{
+    if (!m_captureTimer->isActive()) {
+        return;
+    }
+    m_captureTimer->stop();
+    disconnect(m_captureTimer, nullptr, this, nullptr);
+    m_countdownTimer->stop();
+    m_remainingSeconds = 0;
+    ui->countdownLabel->hide();
+    ui->cancelButton->hide();
+    setCaptureControlsEnabled(true);
+    show();
+    ui->launchButton->setFocus();
+}
+
+void CaptureLauncher::reject()
+{
+    if (m_captureTimer->isActive()) {
+        cancelPendingCapture();
+    } else {
+        QDialog::reject();
+    }
+}
+
+void CaptureLauncher::closeEvent(QCloseEvent* event)
+{
+    cancelPendingCapture();
+    QDialog::closeEvent(event);
 }
 
 void CaptureLauncher::setCaptureControlsEnabled(bool enabled)

@@ -20,6 +20,7 @@
 #include "tools/pin/pintool.h"
 #include "tools/pixelate/pixelatetool.h"
 #include "tools/rectangle/rectangletool.h"
+#include "tools/redact/redacttool.h"
 #include "tools/redo/redotool.h"
 #include "tools/save/savetool.h"
 #include "tools/selection/selectiontool.h"
@@ -58,6 +59,7 @@ CaptureTool* ToolFactory::CreateTool(CaptureTool::Type t, QObject* parent)
         if_TYPE_return_TOOL(TYPE_OPEN_APP, AppLauncher);
 #endif
         if_TYPE_return_TOOL(TYPE_PIXELATE, PixelateTool);
+        if_TYPE_return_TOOL(TYPE_REDACT, RedactTool);
         if_TYPE_return_TOOL(TYPE_REDO, RedoTool);
         if_TYPE_return_TOOL(TYPE_PIN, PinTool);
         if_TYPE_return_TOOL(TYPE_TEXT, TextTool);

@@ -8,10 +8,10 @@ Website: <https://linscreen.aurelson.com/>
 
 Releases: <https://github.com/aurelson101/linscreen/releases>
 
-Current release: **14.1.2** — [release notes](docs/releases/v14.1.2.md).
+Current release: **14.2.0** — [release notes](docs/releases/v14.2.0.md).
 
-- [Download the AppImage](https://github.com/aurelson101/linscreen/releases/download/v14.1.2/LinScreen-14.1.2-x86_64.AppImage)
-- [Download the Debian package](https://github.com/aurelson101/linscreen/releases/download/v14.1.2/linscreen_14.1.2_amd64.deb)
+- [Download the AppImage](https://github.com/aurelson101/linscreen/releases/download/v14.2.0/LinScreen-14.2.0-x86_64.AppImage)
+- [Download the Debian package](https://github.com/aurelson101/linscreen/releases/download/v14.2.0/linscreen_14.2.0_amd64.deb)
 
 ## Features
 
@@ -23,6 +23,9 @@ Current release: **14.1.2** — [release notes](docs/releases/v14.1.2.md).
 - Responsive, system-themed configuration and capture dialogs for compact and high-DPI displays.
 - Scrollable configuration tabs, accessible region fields, validated coordinates, and safer multi-monitor window placement.
 - Scrollable settings panels on small displays and capture controls locked during the countdown.
+- Cancel a delayed capture using the Cancel capture button or Escape; closing the launcher also cancels its pending timer.
+- Opaque black redaction (Shift+R) for manually selected sensitive areas, flattened into exported raster images.
+- Local, anonymized capture diagnostics under About > Capture diagnostics, with portal status and display scaling.
 - Debian package, AppImage, and Linux tarball generation from release scripts.
 - Windows MSI/ZIP and macOS DMG packaging workflows, with release signing and notarization support.
 - Portal debug helper for tricky Wayland desktop setups.
@@ -32,7 +35,7 @@ Current release: **14.1.2** — [release notes](docs/releases/v14.1.2.md).
 Build or download the package, then install it with:
 
 ```sh
-sudo apt install ./linscreen_14.1.2_amd64.deb
+sudo apt install ./linscreen_14.2.0_amd64.deb
 ```
 
 Run this command in the download directory. Locally built packages are under
@@ -73,9 +76,9 @@ tools/package-linscreen-deb.sh
 
 Artifacts are written under `build-linscreen-release/`:
 
-- `linscreen_14.1.2_amd64.deb`
-- `linscreen-14.1.2-linux.tar.gz`
-- `LinScreen-14.1.2-x86_64.AppImage`
+- `linscreen_14.2.0_amd64.deb`
+- `linscreen-14.2.0-linux.tar.gz`
+- `LinScreen-14.2.0-x86_64.AppImage`
 - `src/linscreen`
 
 ## Install The AppImage
@@ -83,8 +86,8 @@ Artifacts are written under `build-linscreen-release/`:
 Download the AppImage, make it executable, and run it:
 
 ```sh
-chmod +x LinScreen-14.1.2-x86_64.AppImage
-./LinScreen-14.1.2-x86_64.AppImage
+chmod +x LinScreen-14.2.0-x86_64.AppImage
+./LinScreen-14.2.0-x86_64.AppImage
 ```
 
 The AppImage is portable and does not install desktop files globally. It bundles
