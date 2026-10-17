@@ -9,6 +9,7 @@
 #include <QLabel>
 #include <QPlainTextEdit>
 #include <QPushButton>
+#include <QResizeEvent>
 #include <QScreen>
 #include <QVBoxLayout>
 
@@ -37,6 +38,11 @@ OcrDialog::OcrDialog(const QImage& image, QWidget* parent)
     status->setWordWrap(true);
     layout->addWidget(status);
     auto* buttons = new QDialogButtonBox(QDialogButtonBox::Close, this);
+    m_buttons = buttons;
+    // Start compact so the horizontal button row cannot impose a large
+    // minimum width before the first resize event.
+    buttons->setOrientation(Qt::Vertical);
+    buttons->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Preferred);
     auto* recognize =
       buttons->addButton(tr("Recognize"), QDialogButtonBox::ActionRole);
     auto* cancel =
@@ -84,4 +90,18 @@ OcrDialog::OcrDialog(const QImage& image, QWidget* parent)
     const QSize available =
       display ? display->availableGeometry().size() : QSize(800, 600);
     resize(qMin(680, available.width()), qMin(520, available.height()));
+}
+
+void OcrDialog::resizeEvent(QResizeEvent* event)
+{
+    const auto margins = layout()->contentsMargins();
+    int requiredWidth = margins.left() + margins.right();
+    for (auto* button : m_buttons->buttons()) {
+        requiredWidth +=
+          button->sizeHint().width() + qMax(0, layout()->spacing());
+    }
+    m_buttons->setOrientation(event->size().width() < qMax(560, requiredWidth)
+                                ? Qt::Vertical
+                                : Qt::Horizontal);
+    QDialog::resizeEvent(event);
 }

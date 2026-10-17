@@ -8,13 +8,17 @@ set_tests_properties(cli_help PROPERTIES
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
 add_executable(linscreen_ocr_test
-  localocr_test.cpp ../src/utils/localocr.cpp ../src/utils/localocr.h)
+  localocr_test.cpp ../src/utils/localocr.cpp ../src/utils/localocr.h
+  ../src/widgets/ocrdialog.cpp ../src/widgets/ocrdialog.h)
 set_target_properties(linscreen_ocr_test PROPERTIES AUTOMOC ON)
 target_include_directories(linscreen_ocr_test PRIVATE ../src)
 target_compile_features(linscreen_ocr_test PRIVATE cxx_std_20)
 target_link_libraries(linscreen_ocr_test PRIVATE Qt6::Widgets)
 add_test(NAME local_ocr_safety COMMAND linscreen_ocr_test)
 set_tests_properties(local_ocr_safety PROPERTIES
+  ENVIRONMENT "QT_QPA_PLATFORM=offscreen" TIMEOUT 15)
+add_test(NAME local_ocr_dialog COMMAND linscreen_ocr_test --dialog)
+set_tests_properties(local_ocr_dialog PROPERTIES
   ENVIRONMENT "QT_QPA_PLATFORM=offscreen" TIMEOUT 15)
 find_program(TESSERACT_EXECUTABLE tesseract)
 if(TESSERACT_EXECUTABLE)

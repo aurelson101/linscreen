@@ -1,10 +1,15 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 #include "utils/localocr.h"
+#include "widgets/ocrdialog.h"
+#include <QApplication>
+#include <QClipboard>
 #include <QCoreApplication>
+#include <QDialogButtonBox>
 #include <QEventLoop>
 #include <QFile>
-#include <QGuiApplication>
 #include <QPainter>
+#include <QPlainTextEdit>
+#include <QPushButton>
 #include <QTemporaryDir>
 #include <QThread>
 #include <QTimer>
@@ -38,7 +43,7 @@ int main(int argc, char** argv)
         output.flush();
         return 0;
     }
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
     LocalOcr engine;
     QImage image(1200, 140, QImage::Format_RGB32);
     image.fill(Qt::white);
@@ -97,6 +102,65 @@ int main(int argc, char** argv)
         return 1;
     }
     qputenv("PATH", directory.path().toUtf8());
+    qunsetenv("LINSCREEN_OCR_TEST_MODE");
+    if (app.arguments().contains("--dialog")) {
+        QApplication::clipboard()->setText("clipboard unchanged");
+        OcrDialog dialog(image);
+        dialog.resize(390, 520);
+        dialog.show();
+        app.processEvents();
+        auto* buttons = dialog.findChild<QDialogButtonBox*>();
+        auto* editor = dialog.findChild<QPlainTextEdit*>();
+        auto* ocr = dialog.findChild<LocalOcr*>();
+        QPushButton* recognize = nullptr;
+        QPushButton* copy = nullptr;
+        for (auto* button : dialog.findChildren<QPushButton*>()) {
+            if (button->text() == "Recognize")
+                recognize = button;
+            if (button->text() == "Copy text")
+                copy = button;
+        }
+        if (!buttons || !editor || !ocr || !recognize || !copy ||
+            dialog.width() > 390 || buttons->orientation() != Qt::Vertical ||
+            copy->isEnabled() || ocr->busy())
+            return 20;
+        QEventLoop recognition;
+        QTimer watchdog;
+        watchdog.setSingleShot(true);
+        QObject::connect(
+          &watchdog, &QTimer::timeout, &recognition, &QEventLoop::quit);
+        QObject::connect(
+          ocr, &LocalOcr::recognized, &recognition, &QEventLoop::quit);
+        QObject::connect(
+          ocr, &LocalOcr::failed, &recognition, &QEventLoop::quit);
+        recognize->click();
+        if (!ocr->busy() || recognize->isEnabled() || !editor->isReadOnly() ||
+            copy->isEnabled())
+            return 21;
+        watchdog.start(4000);
+        recognition.exec();
+        if (ocr->busy() || editor->toPlainText() != "LOCAL OCR 12345" ||
+            editor->isReadOnly() || !copy->isEnabled() ||
+            QApplication::clipboard()->text() != "clipboard unchanged")
+            return 22;
+        editor->setPlainText("Corrected text");
+        copy->click();
+        if (QApplication::clipboard()->text() != "Corrected text")
+            return 23;
+        editor->clear();
+        if (copy->isEnabled())
+            return 24;
+        dialog.resize(680, 520);
+        app.processEvents();
+        if (buttons->orientation() != Qt::Horizontal)
+            return 25;
+        dialog.resize(390, 520);
+        app.processEvents();
+        if (dialog.width() > 390 || buttons->orientation() != Qt::Vertical)
+            return 26;
+        dialog.close();
+        return 0;
+    }
     if (!run("", "fra+eng", 2000, false) || result != "LOCAL OCR 12345" ||
         !error.isEmpty())
         return 2;
