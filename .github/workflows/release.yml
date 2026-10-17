@@ -62,6 +62,19 @@ jobs:
           upload-artifact: false
           upload-release-assets: false
 
+      - name: Validate release packages
+        env:
+          QT_QPA_PLATFORM: offscreen
+          APPIMAGE_EXTRACT_AND_RUN: '1'
+        run: |
+          ctest --test-dir build-linscreen-release --output-on-failure
+          build-linscreen-release/LinScreen-*-x86_64.AppImage --version
+          appstreamcli validate --no-net data/appdata/org.linscreen.LinScreen.metainfo.xml
+          desktop-file-validate data/desktopEntry/package/org.linscreen.LinScreen.desktop
+          sudo apt-get install --yes --no-install-recommends ./build-linscreen-release/linscreen_*.deb
+          linscreen --version
+          dpkg --audit
+
       - name: Checksums
         run: |
           cd build-linscreen-release
@@ -84,6 +97,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
+          name: LinScreen ${{ steps.version.outputs.version }}
+          body_path: docs/releases/v${{ steps.version.outputs.version }}.md
           files: |
             build-linscreen-release/linscreen_*.deb
             build-linscreen-release/linscreen-*-linux.tar.gz

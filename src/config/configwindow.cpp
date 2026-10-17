@@ -20,6 +20,7 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QScreen>
+#include <QScrollArea>
 #include <QSizePolicy>
 #include <QStyle>
 #include <QTabBar>
@@ -126,6 +127,19 @@ ConfigWindow::ConfigWindow(QWidget* parent)
     initErrorIndicator(m_filenameEditorTab, m_filenameEditor);
     initErrorIndicator(m_generalConfigTab, m_generalConfig);
     initErrorIndicator(m_shortcutsTab, m_shortcuts);
+
+    // Keep every setting reachable when the screen is smaller than a page.
+    for (int i = 0; i < m_tabWidget->count(); ++i) {
+        QWidget* page = m_tabWidget->widget(i);
+        const QIcon icon = m_tabWidget->tabIcon(i);
+        const QString title = m_tabWidget->tabText(i);
+        m_tabWidget->removeTab(i);
+        auto* scrollArea = new QScrollArea(m_tabWidget);
+        scrollArea->setFrameShape(QFrame::NoFrame);
+        scrollArea->setWidgetResizable(true);
+        scrollArea->setWidget(page);
+        m_tabWidget->insertTab(i, scrollArea, icon, title);
+    }
 }
 
 void ConfigWindow::keyPressEvent(QKeyEvent* e)

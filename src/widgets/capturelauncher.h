@@ -24,6 +24,7 @@ private:
     Ui::CaptureLauncher* ui;
     QTimer* m_countdownTimer;
     int m_remainingSeconds;
+    void setCaptureControlsEnabled(bool enabled);
     void connectCaptureSlots() const;
     void disconnectCaptureSlots() const;
     void updateCountdown();

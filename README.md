@@ -8,10 +8,10 @@ Website: <https://linscreen.aurelson.com/>
 
 Releases: <https://github.com/aurelson101/linscreen/releases>
 
-Current release: **14.1.0**
+Current release: **14.1.1** — [release notes](docs/releases/v14.1.1.md).
 
-- [Download the AppImage](https://github.com/aurelson101/linscreen/releases/download/v14.1.0/LinScreen-14.1.0-x86_64.AppImage)
-- [Download the Debian package](https://github.com/aurelson101/linscreen/releases/download/v14.1.0/linscreen_14.1.0_amd64.deb)
+- [Download the AppImage](https://github.com/aurelson101/linscreen/releases/download/v14.1.1/LinScreen-14.1.1-x86_64.AppImage)
+- [Download the Debian package](https://github.com/aurelson101/linscreen/releases/download/v14.1.1/linscreen_14.1.1_amd64.deb)
 
 ## Features
 
@@ -22,6 +22,7 @@ Current release: **14.1.0**
 - Desktop integration for GNOME, KDE Plasma, XFCE, Cinnamon, MATE, LXQt, and wlroots sessions.
 - Responsive, system-themed configuration and capture dialogs for compact and high-DPI displays.
 - Scrollable configuration tabs, accessible region fields, validated coordinates, and safer multi-monitor window placement.
+- Scrollable settings panels on small displays and capture controls locked during the countdown.
 - Debian package, AppImage, and Linux tarball generation from release scripts.
 - Windows MSI/ZIP and macOS DMG packaging workflows, with release signing and notarization support.
 - Portal debug helper for tricky Wayland desktop setups.
@@ -31,10 +32,12 @@ Current release: **14.1.0**
 Build or download the package, then install it with:
 
 ```sh
-sudo apt install ./build-linscreen-release/linscreen_14.1.0_amd64.deb
+sudo apt install ./linscreen_14.1.1_amd64.deb
 ```
 
-The Debian package refreshes desktop/icon caches after install. If the launcher is still missing, log out and back in once.
+Run this command in the download directory. Locally built packages are under
+`build-linscreen-release/`. The Debian package refreshes desktop/icon caches after
+install. If the launcher is still missing, log out and back in once.
 
 Quick checks:
 
@@ -70,9 +73,9 @@ tools/package-linscreen-deb.sh
 
 Artifacts are written under `build-linscreen-release/`:
 
-- `linscreen_14.1.0_amd64.deb`
-- `linscreen-14.1.0-linux.tar.gz`
-- `LinScreen-14.1.0-x86_64.AppImage`
+- `linscreen_14.1.1_amd64.deb`
+- `linscreen-14.1.1-linux.tar.gz`
+- `LinScreen-14.1.1-x86_64.AppImage`
 - `src/linscreen`
 
 ## Install The AppImage
@@ -80,8 +83,8 @@ Artifacts are written under `build-linscreen-release/`:
 Download the AppImage, make it executable, and run it:
 
 ```sh
-chmod +x LinScreen-14.1.0-x86_64.AppImage
-./LinScreen-14.1.0-x86_64.AppImage
+chmod +x LinScreen-14.1.1-x86_64.AppImage
+./LinScreen-14.1.1-x86_64.AppImage
 ```
 
 The AppImage is portable and does not install desktop files globally. It bundles
@@ -207,13 +210,12 @@ The script reads `LINSCREEN_VERSION` from `CMakeLists.txt`, builds missing artif
 - Debian package
 - AppImage
 - Linux tarball
-- CycloneDX SBOM
 - `SHA256SUMS`
-- Sigstore bundle for `SHA256SUMS`
 
-Tag builds also attach the Windows and macOS packages. Trusted public Windows
-and macOS releases require their signing secrets to be configured in GitHub
-Actions.
+The GitHub Actions Release workflow additionally validates the packages,
+generates a CycloneDX SBOM, and signs `SHA256SUMS` with Sigstore. Prefer this
+workflow for public releases. Windows and macOS tag workflows require their
+signing secrets to be configured before publishing packages for those platforms.
 
 
 ## License

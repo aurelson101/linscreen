@@ -13,6 +13,7 @@
 #include <QGuiApplication>
 #include <QIntValidator>
 #include <QLineEdit>
+#include <QLocale>
 #include <QMimeData>
 #include <QScreen>
 #include <QSizePolicy>
@@ -31,7 +32,6 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
     ui->gridLayout_3->setColumnStretch(1, 1);
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowIcon(QIcon(GlobalValues::iconPath()));
-    bool ok;
 
     ui->captureType->insertItem(
       1, tr("Rectangular Region"), CaptureRequest::GRAPHICAL_MODE);
@@ -133,15 +133,17 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
     ui->screenshotWidth->setText(QString::number(lastRegion.width()));
     ui->screenshotHeight->setText(QString::number(lastRegion.height()));
 
-    ui->screenshotWidth->setValidator(new QIntValidator(0, 100000, this));
-    ui->screenshotHeight->setValidator(new QIntValidator(0, 100000, this));
-    ui->screenshotX->setValidator(new QIntValidator(-100000, 100000, this));
-    ui->screenshotY->setValidator(new QIntValidator(-100000, 100000, this));
-
+    QLocale coordinateLocale = QLocale::c();
+    coordinateLocale.setNumberOptions(QLocale::RejectGroupSeparator);
     for (QLineEdit* field : { ui->screenshotWidth,
                               ui->screenshotHeight,
                               ui->screenshotX,
                               ui->screenshotY }) {
+        const int minimum =
+          (field == ui->screenshotX || field == ui->screenshotY) ? -100000 : 0;
+        auto* validator = new QIntValidator(minimum, 100000, field);
+        validator->setLocale(coordinateLocale);
+        field->setValidator(validator);
         field->setMinimumWidth(56);
         field->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
         field->setClearButtonEnabled(true);
@@ -168,7 +170,25 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
 // https://github.com/KDE/spectacle/blob/fa1e780b8bf3df3ac36c410b9ece4ace041f401b/src/Gui/KSMainWindow.cpp#L70
 void CaptureLauncher::startCapture()
 {
-    ui->launchButton->setEnabled(false);
+    if (!ui->launchButton->isEnabled()) {
+        return;
+    }
+
+    auto mode = static_cast<CaptureRequest::CaptureMode>(
+      ui->captureType->currentData().toInt());
+    if (mode == CaptureRequest::GRAPHICAL_MODE) {
+        for (QLineEdit* field : { ui->screenshotWidth,
+                                  ui->screenshotHeight,
+                                  ui->screenshotX,
+                                  ui->screenshotY }) {
+            if (!field->hasAcceptableInput()) {
+                field->setFocus();
+                field->selectAll();
+                return;
+            }
+        }
+    }
+    setCaptureControlsEnabled(false);
 
     int delaySeconds = ui->delayTime->value();
 
@@ -183,8 +203,6 @@ void CaptureLauncher::startCapture()
 
     auto const additionalDelayToHideUI = 600;
     auto const secondsToMilliseconds = 1000;
-    auto mode = static_cast<CaptureRequest::CaptureMode>(
-      ui->captureType->currentData().toInt());
     CaptureRequest req(
       mode, additionalDelayToHideUI + delaySeconds * secondsToMilliseconds);
 
@@ -204,6 +222,18 @@ void CaptureLauncher::startCapture()
 
     connectCaptureSlots();
     LinScreen::instance()->requestCapture(req);
+}
+
+void CaptureLauncher::setCaptureControlsEnabled(bool enabled)
+{
+    ui->launchButton->setEnabled(enabled);
+    ui->captureType->setEnabled(enabled);
+    ui->monitorSelection->setEnabled(enabled);
+    ui->delayTime->setEnabled(enabled);
+    ui->screenshotWidth->setEnabled(enabled);
+    ui->screenshotHeight->setEnabled(enabled);
+    ui->screenshotX->setEnabled(enabled);
+    ui->screenshotY->setEnabled(enabled);
 }
 
 void CaptureLauncher::connectCaptureSlots() const
@@ -248,7 +278,7 @@ void CaptureLauncher::onCaptureTaken(QPixmap const& screenshot)
     if (mode == CaptureRequest::FULLSCREEN_MODE) {
         saveToFilesystemGUI(screenshot);
     }
-    ui->launchButton->setEnabled(true);
+    setCaptureControlsEnabled(true);
 }
 
 void CaptureLauncher::onCaptureFailed()
@@ -258,7 +288,7 @@ void CaptureLauncher::onCaptureFailed()
     m_countdownTimer->stop();
     ui->countdownLabel->setVisible(false);
     show();
-    ui->launchButton->setEnabled(true);
+    setCaptureControlsEnabled(true);
 }
 
 void CaptureLauncher::updateCountdown()
