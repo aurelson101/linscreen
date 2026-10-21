@@ -30,7 +30,8 @@ modules:
       - -DBUILD_SHARED_LIBS=ON
       - -DBUILD_PROG=OFF
       - -DENABLE_GIF=OFF
-      - -DENABLE_JPEG=OFF
+      - -DENABLE_JPEG=ON
+      - -DENABLE_TIFF=ON
       - -DENABLE_WEBP=OFF
       - -DENABLE_OPENJPEG=OFF
     post-install:

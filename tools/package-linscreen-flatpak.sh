@@ -5,6 +5,8 @@ set -eu
 project_root="$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)"
 cd "$project_root"
 work_dir="$(realpath -m "${1:-build-linscreen-flatpak}")"
+jobs="${FLATPAK_JOBS:-2}"
+case "$jobs" in ''|0|*[!0-9]*) echo "FLATPAK_JOBS must be a positive integer." >&2; exit 1 ;; esac
 case "$work_dir" in
     "$project_root/build-linscreen-flatpak"|"$project_root"/build-linscreen-flatpak-*) ;;
     *) echo "Build directory must be a build-linscreen-flatpak directory inside the project." >&2; exit 1 ;;
@@ -47,8 +49,8 @@ version="$(sed -n 's/^set(LINSCREEN_VERSION[[:space:]]*\([0-9][^)]*\)).*/\1/p' C
 [ -n "$version" ] || { echo "Cannot determine version." >&2; exit 1; }
 manifest_dir="$source_dir/packaging/flatpak"
 run_builder --show-manifest "$manifest_dir/org.linscreen.LinScreen.yml" |
-    jq --arg revision "$revision" '."build-options".env.GIT_HASH = $revision' > "$manifest_dir/resolved.json"
-run_builder --user --disable-rofiles-fuse --force-clean --keep-build-dirs --jobs=2 \
+    jq --arg revision "$revision" '.modules[-1]."build-options".env.GIT_HASH = $revision' > "$manifest_dir/resolved.json"
+run_builder --user --disable-rofiles-fuse --force-clean --keep-build-dirs --jobs="$jobs" \
     --state-dir="$work_dir/state" --repo="$work_dir/repo" \
     "$work_dir/appdir" "$manifest_dir/resolved.json"
 bundle="LinScreen-${version}-x86_64.flatpak"
