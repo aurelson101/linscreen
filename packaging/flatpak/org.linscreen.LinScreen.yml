@@ -7,6 +7,7 @@ default-branch: stable
 build-options:
   env:
     CMAKE_BUILD_PARALLEL_LEVEL: '2'
+    TESSDATA_PREFIX: /app/share/tessdata
 finish-args:
   # X11 + XShm access
   - --share=ipc
@@ -30,7 +31,6 @@ modules:
       - -DBUILD_PROG=OFF
       - -DENABLE_GIF=OFF
       - -DENABLE_JPEG=OFF
-      - -DENABLE_TIFF=OFF
       - -DENABLE_WEBP=OFF
       - -DENABLE_OPENJPEG=OFF
     post-install:
