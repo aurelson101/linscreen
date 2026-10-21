@@ -8,10 +8,10 @@ Website: <https://linscreen.aurelson.com/>
 
 Releases: <https://github.com/aurelson101/linscreen/releases>
 
-Current release: **14.3.2** — [release notes](docs/releases/v14.3.2.md).
+Current release: **14.4.0** — [release notes](docs/releases/v14.4.0.md).
 
-- [Download the AppImage](https://github.com/aurelson101/linscreen/releases/download/v14.3.2/LinScreen-14.3.2-x86_64.AppImage)
-- [Download the Debian package](https://github.com/aurelson101/linscreen/releases/download/v14.3.2/linscreen_14.3.2_amd64.deb)
+- [Download the AppImage](https://github.com/aurelson101/linscreen/releases/download/v14.4.0/LinScreen-14.4.0-x86_64.AppImage)
+- [Download the Debian package](https://github.com/aurelson101/linscreen/releases/download/v14.4.0/linscreen_14.4.0_amd64.deb)
 
 ## Features
 
@@ -36,7 +36,7 @@ Current release: **14.3.2** — [release notes](docs/releases/v14.3.2.md).
 Build or download the package, then install it with:
 
 ```sh
-sudo apt install ./linscreen_14.3.2_amd64.deb
+sudo apt install ./linscreen_14.4.0_amd64.deb
 ```
 
 Run this command in the download directory. Locally built packages are under
@@ -92,9 +92,9 @@ tools/package-linscreen-deb.sh
 
 Artifacts are written under `build-linscreen-release/`:
 
-- `linscreen_14.3.2_amd64.deb`
-- `linscreen-14.3.2-linux.tar.gz`
-- `LinScreen-14.3.2-x86_64.AppImage`
+- `linscreen_14.4.0_amd64.deb`
+- `linscreen-14.4.0-linux.tar.gz`
+- `LinScreen-14.4.0-x86_64.AppImage`
 - `src/linscreen`
 
 ## Install The AppImage
@@ -102,8 +102,8 @@ Artifacts are written under `build-linscreen-release/`:
 Download the AppImage, make it executable, and run it:
 
 ```sh
-chmod +x LinScreen-14.3.2-x86_64.AppImage
-./LinScreen-14.3.2-x86_64.AppImage
+chmod +x LinScreen-14.4.0-x86_64.AppImage
+./LinScreen-14.4.0-x86_64.AppImage
 ```
 
 The AppImage is portable and does not install desktop files globally. It bundles
@@ -169,13 +169,37 @@ The debug output reports session variables, portal services, backend processes, 
 
 ## Flatpak
 
-Install `flatpak-builder`, `org.kde.Platform//6.9`, and `org.kde.Sdk//6.9`, then run:
+Download the standalone bundle from the GitHub release, then install and run it:
+
+```sh
+flatpak install --user ./LinScreen-14.4.0-x86_64.flatpak
+flatpak run org.linscreen.LinScreen
+```
+
+This is a direct-download bundle, not a Flathub app listing. It includes local
+Tesseract OCR and French/English models. Flatpak may download the KDE runtime
+from Flathub; host portal packages are still required for Wayland capture.
+Updates are installed manually from a newer bundle. Verify the release checksums
+before installation.
+
+To build, install native `flatpak-builder` and `jq`, or the builder Flatpak:
+
+```sh
+flatpak install --user flathub org.flatpak.Builder
+flatpak install --user flathub org.kde.Platform//6.10 org.kde.Sdk//6.10
+```
+
+From a clean, committed checkout, run:
 
 ```sh
 tools/package-linscreen-flatpak.sh
 ```
 
-The bundle is written to `LinScreen.flatpak`.
+The versioned bundle and `SHA256SUMS-flatpak` are written under
+`build-linscreen-flatpak/`. The script snapshots tracked sources and refuses
+unmanaged output directories. It builds and tests inside the SDK without
+installing system development packages. The application sandbox has no network
+or unrestricted home access; direct file access is limited to Pictures.
 
 ## Windows
 

@@ -1,8 +1,12 @@
 app-id: org.linscreen.LinScreen
 runtime: org.kde.Platform
-runtime-version: '6.9'
+runtime-version: '6.10'
 sdk: org.kde.Sdk
 command: linscreen
+default-branch: stable
+build-options:
+  env:
+    CMAKE_BUILD_PARALLEL_LEVEL: '2'
 finish-args:
   # X11 + XShm access
   - --share=ipc
@@ -10,37 +14,100 @@ finish-args:
   # Wayland access
   - --socket=wayland
   - --device=dri
-  # Connectivity
-  - --share=network
-  # QtSingleApplication, allow other instances to see log files
-  - --env=TMPDIR=/var/tmp
-  # Allow loading/saving files from anywhere
+  # Direct access is restricted to Pictures; other locations use file portals.
   - --filesystem=xdg-pictures
+  - --env=TESSDATA_PREFIX=/app/share/tessdata
   # Notification access
   - --talk-name=org.freedesktop.Notifications
   # System Tray Icon
   - --talk-name=org.kde.StatusNotifierWatcher
 modules:
+  - name: leptonica
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DBUILD_SHARED_LIBS=ON
+      - -DBUILD_PROG=OFF
+      - -DENABLE_GIF=OFF
+      - -DENABLE_JPEG=OFF
+      - -DENABLE_TIFF=OFF
+      - -DENABLE_WEBP=OFF
+      - -DENABLE_OPENJPEG=OFF
+    post-install:
+      - install -Dm644 ../leptonica-license.txt /app/share/licenses/leptonica/LICENSE
+    sources:
+      - type: git
+        url: https://github.com/DanBloomberg/leptonica.git
+        tag: 1.87.0
+        commit: 13275a278eb55b5746e33f95fbf5a2c8f604b3ab
+
+  - name: tesseract
+    buildsystem: cmake-ninja
+    config-opts:
+      - -DBUILD_TRAINING_TOOLS=OFF
+      - -DBUILD_TESTS=OFF
+      - -DDISABLE_CURL=ON
+      - -DDISABLE_ARCHIVE=ON
+      - -DENABLE_NATIVE=OFF
+      - -DOPENMP_BUILD=OFF
+    post-install:
+      - install -Dm644 ../LICENSE /app/share/licenses/tesseract/LICENSE
+    sources:
+      - type: git
+        url: https://github.com/tesseract-ocr/tesseract.git
+        tag: 5.5.3
+        commit: db0ec62f81b0737fbbe184d8fea40af5738f8eef
+
+  - name: ocr-languages
+    buildsystem: simple
+    build-commands:
+      - install -Dm644 eng.traineddata /app/share/tessdata/eng.traineddata
+      - install -Dm644 fra.traineddata /app/share/tessdata/fra.traineddata
+      - install -Dm644 LICENSE /app/share/licenses/tessdata_fast/LICENSE
+    sources:
+      - type: file
+        url: https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/eng.traineddata
+        sha256: 7d4322bd2a7749724879683fc3912cb542f19906c83bcc1a52132556427170b2
+      - type: file
+        url: https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/fra.traineddata
+        sha256: ced037562e8c80c13122dece28dd477d399af80911a28791a66a63ac1e3445ca
+      - type: file
+        url: https://raw.githubusercontent.com/tesseract-ocr/tessdata_fast/87416418657359cb625c412a48b6e1d6d41c29bd/LICENSE
+        sha256: cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30
+
   - name: linscreen
     buildsystem: cmake-ninja
     config-opts:
-      - -DCMAKE_BUILD_TYPE=Release 
-      - -DUSE_WAYLAND_CLIPBOARD=1
+      - -DCMAKE_BUILD_TYPE=Release
+      - -DUSE_WAYLAND_CLIPBOARD=ON
+      - -DUSE_LAUNCHER_ABSOLUTE_PATH=OFF
+      - -DDISABLE_UPDATE_CHECKER=ON
+      - -DENABLE_IMGUR=OFF
+      - -DBUILD_TESTING=ON
+    run-tests: true
+    test-rule: ''
+    test-commands:
+      - QT_QPA_PLATFORM=offscreen ctest --output-on-failure
     sources:
+      - type: dir
+        path: ../..
       - type: git
         url: https://gitlab.com/mattbas/Qt-Color-Widgets.git
-        commit: 352bc8f99bf2174d5724ee70623427aa31ddc26a
+        commit: 5d52e907e50dc88cf969b41cea44665ff6c475b1
         dest: external/Qt-Color-Widgets
 
       - type: git
         url: https://github.com/KDAB/KDSingleApplication.git
         tag: v1.2.0
+        commit: 3186a158f8e6565e89f5983b4028c892737844ff
         dest: external/KDSingleApplication
-
-      - type: dir
-        path: ../..
 
     cleanup:
       - /share/bash-completion
       - /share/man
       - /share/zsh
+cleanup:
+  - /include
+  - /lib/cmake
+  - /lib/pkgconfig
+  - '*.a'
+  - '*.la'
