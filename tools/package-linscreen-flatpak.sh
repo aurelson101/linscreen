@@ -2,7 +2,7 @@
 set -eu
 
 [ "$#" -le 1 ] || { echo "Usage: $0 [build-linscreen-flatpak[-suffix]]" >&2; exit 1; }
-project_root="$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd -P)"
+project_root="$(CDPATH='' cd -- "$(dirname -- "$0")/.." && pwd -P)"
 cd "$project_root"
 work_dir="$(realpath -m "${1:-build-linscreen-flatpak}")"
 case "$work_dir" in
