@@ -182,7 +182,7 @@ from Flathub; host portal packages are still required for Wayland capture.
 Updates are installed manually from a newer bundle. Verify the release checksums
 before installation.
 
-To build, install native `flatpak-builder` and `jq`, or the builder Flatpak:
+To build, install `jq` and either native `flatpak-builder` or the builder Flatpak:
 
 ```sh
 flatpak install --user flathub org.flatpak.Builder
@@ -199,7 +199,9 @@ The versioned bundle and `SHA256SUMS-flatpak` are written under
 `build-linscreen-flatpak/`. The script snapshots tracked sources and refuses
 unmanaged output directories. It builds and tests inside the SDK without
 installing system development packages. The application sandbox has no network
-or unrestricted home access; direct file access is limited to Pictures.
+or unrestricted home access. Direct document access is limited to Pictures;
+the KDE runtime can also read theme settings. Build parallelism defaults to two
+jobs and can be changed with `FLATPAK_JOBS`.
 
 ## Windows
 
