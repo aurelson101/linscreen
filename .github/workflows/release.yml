@@ -23,9 +23,10 @@ jobs:
       - name: Install Flatpak tooling and runtime
         run: |
           sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends flatpak flatpak-builder jq elfutils
+          sudo apt-get install --yes --no-install-recommends flatpak jq
           flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-          flatpak install --user --noninteractive -y flathub org.kde.Platform//6.10 org.kde.Sdk//6.10
+          flatpak install --user --noninteractive -y flathub org.flatpak.Builder org.kde.Platform//6.10 org.kde.Sdk//6.10
+          flatpak run org.flatpak.Builder --version
       - name: Build and test Flatpak
         run: tools/package-linscreen-flatpak.sh
       - name: Validate installed bundle and bundled OCR
