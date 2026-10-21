@@ -28,7 +28,11 @@ jobs:
           flatpak install --user --noninteractive -y flathub org.flatpak.Builder org.kde.Platform//6.10 org.kde.Sdk//6.10
           flatpak run org.flatpak.Builder --version
       - name: Build and test Flatpak
-        run: tools/package-linscreen-flatpak.sh
+        run: |
+          dbus-run-session -- sh -ec '
+            flatpak run --command=flatpak-spawn org.flatpak.Builder --host flatpak info --show-commit org.kde.Sdk//6.10
+            tools/package-linscreen-flatpak.sh
+          '
       - name: Validate installed bundle and bundled OCR
         run: |
           flatpak install --user --noninteractive -y build-linscreen-flatpak/LinScreen-*-x86_64.flatpak
