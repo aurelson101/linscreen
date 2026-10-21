@@ -16,6 +16,7 @@ for tool in git tar jq flatpak mktemp sha256sum; do
 done
 [ "$(flatpak --default-arch)" = x86_64 ] || { echo "This bundle currently targets x86_64." >&2; exit 1; }
 if command -v flatpak-builder >/dev/null 2>&1; then
+    command -v eu-strip >/dev/null 2>&1 || { echo "Native flatpak-builder needs elfutils (eu-strip)." >&2; exit 1; }
     run_builder() { flatpak-builder "$@"; }
 elif flatpak info --user org.flatpak.Builder >/dev/null 2>&1; then
     run_builder() { flatpak run org.flatpak.Builder "$@"; }

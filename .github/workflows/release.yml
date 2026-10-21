@@ -5,6 +5,11 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
+    inputs:
+      publish:
+        description: Publish only after all package builds and tests pass
+        type: boolean
+        default: false
 
 permissions:
   contents: read
@@ -18,7 +23,7 @@ jobs:
       - name: Install Flatpak tooling and runtime
         run: |
           sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends flatpak flatpak-builder jq
+          sudo apt-get install --yes --no-install-recommends flatpak flatpak-builder jq elfutils
           flatpak remote-add --user --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
           flatpak install --user --noninteractive -y flathub org.kde.Platform//6.10 org.kde.Sdk//6.10
       - name: Build and test Flatpak
@@ -81,6 +86,10 @@ jobs:
         run: |
           version="$(sed -n 's/^set(LINSCREEN_VERSION[[:space:]]*\([0-9][^)]*\)).*/\1/p' CMakeLists.txt | head -n 1)"
           test -n "$version"
+          if [ "$GITHUB_REF_TYPE" = tag ] && [ "$GITHUB_REF_NAME" != "v$version" ]; then
+            echo "Tag and project version differ." >&2
+            exit 1
+          fi
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Generate CycloneDX SBOM
@@ -150,11 +159,22 @@ jobs:
             --bundle release-assets/SHA256SUMS.sigstore.json \
             release-assets/SHA256SUMS
 
+      - name: Verify existing release tag is immutable
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.publish)
+        run: |
+          refs="$(git ls-remote origin 'refs/tags/v${{ needs.deb.outputs.version }}' 'refs/tags/v${{ needs.deb.outputs.version }}^{}')"
+          existing="$(printf '%s\n' "$refs" | awk 'NF {if ($2 ~ /\^\{\}$/) peeled=$1; else direct=$1} END {print peeled ? peeled : direct}')"
+          if [ -n "$existing" ] && [ "$existing" != "$GITHUB_SHA" ]; then
+            echo "Refusing to replace assets of a release from another commit." >&2
+            exit 1
+          fi
       - name: Publish GitHub release
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v') || (github.event_name == 'workflow_dispatch' && inputs.publish)
         uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
         with:
           name: LinScreen ${{ needs.deb.outputs.version }}
+          tag_name: v${{ needs.deb.outputs.version }}
+          target_commitish: ${{ github.sha }}
           body_path: docs/releases/v${{ needs.deb.outputs.version }}.md
           files: |
             release-assets/linscreen_*.deb
