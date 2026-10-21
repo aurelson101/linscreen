@@ -24,6 +24,7 @@ finish-args:
 modules:
   - name: leptonica
     buildsystem: cmake-ninja
+    builddir: true
     config-opts:
       - -DBUILD_SHARED_LIBS=ON
       - -DBUILD_PROG=OFF
@@ -42,6 +43,7 @@ modules:
 
   - name: tesseract
     buildsystem: cmake-ninja
+    builddir: true
     config-opts:
       - -DBUILD_TRAINING_TOOLS=OFF
       - -DBUILD_TESTS=OFF
@@ -77,6 +79,7 @@ modules:
 
   - name: linscreen
     buildsystem: cmake-ninja
+    builddir: true
     config-opts:
       - -DCMAKE_BUILD_TYPE=Release
       - -DUSE_WAYLAND_CLIPBOARD=ON
