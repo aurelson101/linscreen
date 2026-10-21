@@ -7,6 +7,7 @@
 #include <QDialogButtonBox>
 #include <QEventLoop>
 #include <QFile>
+#include <QLabel>
 #include <QPainter>
 #include <QPlainTextEdit>
 #include <QPushButton>
@@ -35,6 +36,9 @@ int main(int argc, char** argv)
         if (mode == "fail") {
             std::fputs("private/path/should/not/be/disclosed", stderr);
             return 1;
+        }
+        if (mode == "empty") {
+            return 0;
         }
         QFile output;
         output.open(stdout, QIODevice::WriteOnly);
@@ -114,15 +118,20 @@ int main(int argc, char** argv)
         auto* ocr = dialog.findChild<LocalOcr*>();
         QPushButton* recognize = nullptr;
         QPushButton* copy = nullptr;
+        QPushButton* cancel = nullptr;
         for (auto* button : dialog.findChildren<QPushButton*>()) {
             if (button->text() == "Recognize")
                 recognize = button;
             if (button->text() == "Copy text")
                 copy = button;
+            if (button->text() == "Cancel OCR")
+                cancel = button;
         }
-        if (!buttons || !editor || !ocr || !recognize || !copy ||
-            dialog.width() > 390 || buttons->orientation() != Qt::Vertical ||
-            copy->isEnabled() || ocr->busy())
+        auto* status = dialog.findChild<QLabel*>("ocrStatus");
+        if (!buttons || !editor || !ocr || !recognize || !copy || !cancel ||
+            !status || dialog.width() > 390 ||
+            buttons->orientation() != Qt::Vertical || copy->isEnabled() ||
+            ocr->busy())
             return 20;
         QEventLoop recognition;
         QTimer watchdog;
@@ -147,6 +156,45 @@ int main(int argc, char** argv)
         copy->click();
         if (QApplication::clipboard()->text() != "Corrected text")
             return 23;
+        // Failed, cancelled and empty retries must not erase user corrections.
+        const auto retry = [&](const char* mode, bool cancelRetry) {
+            qputenv("LINSCREEN_OCR_TEST_MODE", mode);
+            recognize->click();
+            if (editor->toPlainText() != "Corrected text")
+                return false;
+            if (cancelRetry)
+                cancel->click();
+            if (ocr->busy()) {
+                watchdog.start(4000);
+                recognition.exec();
+            }
+            watchdog.stop();
+            return !ocr->busy() && editor->toPlainText() == "Corrected text" &&
+                   !editor->isReadOnly() && copy->isEnabled() &&
+                   recognize->isEnabled() &&
+                   status->text().contains("Previous text was kept.") &&
+                   QApplication::clipboard()->text() == "Corrected text";
+        };
+        if (!retry("fail", false))
+            return 27;
+        if (!retry("hang", true))
+            return 28;
+        if (!retry("empty", false))
+            return 29;
+        const auto enginePath = qgetenv("PATH");
+        qputenv("PATH", directory.filePath("missing").toUtf8());
+        if (!retry("", false))
+            return 31;
+        qputenv("PATH", enginePath);
+        // A later successful retry still replaces the previous recognition.
+        qunsetenv("LINSCREEN_OCR_TEST_MODE");
+        recognize->click();
+        watchdog.start(4000);
+        recognition.exec();
+        watchdog.stop();
+        if (ocr->busy() || editor->toPlainText() != "LOCAL OCR 12345" ||
+            QApplication::clipboard()->text() != "Corrected text")
+            return 30;
         editor->clear();
         if (copy->isEnabled())
             return 24;

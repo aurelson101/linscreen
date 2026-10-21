@@ -36,6 +36,7 @@ OcrDialog::OcrDialog(const QImage& image, QWidget* parent)
     auto* status =
       new QLabel(tr("Select a language, then recognize the text."), this);
     status->setWordWrap(true);
+    status->setObjectName("ocrStatus");
     layout->addWidget(status);
     auto* buttons = new QDialogButtonBox(QDialogButtonBox::Close, this);
     m_buttons = buttons;
@@ -61,22 +62,28 @@ OcrDialog::OcrDialog(const QImage& image, QWidget* parent)
         copy->setEnabled(!busy && !text->toPlainText().isEmpty());
     };
     connect(recognize, &QPushButton::clicked, this, [=]() {
-        text->clear();
         setBusy(true);
         status->setText(tr("Recognizing locally…"));
         engine->start(image, language->currentData().toString());
     });
     connect(cancel, &QPushButton::clicked, engine, &LocalOcr::cancel);
     connect(engine, &LocalOcr::recognized, this, [=](const QString& result) {
-        text->setPlainText(result);
+        if (!result.isEmpty()) {
+            text->setPlainText(result);
+        }
         setBusy(false);
         status->setText(result.isEmpty()
-                          ? tr("No text recognized.")
+                          ? tr("No text recognized.") +
+                              (text->toPlainText().isEmpty()
+                                 ? QString()
+                                 : " " + tr("Previous text was kept."))
                           : tr("Review the text before copying."));
     });
     connect(engine, &LocalOcr::failed, this, [=](const QString& error) {
         setBusy(false);
-        status->setText(error);
+        status->setText(error + (text->toPlainText().isEmpty()
+                                   ? QString()
+                                   : " " + tr("Previous text was kept.")));
     });
     connect(text, &QPlainTextEdit::textChanged, this, [=]() {
         copy->setEnabled(!engine->busy() && !text->toPlainText().isEmpty());

@@ -3423,6 +3423,7 @@ Vous devrez probablement remplacer le signe &apos;#&apos; par &apos;\#FFF&apos;<
     <message><source>Copy text</source><translation>Copier le texte</translation></message>
     <message><source>Recognizing locally…</source><translation>Reconnaissance locale…</translation></message>
     <message><source>No text recognized.</source><translation>Aucun texte reconnu.</translation></message>
+    <message><source>Previous text was kept.</source><translation>Le texte précédent a été conservé.</translation></message>
     <message><source>Review the text before copying.</source><translation>Relisez le texte avant de le copier.</translation></message>
 </context>
 <context>
