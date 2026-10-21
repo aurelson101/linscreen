@@ -7,7 +7,6 @@ default-branch: stable
 build-options:
   env:
     CMAKE_BUILD_PARALLEL_LEVEL: '2'
-    TESSDATA_PREFIX: /app/share/tessdata
 finish-args:
   # X11 + XShm access
   - --share=ipc
@@ -91,7 +90,7 @@ modules:
     run-tests: true
     test-rule: ''
     test-commands:
-      - QT_QPA_PLATFORM=offscreen ctest --output-on-failure
+      - QT_QPA_PLATFORM=offscreen FONTCONFIG_FILE=/etc/fonts/fonts.conf TESSDATA_PREFIX=/app/share/tessdata ctest --output-on-failure
     sources:
       - type: dir
         path: ../..

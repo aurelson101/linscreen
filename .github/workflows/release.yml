@@ -35,7 +35,7 @@ jobs:
           flatpak run --command=tesseract org.linscreen.LinScreen --list-langs
           helper="$(find "$PWD/build-linscreen-flatpak/state/build" -path '*/tests/linscreen_ocr_test' -type f -print -quit)"
           test -n "$helper"
-          flatpak run --env=QT_QPA_PLATFORM=offscreen --filesystem="$helper:ro" \
+          flatpak run --env=QT_QPA_PLATFORM=offscreen --env=FONTCONFIG_FILE=/etc/fonts/fonts.conf --filesystem="$helper:ro" \
             --command="$helper" org.linscreen.LinScreen --real
       - name: Upload Flatpak
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4

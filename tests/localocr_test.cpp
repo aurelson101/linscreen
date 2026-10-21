@@ -94,10 +94,16 @@ int main(int argc, char** argv)
         painter.setFont(QFont("DejaVu Sans", 32));
         painter.drawText(30, 90, "BONJOUR LOCAL OCR 12345");
         painter.end();
-        return run("", "fra+eng", 4000, false) && error.isEmpty() &&
-                   result.contains("12345") && result.contains("BONJOUR")
-                 ? 0
-                 : 1;
+        const bool success = run("", "fra+eng", 4000, false) &&
+                             error.isEmpty() && result.contains("12345") &&
+                             result.contains("BONJOUR");
+        if (!success) {
+            std::fprintf(stderr,
+                         "Synthetic OCR failed: error=%s result=%s\n",
+                         qPrintable(error),
+                         qPrintable(result));
+        }
+        return success ? 0 : 1;
     }
     image.setPixelColor(0, 0, Qt::black);
     QTemporaryDir directory;
