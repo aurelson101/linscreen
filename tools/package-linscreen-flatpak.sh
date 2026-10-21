@@ -12,6 +12,7 @@ esac
 for tool in git tar jq flatpak mktemp sha256sum; do
     command -v "$tool" >/dev/null 2>&1 || { echo "$tool is required." >&2; exit 1; }
 done
+[ "$(flatpak --default-arch)" = x86_64 ] || { echo "This bundle currently targets x86_64." >&2; exit 1; }
 if command -v flatpak-builder >/dev/null 2>&1; then
     run_builder() { flatpak-builder "$@"; }
 elif flatpak info --user org.flatpak.Builder >/dev/null 2>&1; then
@@ -25,6 +26,9 @@ if ! git diff --quiet HEAD || [ -n "$(git ls-files --others --exclude-standard)"
     exit 1
 fi
 marker="$work_dir/.linscreen-flatpak-workspace"
+for entry in "$marker" "$work_dir/appdir" "$work_dir/repo" "$work_dir/state"; do
+    [ ! -L "$entry" ] || { echo "Refusing a symlinked build entry: $entry" >&2; exit 1; }
+done
 if [ -d "$work_dir" ] && [ ! -f "$marker" ] &&
    [ -n "$(find "$work_dir" -mindepth 1 -maxdepth 1 -print -quit)" ]; then
     echo "Refusing to reuse a non-empty, unmanaged build directory." >&2
@@ -44,7 +48,7 @@ version="$(sed -n 's/^set(LINSCREEN_VERSION[[:space:]]*\([0-9][^)]*\)).*/\1/p' C
 manifest_dir="$source_dir/packaging/flatpak"
 run_builder --show-manifest "$manifest_dir/org.linscreen.LinScreen.yml" |
     jq --arg revision "$revision" '."build-options".env.GIT_HASH = $revision' > "$manifest_dir/resolved.json"
-run_builder --user --force-clean --keep-build-dirs --jobs=2 \
+run_builder --user --disable-rofiles-fuse --force-clean --keep-build-dirs --jobs=2 \
     --state-dir="$work_dir/state" --repo="$work_dir/repo" \
     "$work_dir/appdir" "$manifest_dir/resolved.json"
 bundle="LinScreen-${version}-x86_64.flatpak"
