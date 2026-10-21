@@ -15,7 +15,7 @@ done
 if command -v flatpak-builder >/dev/null 2>&1; then
     run_builder() { flatpak-builder "$@"; }
 elif flatpak info --user org.flatpak.Builder >/dev/null 2>&1; then
-    run_builder() { flatpak run --command=flatpak-builder org.flatpak.Builder "$@"; }
+    run_builder() { flatpak run org.flatpak.Builder "$@"; }
 else
     echo "Install flatpak-builder or the user Flatpak org.flatpak.Builder first." >&2
     exit 1
