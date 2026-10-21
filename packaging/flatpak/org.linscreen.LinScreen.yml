@@ -26,6 +26,7 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=lib
       - -DBUILD_SHARED_LIBS=ON
       - -DBUILD_PROG=OFF
       - -DENABLE_GIF=OFF
@@ -45,6 +46,7 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=lib
       - -DBUILD_TRAINING_TOOLS=OFF
       - -DBUILD_TESTS=OFF
       - -DDISABLE_CURL=ON
@@ -81,6 +83,7 @@ modules:
     buildsystem: cmake-ninja
     builddir: true
     config-opts:
+      - -DCMAKE_INSTALL_LIBDIR=lib
       - -DCMAKE_BUILD_TYPE=Release
       - -DUSE_WAYLAND_CLIPBOARD=ON
       - -DUSE_LAUNCHER_ABSOLUTE_PATH=OFF
@@ -90,7 +93,9 @@ modules:
     run-tests: true
     test-rule: ''
     test-commands:
-      - QT_QPA_PLATFORM=offscreen FONTCONFIG_FILE=/etc/fonts/fonts.conf TESSDATA_PREFIX=/app/share/tessdata ctest --output-on-failure
+      - tesseract --version
+      - TESSDATA_PREFIX=/app/share/tessdata tesseract --list-langs
+      - QT_QPA_PLATFORM=offscreen TESSDATA_PREFIX=/app/share/tessdata ctest --output-on-failure
     sources:
       - type: dir
         path: ../..
