@@ -17,7 +17,8 @@ Current beta version: 14.1.0
 - Multi-monitor and high-DPI Linux desktop behavior.
 - Debian packaging with desktop entry, icon, and DBus service integration.
 - Portable AppImage builds with bundled Qt Wayland support and English/French Qt translation catalogs.
-- Future help wanted for Flatpak, RPM, and Windows packaging.
+- A standalone Flatpak with French/English OCR is available from GitHub releases. It is not listed on Flathub.
+- Help is welcome for native portal testing and a policy-compliant, human-maintained Flathub submission, plus RPM and Windows packaging.
 
 ## Relationship To Flameshot
 

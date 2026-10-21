@@ -31,16 +31,23 @@ SPDX-License-Identifier: CC0-1.0
 
   <description>
     <p>
-      Wayland-focused screenshot and annotation tool with built-in
-      editor with advanced features.
+      LinScreen is an open-source screenshot and annotation tool for Linux
+      desktops. Capture a region, a screen or a monitor, annotate the image,
+      and save or copy the result.
+    </p>
+    <p>
+      Extract text locally with French and English OCR, then review and edit
+      the recognized text before copying it. Images are not uploaded for
+      text recognition. The standalone Flatpak includes the OCR engine and
+      both language models.
     </p>
     <p>Features:</p>
     <ul>
-      <li>Customizable appearance</li>
-      <li>Very easy to use</li>
-      <li>In-app screenshot editing and annotation</li>
-      <li>DBus interface</li>
-      <li>Upload to Imgur</li>
+      <li>Wayland capture through desktop portals and X11 support</li>
+      <li>Arrows, text, shapes and numbered counters</li>
+      <li>Opaque redaction for manually selected sensitive areas</li>
+      <li>Local French and English text recognition</li>
+      <li>Responsive configuration and high-DPI support</li>
     </ul>
   </description>
 
@@ -69,7 +76,7 @@ SPDX-License-Identifier: CC0-1.0
     </screenshot>
   </screenshots>
 
-  <url type="homepage">https://github.com/aurelson101/linscreen</url>
+  <url type="homepage">https://linscreen.aurelson.com/</url>
   <url type="bugtracker">https://github.com/aurelson101/linscreen/issues</url>
   <url type="contribute">https://github.com/aurelson101/linscreen/blob/master/docs/CONTRIBUTING.md</url>
   <url type="vcs-browser">https://github.com/aurelson101/linscreen/</url>

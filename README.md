@@ -182,6 +182,25 @@ from Flathub; host portal packages are still required for Wayland capture.
 Updates are installed manually from a newer bundle. Verify the release checksums
 before installation.
 
+### Help wanted: Flathub
+
+The standalone Flatpak is available, but LinScreen has not been submitted to
+Flathub. Help is welcome for native portal and permission testing on GNOME,
+KDE Plasma and XFCE, and for a human-maintained Flathub submission.
+
+The existing standalone manifest, packaging scripts and portions of the
+application, documentation and metadata were developed with AI assistance.
+[Flathub's current policy](https://docs.flathub.org/docs/for-app-authors/requirements#generative-ai-policy)
+prohibits AI-assisted manifests and AI-agent submission interactions. A human
+maintainer must independently write the Flathub manifest, select an application
+ID tied to a controlled domain or repository, disclose the affected AI-assisted
+material and its approximate extent, and submit and maintain the application
+manually. The current manifest must not be submitted as-is.
+
+Website: <https://linscreen.aurelson.com/>
+
+Source code and downloads: <https://github.com/aurelson101/linscreen>
+
 To build, install `jq` and either native `flatpak-builder` with `elfutils` or the builder Flatpak:
 
 ```sh
