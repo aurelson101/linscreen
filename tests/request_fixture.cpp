@@ -29,3 +29,23 @@ uint CaptureRequest::delay() const
 {
     return m_delay;
 }
+
+CaptureRequest::CaptureMode CaptureRequest::captureMode() const
+{
+    return m_mode;
+}
+
+QVariant CaptureRequest::data() const
+{
+    return m_data;
+}
+
+bool CaptureRequest::hasSelectedMonitor() const
+{
+    return m_hasSelectedMonitor;
+}
+
+int CaptureRequest::selectedMonitor() const
+{
+    return m_selectedMonitor;
+}

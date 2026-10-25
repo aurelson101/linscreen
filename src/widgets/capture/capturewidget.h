@@ -41,6 +41,7 @@ class UpdateNotificationWidget;
 #endif
 class UtilityPanel;
 class SidePanelWidget;
+class CaptureToolsMenu;
 
 class CaptureWidget : public QWidget
 {
@@ -196,6 +197,7 @@ private:
     QPointer<QMessageBox> m_quitPrompt;
 
     ButtonHandler* m_buttonHandler;
+    CaptureToolsMenu* m_toolsMenu = nullptr;
     UtilityPanel* m_panel;
     SidePanelWidget* m_sidePanel;
     ColorPicker* m_colorPicker;

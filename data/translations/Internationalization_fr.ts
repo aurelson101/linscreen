@@ -111,6 +111,10 @@
 <context>
     <name>CaptureLauncher</name>
     <message>
+        <source>Selected Monitor</source>
+        <translation>Moniteur sélectionné</translation>
+    </message>
+    <message>
         <source>Cancel capture</source>
         <translation>Annuler la capture</translation>
     </message>
@@ -208,6 +212,10 @@
 </context>
 <context>
     <name>CaptureWidget</name>
+    <message>
+        <source>Show all capture tools</source>
+        <translation>Afficher tous les outils de capture</translation>
+    </message>
     <message>
         <source>Unable to capture screen</source>
         <translation type="vanished">Impossible de capturer l&apos;écran</translation>
@@ -2596,6 +2604,10 @@ Vous devrez probablement remplacer le signe &apos;#&apos; par &apos;\#FFF&apos;<
 <context>
     <name>ShortcutsWidget</name>
     <message>
+        <source>Show all capture tools</source>
+        <translation>Afficher tous les outils de capture</translation>
+    </message>
+    <message>
         <location filename="../../src/config/shortcutswidget.cpp" line="31"/>
         <source>Hot Keys</source>
         <translation>Raccourcis clavier</translation>
@@ -3437,5 +3449,11 @@ Vous devrez probablement remplacer le signe &apos;#&apos; par &apos;\#FFF&apos;<
     <message><source>OCR cancelled.</source><translation>OCR annulé.</translation></message>
     <message><source>OCR output exceeded the safety limit.</source><translation>La sortie OCR dépasse la limite de sécurité.</translation></message>
     <message><source>Recognition failed. Check that the selected language data is installed, or try another language.</source><translation>Échec de reconnaissance. Vérifiez les données de la langue sélectionnée ou essayez une autre langue.</translation></message>
+</context>
+<context>
+    <name>CaptureToolsMenu</name>
+    <message><source>All tools</source><translation>Tous les outils</translation></message>
+    <message><source>All capture tools</source><translation>Tous les outils de capture</translation></message>
+    <message><source>Show all available tools, including hidden toolbar tools</source><translation>Afficher tous les outils disponibles, y compris ceux masqués dans la barre d’outils</translation></message>
 </context>
 </TS>

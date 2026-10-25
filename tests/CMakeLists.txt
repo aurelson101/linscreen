@@ -7,6 +7,37 @@ set_tests_properties(cli_help PROPERTIES
   PASS_REGULAR_EXPRESSION "Usage:.*linscreen")
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
+add_executable(linscreen_tools_menu_test
+  capturetoolsmenu_test.cpp
+  ../src/widgets/capture/capturetoolsmenu.cpp
+  ../src/widgets/capture/capturetoolsmenu.h)
+set_target_properties(linscreen_tools_menu_test PROPERTIES AUTOMOC ON)
+target_include_directories(linscreen_tools_menu_test PRIVATE ../src)
+target_compile_features(linscreen_tools_menu_test PRIVATE cxx_std_20)
+target_link_libraries(linscreen_tools_menu_test PRIVATE Qt6::Widgets)
+add_test(NAME capture_tools_menu COMMAND linscreen_tools_menu_test)
+set_tests_properties(capture_tools_menu PROPERTIES
+  ENVIRONMENT "QT_QPA_PLATFORM=offscreen" TIMEOUT 10)
+
+add_executable(linscreen_buttonhandler_test
+  buttonhandler_test.cpp
+  ../src/widgets/capture/buttonhandler.cpp
+  ../src/widgets/capture/buttonhandler.h
+  ../src/widgets/capture/capturetoolbutton.h
+  ../src/widgets/capture/capturebutton.cpp
+  ../src/widgets/capture/capturebutton.h
+  ../src/utils/colorutils.cpp
+  ../src/utils/globalvalues.cpp)
+set_target_properties(linscreen_buttonhandler_test PROPERTIES AUTOMOC ON)
+target_include_directories(linscreen_buttonhandler_test PRIVATE ../src)
+target_compile_features(linscreen_buttonhandler_test PRIVATE cxx_std_20)
+target_compile_definitions(linscreen_buttonhandler_test PRIVATE
+  APP_VERSION="v${PROJECT_VERSION}" LINSCREEN_GIT_HASH="test")
+target_link_libraries(linscreen_buttonhandler_test PRIVATE Qt6::Widgets)
+add_test(NAME capture_toolbar_responsive COMMAND linscreen_buttonhandler_test)
+set_tests_properties(capture_toolbar_responsive PROPERTIES
+  ENVIRONMENT "QT_QPA_PLATFORM=offscreen" TIMEOUT 15)
+
 add_executable(linscreen_ocr_test
   localocr_test.cpp ../src/utils/localocr.cpp ../src/utils/localocr.h
   ../src/widgets/ocrdialog.cpp ../src/widgets/ocrdialog.h)

@@ -4,6 +4,7 @@ target_sources(
         PRIVATE buttonhandler.h
         capturebutton.h
         capturetoolbutton.h
+        capturetoolsmenu.h
         capturewidget.h
         colorpicker.h
         hovereventfilter.h
@@ -18,6 +19,7 @@ target_sources(
         PRIVATE buttonhandler.cpp
         capturebutton.cpp
         capturetoolbutton.cpp
+        capturetoolsmenu.cpp
         capturewidget.cpp
         colorpicker.cpp
         hovereventfilter.cpp

@@ -41,17 +41,19 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
     setAttribute(Qt::WA_DeleteOnClose);
     setWindowIcon(QIcon(GlobalValues::iconPath()));
 
-    ui->captureType->insertItem(
-      1, tr("Rectangular Region"), CaptureRequest::GRAPHICAL_MODE);
+    ui->captureType->addItem(tr("Rectangular Region"),
+                             CaptureRequest::GRAPHICAL_MODE);
 
 #if defined(Q_OS_MACOS)
     // Following to MacOS philosophy (one application cannot be displayed on
     // more than one display)
-    ui->captureType->insertItem(
-      2, tr("Full Screen (Current Display)"), CaptureRequest::FULLSCREEN_MODE);
+    ui->captureType->addItem(tr("Full Screen (Current Display)"),
+                             CaptureRequest::FULLSCREEN_MODE);
 #else
-    ui->captureType->insertItem(
-      2, tr("Full Screen"), CaptureRequest::FULLSCREEN_MODE);
+    ui->captureType->addItem(tr("Full Screen"),
+                             CaptureRequest::FULLSCREEN_MODE);
+    ui->captureType->addItem(tr("Selected Monitor"),
+                             CaptureRequest::SCREEN_MODE);
     const QList<QScreen*> screens = QGuiApplication::screens();
     for (int i = 0; i < screens.size(); ++i) {
         QScreen* screen = screens[i];
@@ -68,16 +70,6 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
     int currentIndex = screens.indexOf(currentScreen);
     if (currentIndex >= 0) {
         ui->monitorSelection->setCurrentIndex(currentIndex);
-    }
-#endif
-
-#ifdef Q_OS_MACOS
-    ui->monitorLabel->setVisible(false);
-    ui->monitorSelection->setVisible(false);
-#else
-    if (screens.size() <= 1) {
-        ui->monitorLabel->setVisible(false);
-        ui->monitorSelection->setVisible(false);
     }
 #endif
 
@@ -117,23 +109,8 @@ CaptureLauncher::CaptureLauncher(QDialog* parent)
     connect(ui->captureType,
             QOverload<int>::of(&QComboBox::currentIndexChanged),
             this,
-            [this]() {
-                auto mode = static_cast<CaptureRequest::CaptureMode>(
-                  ui->captureType->currentData().toInt());
-                if (mode == CaptureRequest::CaptureMode::GRAPHICAL_MODE) {
-                    ui->sizeLabel->show();
-                    ui->screenshotX->show();
-                    ui->screenshotY->show();
-                    ui->screenshotWidth->show();
-                    ui->screenshotHeight->show();
-                } else {
-                    ui->sizeLabel->hide();
-                    ui->screenshotX->hide();
-                    ui->screenshotY->hide();
-                    ui->screenshotWidth->hide();
-                    ui->screenshotHeight->hide();
-                }
-            });
+            &CaptureLauncher::updateCaptureModeControls);
+    updateCaptureModeControls();
 
     auto lastRegion = getLastRegion();
     ui->screenshotX->setText(QString::number(lastRegion.x()));
@@ -184,6 +161,11 @@ void CaptureLauncher::startCapture()
 
     auto mode = static_cast<CaptureRequest::CaptureMode>(
       ui->captureType->currentData().toInt());
+    if (mode == CaptureRequest::SCREEN_MODE &&
+        !ui->monitorSelection->currentData().isValid()) {
+        ui->monitorSelection->setFocus();
+        return;
+    }
     if (mode == CaptureRequest::GRAPHICAL_MODE) {
         for (QLineEdit* field : { ui->screenshotWidth,
                                   ui->screenshotHeight,
@@ -211,7 +193,11 @@ void CaptureLauncher::startCapture()
 
     auto const additionalDelayToHideUI = 600;
     auto const secondsToMilliseconds = 1000;
-    CaptureRequest req(mode, additionalDelayToHideUI);
+    CaptureRequest req(mode,
+                       additionalDelayToHideUI,
+                       mode == CaptureRequest::SCREEN_MODE
+                         ? ui->monitorSelection->currentData()
+                         : QVariant());
 
     if (mode == CaptureRequest::CaptureMode::GRAPHICAL_MODE) {
         req.setInitialSelection(QRect(ui->screenshotX->text().toInt(),
@@ -221,8 +207,10 @@ void CaptureLauncher::startCapture()
     }
 
 #ifndef Q_OS_MACOS
-    int selectedMonitor = ui->monitorSelection->currentData().toInt();
-    req.setSelectedMonitor(selectedMonitor);
+    if (mode == CaptureRequest::GRAPHICAL_MODE ||
+        mode == CaptureRequest::SCREEN_MODE) {
+        req.setSelectedMonitor(ui->monitorSelection->currentData().toInt());
+    }
 #else
     req.setSelectedMonitor(-1);
 #endif
@@ -287,6 +275,26 @@ void CaptureLauncher::setCaptureControlsEnabled(bool enabled)
     ui->screenshotY->setEnabled(enabled);
 }
 
+void CaptureLauncher::updateCaptureModeControls()
+{
+    const auto mode = static_cast<CaptureRequest::CaptureMode>(
+      ui->captureType->currentData().toInt());
+    const bool region = mode == CaptureRequest::GRAPHICAL_MODE;
+    ui->sizeLabel->setVisible(region);
+    ui->screenshotX->setVisible(region);
+    ui->screenshotY->setVisible(region);
+    ui->screenshotWidth->setVisible(region);
+    ui->screenshotHeight->setVisible(region);
+#ifdef Q_OS_MACOS
+    const bool monitor = false;
+#else
+    const bool monitor = mode == CaptureRequest::SCREEN_MODE ||
+                         (region && ui->monitorSelection->count() > 1);
+#endif
+    ui->monitorLabel->setVisible(monitor);
+    ui->monitorSelection->setVisible(monitor);
+}
+
 void CaptureLauncher::connectCaptureSlots() const
 {
     connect(LinScreen::instance(),
@@ -326,7 +334,8 @@ void CaptureLauncher::onCaptureTaken(QPixmap const& screenshot)
     auto mode = static_cast<CaptureRequest::CaptureMode>(
       ui->captureType->currentData().toInt());
 
-    if (mode == CaptureRequest::FULLSCREEN_MODE) {
+    if (mode == CaptureRequest::FULLSCREEN_MODE ||
+        mode == CaptureRequest::SCREEN_MODE) {
         saveToFilesystemGUI(screenshot);
     }
     setCaptureControlsEnabled(true);

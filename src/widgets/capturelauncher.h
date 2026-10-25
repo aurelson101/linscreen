@@ -26,6 +26,7 @@ private:
     QTimer* m_captureTimer;
     int m_remainingSeconds;
     void setCaptureControlsEnabled(bool enabled);
+    void updateCaptureModeControls();
     void connectCaptureSlots() const;
     void disconnectCaptureSlots() const;
     void updateCountdown();

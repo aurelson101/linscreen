@@ -72,7 +72,7 @@ private:
     void resetRegionTrack();
     void updateBlockedSides();
     void expandSelection();
-    void positionButtonsInside(int index);
+    void positionButtonsInside(const QRect& selection);
     void ensureSelectionMinimumSize();
     void moveButtonsToPoints(const QVector<QPoint>& points, int& index);
     void adjustHorizontalCenter(QPoint& center);

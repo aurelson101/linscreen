@@ -11,6 +11,11 @@ class LinScreen : public QObject
 public:
     int requests = 0;
     uint lastDelay = 0;
+    CaptureRequest::CaptureMode lastMode = CaptureRequest::GRAPHICAL_MODE;
+    QVariant lastData;
+    bool lastHasSelectedMonitor = false;
+    int lastSelectedMonitor = -1;
+    bool captureSucceeds = false;
     static LinScreen* instance()
     {
         static LinScreen backend;
@@ -20,8 +25,18 @@ public:
     {
         ++requests;
         lastDelay = request.delay();
+        lastMode = request.captureMode();
+        lastData = request.data();
+        lastHasSelectedMonitor = request.hasSelectedMonitor();
+        lastSelectedMonitor = request.selectedMonitor();
         emit requestStarted();
-        emit captureFailed();
+        if (captureSucceeds) {
+            QPixmap image(8, 8);
+            image.fill(Qt::white);
+            emit captureTaken(image);
+        } else {
+            emit captureFailed();
+        }
     }
 signals:
     void requestStarted();

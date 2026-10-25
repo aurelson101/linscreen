@@ -6,6 +6,7 @@
 
 #include <QPoint>
 #include <QScreen>
+#include <algorithm>
 
 // ButtonHandler is a handler for every active button. It makes easier to
 // manipulate the buttons as a unit.
@@ -14,8 +15,8 @@ ButtonHandler::ButtonHandler(const QVector<CaptureToolButton*>& v,
                              QObject* parent)
   : QObject(parent)
 {
-    setButtons(v);
     init();
+    setButtons(v);
 }
 
 ButtonHandler::ButtonHandler(QObject* parent)
@@ -33,7 +34,11 @@ void ButtonHandler::hide()
 
 void ButtonHandler::show()
 {
-    if (m_vectorButtons.isEmpty() || m_vectorButtons.first()->isVisible()) {
+    if (m_vectorButtons.isEmpty() ||
+        std::none_of(m_screenRegions.cbegin(),
+                     m_screenRegions.cend(),
+                     [](const QRect& screen) { return !screen.isEmpty(); }) ||
+        m_vectorButtons.first()->isVisible()) {
         return;
     }
     for (CaptureToolButton* b : m_vectorButtons) {
@@ -43,6 +48,9 @@ void ButtonHandler::show()
 
 bool ButtonHandler::isVisible() const
 {
+    if (m_vectorButtons.isEmpty()) {
+        return false;
+    }
     bool ret = true;
     for (const CaptureToolButton* b : m_vectorButtons) {
         if (!b->isVisible()) {
@@ -71,11 +79,30 @@ void ButtonHandler::updatePosition(const QRect& selection)
 {
     resetRegionTrack();
     const int vecLength = m_vectorButtons.size();
-    if (vecLength == 0) {
+    if (vecLength == 0 ||
+        std::none_of(m_screenRegions.cbegin(),
+                     m_screenRegions.cend(),
+                     [](const QRect& screen) { return !screen.isEmpty(); })) {
+        hide();
         return;
+    }
+    // Restore normal dimensions after a previous compact-screen layout.
+    for (auto* button : m_vectorButtons) {
+        button->setMinimumSize(0, 0);
+        button->setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
+        button->resize(m_buttonBaseSize, m_buttonBaseSize);
+        button->setIconSize(QSize(m_buttonBaseSize, m_buttonBaseSize) * 0.6);
+        button->setMask(
+          QRegion(QRect(-1, -1, m_buttonBaseSize + 2, m_buttonBaseSize + 2),
+                  QRegion::Ellipse));
+        button->setStyleSheet(button->CaptureButton::styleSheet());
     }
     // Copy of the selection area for internal modifications
     m_selection = intersectWithAreas(selection);
+    if (m_selection.isEmpty()) {
+        positionButtonsInside(selection);
+        return;
+    }
     updateBlockedSides();
     ensureSelectionMinimumSize();
     // Indicates the actual button to be moved
@@ -85,8 +112,7 @@ void ButtonHandler::updatePosition(const QRect& selection)
 
         // Add them inside the area when there is no more space
         if (m_allSidesBlocked) {
-            m_selection = selection;
-            positionButtonsInside(elemIndicator);
+            positionButtonsInside(selection);
             break; // the while
         }
         // Number of buttons per row column
@@ -238,7 +264,10 @@ QRect ButtonHandler::intersectWithAreas(const QRect& rect)
 
 void ButtonHandler::init()
 {
-    m_separator = GlobalValues::buttonBaseSize() / 4;
+    m_buttonBaseSize = GlobalValues::buttonBaseSize();
+    m_separator = m_buttonBaseSize / 4;
+    m_buttonExtendedSize = m_buttonBaseSize + m_separator;
+    m_buttonsAreInside = false;
 }
 
 void ButtonHandler::resetRegionTrack()
@@ -289,25 +318,56 @@ void ButtonHandler::expandSelection()
     m_selection = intersectWithAreas(m_selection);
 }
 
-void ButtonHandler::positionButtonsInside(int index)
+void ButtonHandler::positionButtonsInside(const QRect& selection)
 {
-    // Position the buttons in the botton-center of the main but inside of the
-    // selection.
-    QRect mainArea = m_selection;
-    mainArea = intersectWithAreas(mainArea);
-    const int buttonsPerRow = (mainArea.width()) / (m_buttonExtendedSize);
-    if (buttonsPerRow == 0) {
+    // Use the actual monitor, not a potentially tiny original selection.
+    // Reposition the entire toolbar so old outer rows cannot overlap this grid.
+    QRect mainArea;
+    qint64 bestOverlap = -1;
+    for (const auto& screen : m_screenRegions) {
+        const QRect overlap = screen.intersected(selection);
+        const qint64 area = qint64(overlap.width()) * overlap.height();
+        if (!screen.isEmpty() && area > bestOverlap) {
+            bestOverlap = area;
+            mainArea = screen;
+        }
+    }
+    if (mainArea.isEmpty()) {
         return;
     }
-    QPoint center =
-      QPoint(mainArea.center().x(), mainArea.bottom() - m_buttonExtendedSize);
-
-    while (m_vectorButtons.size() > index) {
-        int addCounter = buttonsPerRow;
-        addCounter = qBound(0, addCounter, m_vectorButtons.size() - index);
-        QVector<QPoint> positions = horizontalPoints(center, addCounter, true);
-        moveButtonsToPoints(positions, index);
-        center.setY(center.y() - m_buttonExtendedSize);
+    const int count = m_vectorButtons.size();
+    int side =
+      qMin(m_buttonBaseSize, qMin(mainArea.width(), mainArea.height()));
+    int gap = qMin(m_separator, side / 4);
+    while (side > 1 && ((mainArea.width() + gap) / (side + gap)) *
+                           ((mainArea.height() + gap) / (side + gap)) <
+                         count) {
+        --side;
+        gap = qMin(m_separator, side / 4);
+    }
+    const int columns =
+      qMin(count, qMax(1, (mainArea.width() + gap) / (side + gap)));
+    const int rows = (count + columns - 1) / columns;
+    const int left =
+      mainArea.left() +
+      (mainArea.width() - columns * side - (columns - 1) * gap) / 2;
+    const int top = mainArea.bottom() - rows * side - (rows - 1) * gap + 1;
+    for (int index = 0; index < count; ++index) {
+        auto* button = m_vectorButtons[index];
+        button->setFixedSize(side, side);
+        button->setIconSize(QSize(side, side) * 0.6);
+        button->setMask(
+          QRegion(QRect(-1, -1, side + 2, side + 2), QRegion::Ellipse));
+        button->setStyleSheet(
+          // Generate a fresh base; QWidget::styleSheet() would accumulate
+          // rules.
+          button->CaptureButton::styleSheet() +
+          QStringLiteral("CaptureToolButton { border-radius: %1px; }")
+            .arg(side / 2));
+        button->move(left + (index % columns) * (side + gap),
+                     qBound(mainArea.top(),
+                            top + (index / columns) * (side + gap),
+                            mainArea.bottom() - side + 1));
     }
 
     m_buttonsAreInside = true;
@@ -356,32 +416,23 @@ void ButtonHandler::adjustHorizontalCenter(QPoint& center)
 // setButtons redefines the buttons of the button handler
 void ButtonHandler::setButtons(const QVector<CaptureToolButton*>& v)
 {
-    if (v.isEmpty()) {
-        return;
-    }
-
     for (CaptureToolButton* b : m_vectorButtons) {
         delete (b);
     }
     m_vectorButtons = v;
-    m_buttonBaseSize = GlobalValues::buttonBaseSize();
-    m_buttonExtendedSize = m_buttonBaseSize + m_separator;
+    init();
 }
 
 bool ButtonHandler::contains(const QPoint& p) const
 {
-    if (m_vectorButtons.isEmpty()) {
-        return false;
+    for (const auto* button : m_vectorButtons) {
+        if (button->geometry()
+              .adjusted(-m_separator, -m_separator, m_separator, m_separator)
+              .contains(p)) {
+            return true;
+        }
     }
-    QPoint first(m_vectorButtons.first()->pos());
-    QPoint last(m_vectorButtons.last()->pos());
-    bool firstIsTopLeft = (first.x() <= last.x() && first.y() <= last.y());
-    QPoint topLeft = firstIsTopLeft ? first : last;
-    QPoint bottonRight = firstIsTopLeft ? last : first;
-    topLeft += QPoint(-m_separator, -m_separator);
-    bottonRight += QPoint(m_buttonExtendedSize, m_buttonExtendedSize);
-    QRegion r(QRect(topLeft, bottonRight).normalized());
-    return r.contains(p);
+    return false;
 }
 
 void ButtonHandler::updateScreenRegions(const QVector<QRect>& rects)

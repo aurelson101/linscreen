@@ -18,6 +18,7 @@
 #include "utils/abstractlogger.h"
 #include "utils/screengrabber.h"
 #include "utils/screenshotsaver.h"
+#include "widgets/capture/capturetoolsmenu.h"
 #include "widgets/capture/colorpicker.h"
 #include "widgets/capture/hovereventfilter.h"
 #include "widgets/capture/modificationcommand.h"
@@ -28,10 +29,12 @@
 #include "widgets/panel/sidepanelwidget.h"
 #include "widgets/panel/utilitypanel.h"
 
+#include <QAction>
 #include <QApplication>
 #include <QCheckBox>
 #include <QDateTime>
 #include <QFontMetrics>
+#include <QMenu>
 #include <QMessageBox>
 #include <QPaintEvent>
 #include <QPainter>
@@ -331,6 +334,11 @@ CaptureWidget::~CaptureWidget()
 
 void CaptureWidget::initButtons()
 {
+    m_toolsMenu = new CaptureToolsMenu(this);
+    makeChild(m_toolsMenu);
+    connect(m_toolsMenu->menu(), &QMenu::aboutToShow, this, [this]() {
+        m_toolsMenu->setActiveTool(static_cast<int>(activeButtonToolType()));
+    });
     auto allButtonTypes = CaptureToolButton::getIterableButtonTypes();
     auto visibleButtonTypes = m_config.buttons();
     if ((m_context.request.tasks() == CaptureRequest::NO_TASK) ||
@@ -384,6 +392,29 @@ void CaptureWidget::initButtons()
 
         m_tools[t] = b->tool();
 
+        auto* action = m_toolsMenu->addTool(
+          static_cast<int>(t),
+          b->icon(),
+          b->name(),
+          b->description(),
+          ConfigHandler().shortcut(QVariant::fromValue(t).toString()),
+          b->tool()->isSelectable());
+        connect(
+          action, &QAction::triggered, this, [this, b]() { setState(b); });
+        if (t == CaptureTool::TYPE_UNDO) {
+            action->setEnabled(m_undoStack.canUndo());
+            connect(&m_undoStack,
+                    &QUndoStack::canUndoChanged,
+                    action,
+                    &QAction::setEnabled);
+        } else if (t == CaptureTool::TYPE_REDO) {
+            action->setEnabled(m_undoStack.canRedo());
+            connect(&m_undoStack,
+                    &QUndoStack::canRedoChanged,
+                    action,
+                    &QAction::setEnabled);
+        }
+
         connect(b->tool(),
                 &CaptureTool::requestAction,
                 this,
@@ -406,6 +437,8 @@ void CaptureWidget::initButtons()
         }
     }
     m_buttonHandler->setButtons(vectorButtons);
+    m_toolsMenu->adjustSize();
+    m_toolsMenu->move(qMax(4, width() - m_toolsMenu->width() - 12), 12);
 }
 
 void CaptureWidget::handleButtonRightClick(CaptureToolButton* b)
@@ -485,6 +518,8 @@ void CaptureWidget::initHelpMessage()
     }
     keyMap << std::pair(tr("Mouse Wheel"), tr("Change tool size"));
     keyMap << std::pair(tr("Right Click"), tr("Show color picker"));
+    keyMap << std::pair(ConfigHandler().shortcut("TYPE_SHOW_TOOLS"),
+                        tr("Show all capture tools"));
     keyMap << std::pair(ConfigHandler().shortcut("TYPE_TOGGLE_PANEL"),
                         tr("Open side panel"));
     keyMap << std::pair(tr("Esc"), tr("Exit"));
@@ -1172,6 +1207,9 @@ void CaptureWidget::wheelEvent(QWheelEvent* e)
 void CaptureWidget::resizeEvent(QResizeEvent* e)
 {
     QWidget::resizeEvent(e);
+    if (m_toolsMenu) {
+        m_toolsMenu->move(qMax(4, width() - m_toolsMenu->width() - 12), 12);
+    }
     m_context.widgetOffset = mapToGlobal(QPoint(0, 0));
     if (!m_context.fullscreen) {
         m_panel->setFixedHeight(height());
@@ -1646,6 +1684,12 @@ void CaptureWidget::removeToolObject(int index)
 
 void CaptureWidget::initShortcuts()
 {
+    const auto toolsShortcuts = newShortcut(
+      QKeySequence(ConfigHandler().shortcut("TYPE_SHOW_TOOLS")), this, nullptr);
+    for (auto* shortcut : toolsShortcuts) {
+        connect(
+          shortcut, &QShortcut::activated, m_toolsMenu, &QToolButton::showMenu);
+    }
     newShortcut(
       QKeySequence(ConfigHandler().shortcut("TYPE_UNDO")), this, SLOT(undo()));
 
