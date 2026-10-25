@@ -6,7 +6,11 @@ add_test(NAME cli_help COMMAND $<TARGET_FILE:linscreen> --help)
 set_tests_properties(cli_help PROPERTIES
   PASS_REGULAR_EXPRESSION "Usage:.*linscreen")
 
-find_package(Qt6 REQUIRED COMPONENTS Widgets)
+find_package(Qt6 REQUIRED COMPONENTS Widgets Network)
+add_executable(linscreen_tls_test tls_test.cpp)
+target_link_libraries(linscreen_tls_test PRIVATE Qt6::Core Qt6::Network)
+add_test(NAME tls_runtime COMMAND linscreen_tls_test)
+set_tests_properties(tls_runtime PROPERTIES TIMEOUT 10)
 add_executable(linscreen_tools_menu_test
   capturetoolsmenu_test.cpp
   ../src/widgets/capture/capturetoolsmenu.cpp

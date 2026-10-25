@@ -113,6 +113,9 @@ jobs:
         run: |
           ctest --test-dir build-linscreen-release --output-on-failure
           build-linscreen-release/LinScreen-*-x86_64.AppImage --version
+          LD_LIBRARY_PATH="$PWD/build-linscreen-appimage/LinScreen.AppDir/usr/lib" \
+            QT_PLUGIN_PATH="$PWD/build-linscreen-appimage/LinScreen.AppDir/usr/plugins" \
+            build-linscreen-release/tests/linscreen_tls_test
           appstreamcli validate --no-net data/appdata/org.linscreen.LinScreen.metainfo.xml
           desktop-file-validate data/desktopEntry/package/org.linscreen.LinScreen.desktop
           sudo apt-get install --yes --no-install-recommends ./build-linscreen-release/linscreen_*.deb

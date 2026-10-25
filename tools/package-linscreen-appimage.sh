@@ -19,7 +19,7 @@ if [ -z "${project_version}" ]; then
     exit 1
 fi
 
-for command_name in cmake curl chmod cut find mv rm sha256sum; do
+for command_name in cmake curl chmod cut find mv rm sha256sum awk ldconfig; do
     if ! command -v "${command_name}" >/dev/null 2>&1; then
         echo "${command_name} is required to build the LinScreen AppImage." >&2
         exit 1
@@ -56,6 +56,15 @@ esac
 if [ "${arch}" != "x86_64" ]; then
     echo "This script currently downloads linuxdeploy tools for x86_64 only." >&2
     echo "Set LINUXDEPLOY_URL and LINUXDEPLOY_QT_PLUGIN_URL for ${arch}." >&2
+    exit 1
+fi
+
+# Qt loads OpenSSL at runtime, so ldd/plugin dependency scans can miss libssl.
+# Bundle the matching pair; host libssl may require a newer bundled libcrypto.
+ssl_library="$(ldconfig -p | awk '$1 == "libssl.so.3" && /x86-64/ { print $NF; exit }')"
+crypto_library="$(ldconfig -p | awk '$1 == "libcrypto.so.3" && /x86-64/ { print $NF; exit }')"
+if [ ! -f "${ssl_library}" ] || [ ! -f "${crypto_library}" ]; then
+    echo "Matching x86_64 OpenSSL 3 runtime libraries are required." >&2
     exit 1
 fi
 
@@ -172,6 +181,8 @@ export PATH="${tools_dir}:${PATH}"
     --appdir "${appdir}" \
     --plugin qt \
     --executable "${appdir}/usr/bin/linscreen" \
+    --library "${ssl_library}" \
+    --library "${crypto_library}" \
     --desktop-file "${desktop_file}" \
     --icon-file "${icon_file}" \
     --output appimage
@@ -189,4 +200,6 @@ if [ ! -f "${OUTPUT}" ]; then
 fi
 
 chmod +x "${OUTPUT}"
+test -f "${appdir}/usr/lib/libssl.so.3"
+test -f "${appdir}/usr/lib/libcrypto.so.3"
 echo "AppImage written to ${OUTPUT}"
