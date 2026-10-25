@@ -395,8 +395,8 @@ void CaptureWidget::initButtons()
         auto* action = m_toolsMenu->addTool(
           static_cast<int>(t),
           b->icon(),
-          b->name(),
-          b->description(),
+          b->tool()->name(),
+          b->tool()->description(),
           ConfigHandler().shortcut(QVariant::fromValue(t).toString()),
           b->tool()->isSelectable());
         connect(
